@@ -26,6 +26,7 @@
 
   let result = [];
   let queryField;
+  let activeKey = '';
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
 
   $: if (collection) {
@@ -33,9 +34,28 @@
   }
 
   async function submitQuery() {
+    activeKey = '';
     result = await PerformFind(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
     queryField?.focus();
     queryField?.select();
+  }
+
+  function prev() {
+    form.skip -= form.limit;
+    if (form.skip < 0) {
+      form.skip = 0;
+    }
+    submitQuery();
+  }
+
+  function next() {
+    form.skip += form.limit;
+    submitQuery();
+  }
+
+  function remove() {
+    // eslint-disable-next-line no-alert
+    alert('yet to be implemented');
   }
 
   onMount(() => {
@@ -80,7 +100,7 @@
 <CodeExample {code} />
 
 <div class="result">
-  <ObjectGrid data={result} />
+  <ObjectGrid data={result} bind:activeKey />
   <div class="controls">
     <div>
       {#if result}
@@ -88,8 +108,15 @@
       {/if}
     </div>
     <div>
-      <button class="btn"><Icon name="chev-l" /></button>
-      <button class="btn"><Icon name="chev-r" /></button>
+      <button class="btn danger" on:click={remove} disabled={!activeKey}>
+        <Icon name="-" />
+      </button>
+      <button class="btn" on:click={prev} disabled={!form.limit || (form.skip <= 0) || !result?.length}>
+        <Icon name="chev-l" />
+      </button>
+      <button class="btn" on:click={next} disabled={!form.limit || ((result?.length || Infinity) < form.limit) || !result?.length}>
+        <Icon name="chev-r" />
+      </button>
     </div>
   </div>
 </div>

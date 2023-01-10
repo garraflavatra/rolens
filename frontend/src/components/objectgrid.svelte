@@ -5,6 +5,13 @@
   export let key = '_id';
   export let showHeaders = false;
   export let contained = true;
+  export let activeKey = '';
+
+  const columns = [
+    { key: 'key', label: 'Key' },
+    { key: 'value', label: 'Value' },
+    { key: 'type', label: 'Type' },
+  ];
 
   let items = [];
 
@@ -61,8 +68,4 @@
   }
 </script>
 
-<Grid columns={[
-  { key: 'key', label: 'Key' },
-  { key: 'value', label: 'Value' },
-  { key: 'type', label: 'Type' },
-]} {items} {showHeaders} {contained} key="key" />
+<Grid {columns} {items} {showHeaders} {contained} key="key" bind:activeKey />

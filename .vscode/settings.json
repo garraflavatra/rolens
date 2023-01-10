@@ -1,0 +1,18 @@
+{
+  "editor.tabSize": 2,
+
+  "[go]": {
+    "editor.insertSpaces": false,
+    "editor.tabSize": 4,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
+    "editor.suggest.snippetsPreventQuickSuggestions": false
+  },
+
+  "[css]": {
+    "editor.suggest.insertMode": "replace",
+    "editor.tabSize": 2
+  }
+}

@@ -6,8 +6,6 @@
   export let showHeaders = false;
   export let contained = true;
 
-  console.log(data);
-
   let items = [];
 
   $: if (data) {
@@ -30,6 +28,12 @@
   function getType(value) {
     if (Array.isArray(value)) {
       return `array (${value.length} item${value.length === 1 ? '' : 's'})`;
+    }
+    else if (typeof value === 'number') {
+      if (value.toString().includes('.')) {
+        return 'double';
+      }
+      return 'integer';
     }
     else if (new Date(value).toString() !== 'Invalid Date') {
       return 'date';

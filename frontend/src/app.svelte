@@ -93,25 +93,25 @@
 <style>
   main {
     height: 100vh;
-    max-height: 100vh;
     display: flex;
-    flex-direction: column;
+    flex-flow: column;
   }
 
   .columns {
     display: flex;
     gap: 1rem;
     flex: 1;
+    height: 100%;
   }
   .columns > :global(*) {
     height: 100%;
     display: flex;
-    flex-direction: column;
+    flex-flow: column;
   }
 
   .hostlist {
     flex: 0 0 250px;
-    overflow-y: scroll;
+    overflow: scroll;
   }
   .collection {
     flex: 1;

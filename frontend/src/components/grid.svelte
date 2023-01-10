@@ -65,7 +65,7 @@
       {#each _items as item (item[key])}
         <tr on:click={() => select(item[key])} class:selected={activeKey === item[key] && !activeChildKey}>
           <td class="has-toggle">
-            {#if item.children}
+            {#if item.children?.length}
               <button class="toggle" on:click={() => toggleChildren(item[key])}>
                 <Icon name={childrenOpen[item[key]] ? 'chev-d' : 'chev-r'} />
               </button>
@@ -106,9 +106,9 @@
 <style>
   .grid {
     background-color: #fff;
-    height: 100%;
     width: 100%;
     overflow: scroll;
+    max-height: 400px; /* fixme */
   }
   .grid.contained {
     border: 1px solid #ccc;
@@ -126,7 +126,7 @@
     border-bottom: 2px solid #ccc;
   }
 
-  table th {
+  th {
     font-weight: 600;
     text-align: left;
   }
@@ -137,7 +137,6 @@
 
   td, th {
     padding: 0.3rem;
-    height: 100%;
   }
   td.has-toggle {
     width: calc(20px + 0.3rem);
@@ -146,7 +145,7 @@
     padding: 0;
   }
 
-  table tbody tr.selected td {
+  tbody tr.selected td {
     background-color: #00008b;
     color: #fff;
   }

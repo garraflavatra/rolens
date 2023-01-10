@@ -53,7 +53,7 @@
     width: 100%;
     border-radius: 10px;
     display: flex;
-    flex-direction: column;
+    flex-flow: column;
     cursor: auto;
   }
   .inner > :global(*:first-child) {

@@ -4,6 +4,7 @@
   import { onMount } from 'svelte';
   import { input } from '../../actions';
   import ObjectGrid from '../../components/objectgrid.svelte';
+  import Icon from '../../components/icon.svelte';
 
   export let collection;
 
@@ -33,6 +34,8 @@
 
   async function submitQuery() {
     result = await PerformFind(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
+    queryField?.focus();
+    queryField?.select();
   }
 
   onMount(() => {
@@ -75,7 +78,21 @@
 </form>
 
 <CodeExample {code} />
-<ObjectGrid data={result} />
+
+<div class="result">
+  <ObjectGrid data={result} />
+  <div class="controls">
+    <div>
+      {#if result}
+        Results: {result.length}
+      {/if}
+    </div>
+    <div>
+      <button class="btn"><Icon name="chev-l" /></button>
+      <button class="btn"><Icon name="chev-r" /></button>
+    </div>
+  </div>
+</div>
 
 <style>
   .row-one {
@@ -89,5 +106,21 @@
     gap: 0.5rem;
     grid-template-columns: 5fr 1fr 1fr 1fr;
     margin-bottom: 0.5rem;
+  }
+
+  .result {
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+    margin-top: 0.5rem;
+    gap: 0.5rem;
+  }
+  .result > :global(.grid) {
+    flex: 1;
+  }
+  .result > .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 </style>

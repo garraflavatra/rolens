@@ -56,13 +56,13 @@
     margin: 1rem 1rem 1rem 0;
     height: 100%;
     display: flex;
-    flex-direction: column;
+    flex-flow: column;
   }
 
   .container {
     padding: 0.5rem 0.5rem 0;
     flex: 1;
     display: flex;
-    flex-direction: column;
+    flex-flow: column;
   }
 </style>

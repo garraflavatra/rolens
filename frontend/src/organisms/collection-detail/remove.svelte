@@ -6,10 +6,10 @@
   let remove = '';
   $: code = `db.${collection.key}.remove(${remove});`;
 
-  function insert() {}
+  function performRemove() {}
 </script>
 
-<form on:submit|preventDefault={insert}>
+<form on:submit|preventDefault={performRemove}>
   <CodeExample {code} />
 
   <label class="field">
@@ -18,7 +18,7 @@
 
   <div class="flex">
     <div></div>
-    <button type="submit" class="btn">Remove</button>
+    <button type="submit" class="btn" disabled={!remove}>Remove</button>
   </div>
 </form>
 

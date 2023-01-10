@@ -26,7 +26,7 @@
         Success! {insertedIds.length} document{insertedIds.length > 1 ? 's' : ''} inserted
       {/if}
     </div>
-    <button type="submit" class="btn">Insert</button>
+    <button type="submit" class="btn" disabled={!input}>Insert</button>
   </div>
 </form>
 

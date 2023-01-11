@@ -107,8 +107,7 @@
   .grid {
     background-color: #fff;
     width: 100%;
-    overflow: scroll;
-    max-height: 400px; /* fixme */
+    height: 100%;
   }
   .grid.contained {
     border: 1px solid #ccc;

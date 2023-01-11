@@ -6,10 +6,6 @@
   let input = '';
   let insertedIds;
 
-  $: if (collection) {
-    insertedIds = undefined;
-  }
-
   async function insert() {
     insertedIds = await PerformInsert(collection.hostKey, collection.dbKey, collection.key, input);
   }

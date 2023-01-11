@@ -13,7 +13,6 @@
     border-radius: 10px;
     padding: 0.5rem;
     opacity: 0.6;
-    margin-bottom: 0.5rem;
   }
 
   strong {

@@ -24,20 +24,19 @@
     limit: 30,
   };
 
-  let result = [];
+  let result = {};
+  let submittedForm = {};
   let queryField;
   let activeKey = '';
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
 
-  $: if (collection) {
-    result = [];
-  }
-
   async function submitQuery() {
     activeKey = '';
     result = await PerformFind(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
-    queryField?.focus();
-    queryField?.select();
+    if (result) {
+      submittedForm = JSON.parse(JSON.stringify(form));
+    }
+    resetFocus();
   }
 
   function prev() {
@@ -58,92 +57,104 @@
     alert('yet to be implemented');
   }
 
-  onMount(() => {
+  function resetFocus() {
     queryField?.focus();
     queryField?.select();
-  });
+  }
+
+  onMount(resetFocus);
 </script>
 
-<form on:submit|preventDefault={submitQuery}>
-  <div class="row-one">
-    <label class="field">
-      <span class="label">Query or id</span>
-      <input type="text" class="code" bind:this={queryField} bind:value={form.query} use:input={{ json: true }} placeholder={defaults.query} />
-    </label>
+<div class="find">
+  <form on:submit|preventDefault={submitQuery}>
+    <div class="form-row one">
+      <label class="field">
+        <span class="label">Query or id</span>
+        <input type="text" class="code" bind:this={queryField} bind:value={form.query} use:input={{ json: true }} placeholder={defaults.query} />
+      </label>
 
-    <label class="field">
-      <span class="label">Sort</span>
-      <input type="text" class="code" bind:value={form.sort} use:input={{ json: true }} placeholder={defaults.sort} />
-    </label>
-  </div>
-
-  <div class="row-two">
-    <label class="field">
-      <span class="label">Fields</span>
-      <input type="text" class="code" bind:value={form.fields} use:input={{ json: true }} placeholder={defaults.fields} />
-    </label>
-
-    <label class="field">
-      <span class="label">Skip</span>
-      <input type="number" min="0" bind:value={form.skip} use:input placeholder={defaults.skip} />
-    </label>
-
-    <label class="field">
-      <span class="label">Limit</span>
-      <input type="number" min="0" bind:value={form.limit} use:input placeholder={defaults.limit} />
-    </label>
-
-    <button type="submit" class="btn">Run</button>
-  </div>
-</form>
-
-<CodeExample {code} />
-
-<div class="result">
-  <ObjectGrid data={result} bind:activeKey />
-  <div class="controls">
-    <div>
-      {#if result}
-        Results: {result.length}
-      {/if}
+      <label class="field">
+        <span class="label">Sort</span>
+        <input type="text" class="code" bind:value={form.sort} use:input={{ json: true }} placeholder={defaults.sort} />
+      </label>
     </div>
-    <div>
-      <button class="btn danger" on:click={remove} disabled={!activeKey}>
-        <Icon name="-" />
-      </button>
-      <button class="btn" on:click={prev} disabled={!form.limit || (form.skip <= 0) || !result?.length}>
-        <Icon name="chev-l" />
-      </button>
-      <button class="btn" on:click={next} disabled={!form.limit || ((result?.length || Infinity) < form.limit) || !result?.length}>
-        <Icon name="chev-r" />
-      </button>
+
+    <div class="form-row two">
+      <label class="field">
+        <span class="label">Fields</span>
+        <input type="text" class="code" bind:value={form.fields} use:input={{ json: true }} placeholder={defaults.fields} />
+      </label>
+
+      <label class="field">
+        <span class="label">Skip</span>
+        <input type="number" min="0" bind:value={form.skip} use:input placeholder={defaults.skip} />
+      </label>
+
+      <label class="field">
+        <span class="label">Limit</span>
+        <input type="number" min="0" bind:value={form.limit} use:input placeholder={defaults.limit} />
+      </label>
+
+      <button type="submit" class="btn">Run</button>
+    </div>
+  </form>
+
+  <CodeExample {code} />
+
+  <div class="result">
+    <div class="grid">
+      {#key result}
+        <ObjectGrid data={result.results} bind:activeKey />
+      {/key}
+    </div>
+
+    <div class="controls">
+      <div>
+        {#if result}
+          Results: {result.total || 0}
+        {/if}
+      </div>
+      <div>
+        <button class="btn danger" on:click={remove} disabled={!activeKey}>
+          <Icon name="-" />
+        </button>
+        <button class="btn" on:click={prev} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results?.length}>
+          <Icon name="chev-l" />
+        </button>
+        <button class="btn" on:click={next} disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results?.length}>
+          <Icon name="chev-r" />
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
 <style>
-  .row-one {
+  .find {
     display: grid;
     gap: 0.5rem;
-    grid-template-columns: 3fr 2fr;
+    grid-template: auto auto 1fr / 1fr;
+  }
+
+  .form-row {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .form-row.one {
+    grid-template: 1fr / 3fr 2fr;
     margin-bottom: 0.5rem;
   }
-  .row-two {
-    display: grid;
-    gap: 0.5rem;
-    grid-template-columns: 5fr 1fr 1fr 1fr;
-    margin-bottom: 0.5rem;
+  .form-row.two {
+    grid-template: 1fr / 5fr 1fr 1fr 1fr;
   }
 
   .result {
-    flex: 1;
-    display: flex;
-    flex-flow: column;
-    margin-top: 0.5rem;
+    display: grid;
+    grid-template: 1fr auto / 1fr;
     gap: 0.5rem;
   }
-  .result > :global(.grid) {
-    flex: 1;
+  .result > .grid {
+    overflow: auto;
   }
   .result > .controls {
     display: flex;

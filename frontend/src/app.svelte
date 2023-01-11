@@ -11,7 +11,7 @@
   let activeHostKey = '';
   let activeDbKey = '';
   let activeCollKey = '';
-  let addressBarModalOpen = false;
+  let addressBarModalOpen = true;
 
   $: host = hosts[activeHostKey];
   $: connection = connections[activeHostKey];
@@ -61,60 +61,46 @@
 <main>
   <AddressBar {hosts} bind:activeHostKey on:select={e => openConnection(e.detail)} bind:modalOpen={addressBarModalOpen} />
 
-  <div class="columns">
-    {#if host && connection}
-      <div class="hostlist">
-        <Grid
-          columns={[ { key: 'id' }, { key: 'collCount', right: true } ]}
-          items={Object.keys(connection.databases).map(id => ({
-            id,
-            collCount: Object.keys(connection.databases[id].collections || {}).length,
-            children: connection.databases[id].collections || [],
-          }))}
-          bind:activeKey={activeDbKey}
-          bind:activeChildKey={activeCollKey}
-          on:select={e => openDatabase(e.detail)}
-          on:selectChild={e => openCollection(e.detail)}
-        />
-      </div>
+  {#if host && connection}
+    <div class="hostlist">
+      <Grid
+        columns={[ { key: 'id' }, { key: 'collCount', right: true } ]}
+        items={Object.keys(connection.databases).map(id => ({
+          id,
+          collCount: Object.keys(connection.databases[id].collections || {}).length,
+          children: connection.databases[id].collections || [],
+        }))}
+        bind:activeKey={activeDbKey}
+        bind:activeChildKey={activeCollKey}
+        on:select={e => openDatabase(e.detail)}
+        on:selectChild={e => openCollection(e.detail)}
+      />
+    </div>
 
-      <div class="collection">
-        <CollectionDetail
-          {collection}
-          hostKey={activeHostKey}
-          dbKey={activeDbKey}
-          collectionKey={activeCollKey}
-        />
-      </div>
-    {/if}
-  </div>
+    <div class="collection">
+      <CollectionDetail
+        {collection}
+        hostKey={activeHostKey}
+        dbKey={activeDbKey}
+        collectionKey={activeCollKey}
+      />
+    </div>
+  {/if}
 </main>
 
 <style>
   main {
     height: 100vh;
-    display: flex;
-    flex-flow: column;
+    display: grid;
+    grid-template: 3rem auto / 250px 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
   }
-
-  .columns {
-    display: flex;
-    gap: 1rem;
-    flex: 1;
-    height: 100%;
-  }
-  .columns > :global(*) {
-    height: 100%;
-    display: flex;
-    flex-flow: column;
+  main > :global(.addressbar) {
+    grid-column: 1 / 3;
   }
 
   .hostlist {
-    flex: 0 0 250px;
     overflow: scroll;
-  }
-  .collection {
-    flex: 1;
-    width: auto;
   }
 </style>

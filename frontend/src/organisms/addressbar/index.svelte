@@ -18,8 +18,13 @@
 
 <div class="addressbar">
   <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <div class="address" class:empty={!host?.uri} on:click={() => modalOpen = true}>
-    {host?.uri || 'No host selected'}
+  <div class="address" on:click={() => modalOpen = true}>
+    {#if host?.uri}
+      {@const split = host.uri.split('://').map(s => s.split('/')).flat()}
+      <span class="protocol">{split[0]}://</span><span class="hostname">{split[1]}</span><span class="path">{split.slice(2).join('/')}</span>
+    {:else}
+      <span class="empty">no host selected</span>
+    {/if}
   </div>
 
   <div class="actions">
@@ -48,14 +53,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 1rem;
     padding: 0.5rem 0.5rem 0.5rem 1rem;
+    height: 3rem;
     border: 1px solid #ccc;
     border-radius: 10px;
   }
 
-  .address.empty {
-    font-style: italic;
+  .address .protocol,
+  .address .path,
+  .address .empty {
     opacity: 0.6;
   }
 

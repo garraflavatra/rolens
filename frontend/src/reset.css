@@ -64,3 +64,6 @@ input {
 	min-width: 100px;
 	width: 100%;
 }
+textarea {
+	font: inherit;
+}

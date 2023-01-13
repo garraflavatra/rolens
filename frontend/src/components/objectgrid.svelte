@@ -28,7 +28,6 @@
     }
     else {
       items = dissectObject(data);
-      console.log(items);
     }
   }
 
@@ -55,11 +54,13 @@
   }
 
   function dissectObject(object) {
-    return Object.entries(object).map(([ key, value ]) => {
+    const entries = [ ...Array.isArray(object) ? object.entries() : Object.entries(object) ];
+    return entries.map(([ key, value ]) => {
+      key = key + '';
       const type = getType(value);
       const child = { key, value, type };
 
-      if (type.startsWith('object')) {
+      if (type.startsWith('object') || type.startsWith('array')) {
         child.children = dissectObject(value);
       }
 

@@ -1,4 +1,5 @@
 <script>
+  import { tick } from 'svelte';
   import TabBar from '../../components/tabbar.svelte';
   import Find from './find.svelte';
   import Indexes from './indexes.svelte';
@@ -12,11 +13,19 @@
   export let collectionKey;
 
   let tab = 'find';
+  let find;
 
   $: if (collection) {
     collection.hostKey = hostKey;
     collection.dbKey = dbKey;
     collection.key = collectionKey;
+  }
+
+  async function catchQuery(event) {
+    tab = 'find';
+    await tick();
+    console.log(event, find);
+    find.performQuery(event.detail);
   }
 </script>
 
@@ -34,8 +43,8 @@
 
       <div class="container">
         {#if tab === 'stats'} <Stats {collection} />
-        {:else if tab === 'find'} <Find {collection} />
-        {:else if tab === 'insert'} <Insert {collection} />
+        {:else if tab === 'find'} <Find {collection} bind:this={find} />
+        {:else if tab === 'insert'} <Insert {collection} on:performFind={catchQuery} />
         {:else if tab === 'remove'} <Remove {collection} />
         {:else if tab === 'indexes'} <Indexes {collection} />
         {/if}

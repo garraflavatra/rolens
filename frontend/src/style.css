@@ -10,11 +10,17 @@ body {
     cursor: default;
     font-size: 15px;
     line-height: 15px;
+    background-color: #eee;
 }
 
 * {
     vertical-align: middle;
     box-sizing: border-box;
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    touch-action: none;
 }
 
 p {
@@ -95,4 +101,12 @@ p {
 
 code, .code {
     font-family: Menlo, monospace;
+}
+
+@keyframes flashGreen {
+    0% { color: #0d0; }
+    100% { color: unset; }
+}
+.flash-green {
+    animation: 1s ease-out 0s 1 flashGreen;
 }

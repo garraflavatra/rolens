@@ -23,9 +23,14 @@
 </form>
 
 <style>
+  form {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 0.5rem;
+  }
+
   .flex {
     display: flex;
     justify-content: space-between;
-    margin-top: 0.5rem;
   }
 </style>

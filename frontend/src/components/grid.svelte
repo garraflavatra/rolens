@@ -105,9 +105,9 @@
 
 <style>
   .grid {
-    background-color: #fff;
     width: 100%;
     height: 100%;
+    background-color: #fff;
   }
   .grid.contained {
     border: 1px solid #ccc;
@@ -152,6 +152,8 @@
   button.toggle {
     color: inherit;
     padding: 0;
+    margin: 0;
+    display: contents;
   }
   button.toggle :global(svg) {
     width: 15px;

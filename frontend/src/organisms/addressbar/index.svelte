@@ -57,6 +57,7 @@
     height: 3rem;
     border: 1px solid #ccc;
     border-radius: 10px;
+    background-color: #fff;
   }
 
   .address .protocol,

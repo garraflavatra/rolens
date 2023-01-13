@@ -16,7 +16,7 @@
     limit: 30,
   };
 
-  const form = {
+  let form = {
     query: '{}',
     sort: '{ "_id": 1 }',
     fields: '{}',
@@ -60,6 +60,12 @@
   function resetFocus() {
     queryField?.focus();
     queryField?.select();
+  }
+
+  export function performQuery(q) {
+    form = { ...defaults, ...q };
+    console.log(form);
+    submitQuery();
   }
 
   onMount(resetFocus);
@@ -110,9 +116,9 @@
 
     <div class="controls">
       <div>
-        {#if result}
-          Results: {result.total || 0}
-        {/if}
+        {#key result}
+          <span class="flash-green">Results: {result.total || 0}</span>
+        {/key}
       </div>
       <div>
         <button class="btn danger" on:click={remove} disabled={!activeKey}>

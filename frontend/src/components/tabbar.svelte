@@ -44,6 +44,7 @@
     border-bottom: none;
     border-radius: 5px 5px 0 0;
     cursor: pointer;
+    background-color: #fff;
   }
   .tabs li.active button {
     color: #fff;

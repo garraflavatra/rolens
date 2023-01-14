@@ -27,3 +27,34 @@ func (a *App) OpenCollection(hostKey, dbKey, collKey string) (result bson.M) {
 	defer close()
 	return result
 }
+
+func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
+	sure, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+		Title:         "Confirm",
+		Message:       "Are you sure you want to drop " + collKey + "?",
+		Buttons:       []string{"Yes", "No"},
+		DefaultButton: "Yes",
+		CancelButton:  "No",
+	})
+	if sure != "Yes" {
+		return false
+	}
+
+	client, ctx, close, err := a.connectToHost(hostKey)
+	if err != nil {
+		fmt.Println(err.Error())
+		return false
+	}
+	err = client.Database(dbKey).Collection(collKey).Drop(ctx)
+	if err != nil {
+		fmt.Println(err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:    runtime.ErrorDialog,
+			Title:   "Could not drop " + dbKey,
+			Message: err.Error(),
+		})
+		return false
+	}
+	defer close()
+	return true
+}

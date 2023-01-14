@@ -1,7 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
 
-
   export let items = undefined;
   export let position = undefined;
 
@@ -9,6 +8,11 @@
 
   function close() {
     dispatch('close');
+  }
+
+  function click(fn) {
+    fn();
+    close();
   }
 </script>
 
@@ -20,7 +24,7 @@
         <hr />
       {:else}
         <li>
-          <button class="item" on:click={item.fn}>
+          <button class="item" on:click={() => click(item.fn)}>
             {item.label}
           </button>
         </li>

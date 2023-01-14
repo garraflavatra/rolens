@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { DropDatabase, Hosts, OpenCollection, OpenConnection, OpenDatabase } from '../wailsjs/go/app/App';
+  import { DropCollection, DropDatabase, Hosts, OpenCollection, OpenConnection, OpenDatabase } from '../wailsjs/go/app/App';
   import AddressBar from './organisms/addressbar/index.svelte';
   import Grid from './components/grid.svelte';
   import CollectionDetail from './organisms/collection-detail/index.svelte';
@@ -19,8 +19,10 @@
   $: database = connection?.databases[activeDbKey];
   $: collection = database?.collections?.[activeCollKey];
 
+  $: console.log(connection?.databases);
+
   async function openConnection(hostKey) {
-    $busy = true;
+    busy.start();
     const databases = await OpenConnection(hostKey);
 
     if (databases) {
@@ -33,32 +35,40 @@
       window.runtime.WindowSetTitle(`${host.name} - Mongodup`);
     }
 
-    $busy = false;
+    busy.end();
   }
 
   async function openDatabase(dbKey) {
-    $busy = true;
+    busy.start();
     const collections = await OpenDatabase(activeHostKey, dbKey);
 
     for (const collKey of collections || []) {
       connections[activeHostKey].databases[dbKey].collections[collKey] = {};
     }
 
-    $busy = false;
+    busy.end();
   }
 
   async function dropDatabase(dbKey) {
-    $busy = true;
+    busy.start();
     await DropDatabase(activeHostKey, dbKey);
     await openConnection(activeHostKey);
-    $busy = false();
+    busy.end();
   }
 
   async function openCollection(collKey) {
-    $busy = true;
+    busy.start();
     const stats = await OpenCollection(activeHostKey, activeDbKey, collKey);
     connections[activeHostKey].databases[activeDbKey].collections[collKey].stats = stats;
-    $busy = false;
+    busy.end();
+  }
+
+  async function dropCollection(dbKey, collKey) {
+    busy.start();
+    await DropCollection(activeHostKey, dbKey, collKey);
+    await openConnection(activeHostKey);
+    await openCollection(collKey);
+    busy.end();
   }
 
   async function reload() {
@@ -78,11 +88,14 @@
     <div class="databaselist">
       <Grid
         columns={[ { key: 'id' }, { key: 'collCount', right: true } ]}
-        items={Object.keys(connection.databases).map(id => ({
-          id,
-          collCount: Object.keys(connection.databases[id].collections || {}).length,
-          children: connection.databases[id].collections || [],
-          menu: [ { label: `Drop ${id}`, fn: () => dropDatabase(id) } ],
+        items={Object.keys(connection.databases).map(dbKey => ({
+          id: dbKey,
+          collCount: Object.keys(connection.databases[dbKey].collections || {}).length,
+          children: Object.keys(connection.databases[dbKey].collections).map(collKey => ({
+            id: collKey,
+            menu: [ { label: `Drop ${collKey}`, fn: () => dropCollection(dbKey, collKey) } ],
+          })) || [],
+          menu: [ { label: `Drop ${dbKey}`, fn: () => dropDatabase(dbKey) } ],
         }))}
         actions={[
           { icon: 'reload', fn: reload },

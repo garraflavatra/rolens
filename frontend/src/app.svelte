@@ -67,7 +67,7 @@
     busy.start();
     await DropCollection(activeHostKey, dbKey, collKey);
     await openConnection(activeHostKey);
-    await openCollection(collKey);
+    await openDatabase(dbKey);
     busy.end();
   }
 

@@ -31,7 +31,7 @@ func (a *App) DropDatabase(hostKey, dbKey string) bool {
 	sure, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 		Title:         "Confirm",
 		Message:       "Are you sure you want to drop " + dbKey + "?",
-		Buttons:       []string{"yes", "no"},
+		Buttons:       []string{"Yes", "No"},
 		DefaultButton: "Yes",
 		CancelButton:  "No",
 	})

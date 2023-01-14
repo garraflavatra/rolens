@@ -120,6 +120,37 @@ func (a *App) OpenDatabase(hostKey, dbKey string) (collections []string) {
 	return collections
 }
 
+func (a *App) DropDatabase(hostKey, dbKey string) bool {
+	sure, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+		Title:         "Confirm",
+		Message:       "Are you sure you want to drop " + dbKey + "?",
+		Buttons:       []string{"yes", "no"},
+		DefaultButton: "Yes",
+		CancelButton:  "No",
+	})
+	if sure != "Yes" {
+		return false
+	}
+
+	client, ctx, close, err := a.connectToHost(hostKey)
+	if err != nil {
+		fmt.Println(err.Error())
+		return false
+	}
+	err = client.Database(dbKey).Drop(ctx)
+	if err != nil {
+		fmt.Println(err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:    runtime.ErrorDialog,
+			Title:   "Could not drop " + dbKey,
+			Message: err.Error(),
+		})
+		return false
+	}
+	defer close()
+	return true
+}
+
 func (a *App) OpenCollection(hostKey, dbKey, collKey string) (result bson.M) {
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {

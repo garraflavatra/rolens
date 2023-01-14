@@ -13,17 +13,10 @@
     sort: '{ "_id": 1 }',
     fields: '{}',
     skip: 0,
-    limit: 30,
+    limit: 15,
   };
 
-  let form = {
-    query: '{}',
-    sort: '{ "_id": 1 }',
-    fields: '{}',
-    skip: 0,
-    limit: 30,
-  };
-
+  let form = { ...defaults };
   let result = {};
   let submittedForm = {};
   let queryField;

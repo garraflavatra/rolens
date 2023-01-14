@@ -1,9 +1,11 @@
 <script>
+  import { contextMenu } from '../stores';
   import { createEventDispatcher } from 'svelte';
   import Icon from './icon.svelte';
 
   export let columns = [];
   export let items = [];
+  export let actions = [];
   export let key = 'id';
   export let activeKey = '';
   export let activeChildKey = '';
@@ -12,7 +14,7 @@
   export let contained = false;
 
   const dispatch = createEventDispatcher();
-  const childrenOpen = {};
+  let childrenOpen = {};
 
   $: _items = objectToArray(items).map(item => {
     item.children = objectToArray(item.children);
@@ -43,12 +45,32 @@
     dispatch('selectChild', childKey);
   }
 
-  function toggleChildren(itemKey) {
+  function toggleChildren(itemKey, closeAll) {
     childrenOpen[itemKey] = !childrenOpen[itemKey];
+    if (closeAll) {
+      childrenOpen = {};
+      dispatch('closeAll');
+    }
+  }
+
+  function showContextMenu(evt, item) {
+    select(item[key]);
+    contextMenu.show(evt, item.menu);
   }
 </script>
 
 <div class:grid={level === 0} class:subgrid={level > 0} class:contained>
+  {#if actions?.length}
+    <div class="actions">
+      {#each actions as action}
+        <button class="btn" on:click={action.fn}>
+          {#if action.icon}<Icon name={action.icon} />{/if}
+          {action.label || ''}
+        </button>
+      {/each}
+    </div>
+  {/if}
+
   <table>
     {#if showHeaders && columns.some(col => col.title)}
       <thead>
@@ -63,10 +85,15 @@
 
     <tbody>
       {#each _items as item (item[key])}
-        <tr on:click={() => select(item[key])} class:selected={activeKey === item[key] && !activeChildKey}>
+        <tr
+          on:click={() => select(item[key])}
+          on:dblclick={() => toggleChildren(item[key])}
+          on:contextmenu|preventDefault={evt => showContextMenu(evt, item)}
+          class:selected={activeKey === item[key] && !activeChildKey}
+        >
           <td class="has-toggle">
             {#if item.children?.length}
-              <button class="toggle" on:click={() => toggleChildren(item[key])}>
+              <button class="toggle" on:click={evt => toggleChildren(item[key], evt.shiftKey)}>
                 <Icon name={childrenOpen[item[key]] ? 'chev-d' : 'chev-r'} />
               </button>
             {/if}
@@ -94,6 +121,7 @@
                 items={item.children}
                 level={level + 1}
                 on:select={e => selectChild(item[key], e.detail)}
+                on:closeAll={() => (childrenOpen = {})}
               />
             </td>
           </tr>
@@ -114,6 +142,15 @@
   }
   .subgrid {
     width: 100%;
+  }
+
+  .actions {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ccc;
+  }
+  .actions button {
+    margin-right: 0.2rem;
   }
 
   table {

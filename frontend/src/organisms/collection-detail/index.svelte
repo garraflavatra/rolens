@@ -24,7 +24,6 @@
   async function catchQuery(event) {
     tab = 'find';
     await tick();
-    console.log(event, find);
     find.performQuery(event.detail);
   }
 </script>

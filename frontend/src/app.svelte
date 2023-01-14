@@ -1,10 +1,11 @@
 <script>
   import { onMount } from 'svelte';
-  import { Hosts, OpenCollection, OpenConnection, OpenDatabase } from '../wailsjs/go/main/App';
+  import { DropDatabase, Hosts, OpenCollection, OpenConnection, OpenDatabase } from '../wailsjs/go/main/App';
   import AddressBar from './organisms/addressbar/index.svelte';
   import Grid from './components/grid.svelte';
   import CollectionDetail from './organisms/collection-detail/index.svelte';
-  import { busy } from './stores';
+  import { busy, contextMenu } from './stores';
+  import ContextMenu from './components/contextmenu.svelte';
 
   const connections = {};
   let hosts = {};
@@ -46,11 +47,23 @@
     $busy = false;
   }
 
+  async function dropDatabase(dbKey) {
+    $busy = true;
+    await DropDatabase(activeHostKey, dbKey);
+    await openConnection(activeHostKey);
+    $busy = false();
+  }
+
   async function openCollection(collKey) {
     $busy = true;
     const stats = await OpenCollection(activeHostKey, activeDbKey, collKey);
     connections[activeHostKey].databases[activeDbKey].collections[collKey].stats = stats;
     $busy = false;
+  }
+
+  async function reload() {
+    activeHostKey && await openConnection(activeHostKey);
+    activeDbKey && await openDatabase(activeDbKey);
   }
 
   onMount(() => {
@@ -62,14 +75,20 @@
   <AddressBar {hosts} bind:activeHostKey on:select={e => openConnection(e.detail)} bind:modalOpen={addressBarModalOpen} />
 
   {#if host && connection}
-    <div class="hostlist">
+    <div class="databaselist">
       <Grid
         columns={[ { key: 'id' }, { key: 'collCount', right: true } ]}
         items={Object.keys(connection.databases).map(id => ({
           id,
           collCount: Object.keys(connection.databases[id].collections || {}).length,
           children: connection.databases[id].collections || [],
+          menu: [ { label: `Drop ${id}`, fn: () => dropDatabase(id) } ],
         }))}
+        actions={[
+          { icon: 'reload', fn: reload },
+          { icon: '+' },
+          { icon: '-' },
+        ]}
         bind:activeKey={activeDbKey}
         bind:activeChildKey={activeCollKey}
         on:select={e => openDatabase(e.detail)}
@@ -88,6 +107,10 @@
   {/if}
 </main>
 
+{#key $contextMenu}
+  <ContextMenu {...$contextMenu} on:close={contextMenu.hide} />
+{/key}
+
 <style>
   main {
     height: 100vh;
@@ -100,7 +123,7 @@
     grid-column: 1 / 3;
   }
 
-  .hostlist {
+  .databaselist {
     overflow: scroll;
   }
 </style>

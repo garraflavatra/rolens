@@ -9,3 +9,15 @@ busy.subscribe(isBusy => {
     document.body.classList.remove('busy');
   }
 });
+
+export const contextMenu = (() => {
+  const { set, subscribe } = writable();
+  return {
+    show: (evt, menu) => set(menu ? {
+      position: [ evt.clientX, evt.clientY ],
+      items: menu,
+    } : undefined),
+    hide: () => set(undefined),
+    subscribe,
+  };
+})();

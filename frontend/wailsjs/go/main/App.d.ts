@@ -4,6 +4,8 @@ import {map[string]main} from '../models';
 import {primitive} from '../models';
 import {main} from '../models';
 
+export function DropDatabase(arg1:string,arg2:string):Promise<boolean>;
+
 export function Hosts():Promise<map[string]main.Host>;
 
 export function OpenCollection(arg1:string,arg2:string,arg3:string):Promise<primitive.M>;

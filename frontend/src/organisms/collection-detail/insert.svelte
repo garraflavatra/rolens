@@ -1,7 +1,7 @@
 <script>
   import { input } from '../../actions';
   import { createEventDispatcher } from 'svelte';
-  import { PerformInsert } from '../../../wailsjs/go/main/App';
+  import { PerformInsert } from '../../../wailsjs/go/app/App';
 
   export let collection;
 

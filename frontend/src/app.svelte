@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { DropDatabase, Hosts, OpenCollection, OpenConnection, OpenDatabase } from '../wailsjs/go/main/App';
+  import { DropDatabase, Hosts, OpenCollection, OpenConnection, OpenDatabase } from '../wailsjs/go/app/App';
   import AddressBar from './organisms/addressbar/index.svelte';
   import Grid from './components/grid.svelte';
   import CollectionDetail from './organisms/collection-detail/index.svelte';

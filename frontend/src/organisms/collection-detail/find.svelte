@@ -1,5 +1,5 @@
 <script>
-  import { PerformFind } from '../../../wailsjs/go/main/App';
+  import { PerformFind } from '../../../wailsjs/go/app/App';
   import CodeExample from '../../components/code-example.svelte';
   import { onMount } from 'svelte';
   import { input } from '../../actions';

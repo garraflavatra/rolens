@@ -1,22 +1,31 @@
 <script>
   import hljs from 'highlight.js/lib/core';
-  import hljsJson from 'highlight.js/lib/languages/json';
-  import 'highlight.js/styles/atom-one-dark.css';
+  import hljsJSON from 'highlight.js/lib/languages/json';
+  import hljsJavaScript from 'highlight.js/lib/languages/javascript';
   import Icon from './icon.svelte';
   import Modal from './modal.svelte';
+  import 'highlight.js/styles/atom-one-dark.css';
 
-  export let json = '';
+  export let code = '';
+  export let language = 'json';
 
-  hljs.registerLanguage('json', hljsJson);
-  $: highlighted = json ? hljs.highlight('json', json).value : '';
+  const languageNames = {
+    json: 'JSON',
+    js: 'JavaScript',
+  };
+
+  hljs.registerLanguage('json', hljsJSON);
+  hljs.registerLanguage('js', hljsJavaScript);
+
+  $: highlighted = code ? hljs.highlight(language, code).value : '';
 
   function copy() {
-    navigator.clipboard.writeText(json);
+    navigator.clipboard.writeText(code);
   }
 </script>
 
-{#if json}
-  <Modal bind:show={json} title="JSON viewer" contentPadding={false}>
+{#if code}
+  <Modal bind:show={code} title="{languageNames[language]} viewer" contentPadding={false}>
     <div class="codeblock">
       <div class="buttons">
         <button class="btn" on:click={copy}>

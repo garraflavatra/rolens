@@ -5,7 +5,7 @@
   import { input } from '../../actions';
   import ObjectGrid from '../../components/objectgrid.svelte';
   import Icon from '../../components/icon.svelte';
-  import JsonViewer from '../../components/jsonviewer.svelte';
+  import CodeViewer from '../../components/codeviewer.svelte';
 
   export let collection;
 
@@ -136,7 +136,7 @@
   </div>
 </div>
 
-<JsonViewer bind:json />
+<CodeViewer bind:code={json} language="json" />
 
 <style>
   .find {

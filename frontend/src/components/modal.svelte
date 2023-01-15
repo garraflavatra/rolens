@@ -5,7 +5,15 @@
   export let show = false;
   export let title = undefined;
   export let contentPadding = true;
+
+  function keydown(event) {
+    if (event.key === 'Escape') {
+      show = false;
+    }
+  }
 </script>
+
+<svelte:window on:keydown={keydown} />
 
 {#if show}
   <div class="modal outer" on:mousedown|self={() => show = false} transition:fade>

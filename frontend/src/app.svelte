@@ -100,6 +100,7 @@
   async function reload() {
     activeHostKey && await openConnection(activeHostKey);
     activeDbKey && await openDatabase(activeDbKey);
+    activeCollKey && await openCollection(activeCollKey);
   }
 
   onMount(() => {

@@ -11,7 +11,7 @@
   }
 
   function click(fn) {
-    fn();
+    fn?.();
     close();
   }
 </script>
@@ -54,6 +54,8 @@
   button {
     padding: 5px;
     border-radius: 5px;
+    width: 100%;
+    text-align: left;
   }
   button:hover {
     background-color: #00008b;

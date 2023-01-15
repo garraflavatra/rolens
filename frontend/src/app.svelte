@@ -1,23 +1,37 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import { DropCollection, DropDatabase, Hosts, OpenCollection, OpenConnection, OpenDatabase } from '../wailsjs/go/app/App';
   import AddressBar from './organisms/addressbar/index.svelte';
   import Grid from './components/grid.svelte';
   import CollectionDetail from './organisms/collection-detail/index.svelte';
   import { busy, contextMenu } from './stores';
   import ContextMenu from './components/contextmenu.svelte';
+  import Modal from './components/modal.svelte';
+  import { input } from './actions';
 
   const connections = {};
   let hosts = {};
+
   let activeHostKey = '';
   let activeDbKey = '';
   let activeCollKey = '';
+
   let addressBarModalOpen = true;
+
+  let newDb;
+  let newDbInput;
+
+  let newColl;
+  let newCollInput;
 
   $: host = hosts[activeHostKey];
   $: connection = connections[activeHostKey];
   $: database = connection?.databases[activeDbKey];
   $: collection = database?.collections?.[activeCollKey];
+
+  $: if (newDb) {
+    tick().then(() => newDbInput.focus());
+  }
 
   async function openConnection(hostKey) {
     busy.start();
@@ -36,6 +50,13 @@
     busy.end();
   }
 
+  function createDatabase() {
+    busy.start();
+    connections[activeHostKey].databases[newDb.name] = { collections: {} };
+    newDb = undefined;
+    busy.end();
+  }
+
   async function openDatabase(dbKey) {
     busy.start();
     const collections = await OpenDatabase(activeHostKey, dbKey);
@@ -50,7 +71,14 @@
   async function dropDatabase(dbKey) {
     busy.start();
     await DropDatabase(activeHostKey, dbKey);
-    await openConnection(activeHostKey);
+    await reload();
+    busy.end();
+  }
+
+  function createCollection() {
+    busy.start();
+    connections[activeHostKey].databases[activeDbKey].collections[newColl.name] = {};
+    newColl = undefined;
     busy.end();
   }
 
@@ -64,8 +92,7 @@
   async function dropCollection(dbKey, collKey) {
     busy.start();
     await DropCollection(activeHostKey, dbKey, collKey);
-    await openConnection(activeHostKey);
-    await openDatabase(dbKey);
+    await reload();
     busy.end();
   }
 
@@ -88,16 +115,26 @@
         columns={[ { key: 'id' }, { key: 'collCount', right: true } ]}
         items={Object.keys(connection.databases).map(dbKey => ({
           id: dbKey,
-          collCount: Object.keys(connection.databases[dbKey].collections || {}).length,
+          collCount: Object.keys(connection.databases[dbKey].collections || {}).length || '',
           children: Object.keys(connection.databases[dbKey].collections).map(collKey => ({
             id: collKey,
             menu: [ { label: `Drop ${collKey}`, fn: () => dropCollection(dbKey, collKey) } ],
-          })) || [],
+          })).sort((a, b) => a.id.localeCompare(b)) || [],
           menu: [ { label: `Drop ${dbKey}`, fn: () => dropDatabase(dbKey) } ],
         }))}
         actions={[
           { icon: 'reload', fn: reload },
-          { icon: '+' },
+          { icon: '+', fn: evt => {
+            if (activeDbKey) {
+              contextMenu.show(evt, [
+                { label: 'New database', fn: () => newDb = {} },
+                { label: 'New collection', fn: () => newColl = {} },
+              ]);
+            }
+            else {
+              newDb = {};
+            }
+          } },
           { icon: '-' },
         ]}
         bind:activeKey={activeDbKey}
@@ -118,6 +155,32 @@
   {/if}
 </main>
 
+{#if newDb}
+  <Modal bind:show={newDb}>
+    <p><strong>Create a database</strong></p>
+    <p>Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.</p>
+    <form on:submit|preventDefault={createDatabase}>
+      <label class="field">
+        <input type="text" spellcheck="false" bind:value={newDb.name} use:input placeholder="New collection name" bind:this={newDbInput} />
+      </label>
+      <button class="btn create" type="submit">Create database</button>
+    </form>
+  </Modal>
+{/if}
+
+{#if newColl}
+  <Modal bind:show={newColl}>
+    <p><strong>Create a collections</strong></p>
+    <p>Note: collections in MongoDB do not exist until they have at least one item. Your new collection will not persist on the server; fill it to have it created.</p>
+    <form on:submit|preventDefault={createCollection}>
+      <label class="field">
+        <input type="text" spellcheck="false" bind:value={newColl.name} use:input placeholder="New collection name" bind:this={newCollInput} />
+      </label>
+      <button class="btn create" type="submit">Create collection</button>
+    </form>
+  </Modal>
+{/if}
+
 {#key $contextMenu}
   <ContextMenu {...$contextMenu} on:close={contextMenu.hide} />
 {/key}
@@ -136,5 +199,9 @@
 
   .databaselist {
     overflow: scroll;
+  }
+
+  .btn.create {
+    margin-top: 0.5rem;
   }
 </style>

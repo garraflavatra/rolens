@@ -18,19 +18,19 @@
 {#if show}
   <div class="modal outer" on:mousedown|self={() => show = false} transition:fade>
     <div class="inner" transition:fly={{ y: 100 }}>
-      <header>
-        {#if title}
+      {#if title}
+        <header>
           <div class="title">{title}</div>
-        {/if}
-        <button class="btn close" on:click={() => show = false} title="close">
-          <Icon name="x" />
-        </button>
-      </header>
+          <button class="btn close" on:click={() => show = false} title="close">
+            <Icon name="x" />
+          </button>
+        </header>
+      {/if}
+
       <div class="slot content" class:padded={contentPadding}> <slot /> </div>
-      {#if $$slots.footerLeft || $$slots.footerRight}
-        <footer>
-          <slot name="footer" />
-        </footer>
+
+      {#if $$slots.footer}
+        <footer> <slot name="footer" /> </footer>
       {/if}
     </div>
   </div>

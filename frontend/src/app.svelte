@@ -135,7 +135,17 @@
               newDb = {};
             }
           } },
-          { icon: '-' },
+          { icon: '-', fn: evt => {
+            if (activeCollKey) {
+              contextMenu.show(evt, [
+                { label: 'Drop database', fn: () => dropDatabase(activeDbKey) },
+                { label: 'Drop collection', fn: () => dropCollection(activeDbKey, activeCollKey) },
+              ]);
+            }
+            else {
+              dropDatabase(activeDbKey);
+            }
+          }, disabled: !activeDbKey },
         ]}
         bind:activeKey={activeDbKey}
         bind:activeChildKey={activeCollKey}

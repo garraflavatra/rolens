@@ -87,7 +87,7 @@
   {#if actions?.length}
     <div class="actions">
       {#each actions as action}
-        <button class="btn" on:click={action.fn}>
+        <button class="btn" on:click={action.fn} disabled={action.disabled}>
           {#if action.icon}<Icon name={action.icon} />{/if}
           {action.label || ''}
         </button>

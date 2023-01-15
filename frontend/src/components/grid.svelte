@@ -62,6 +62,25 @@
     select(item[key]);
     contextMenu.show(evt, item.menu);
   }
+
+  function formatValue(value) {
+    if (Array.isArray(value)) {
+      return '[...]';
+    }
+    if (typeof value === 'object') {
+      return '{...}';
+    }
+    if (value === undefined || value === null) {
+      return '';
+    }
+    if (typeof value === 'number' || typeof value === 'boolean') {
+      return String(value);
+    }
+    if (String(value).length <= 1000) {
+      return value;
+    }
+    return String(value).slice(0, 1000) + '…';
+  }
 </script>
 
 <div class:grid={level === 0} class:subgrid={level > 0} class:contained>
@@ -77,6 +96,13 @@
   {/if}
 
   <table>
+    <colgroup>
+      <col style:width="calc(15px + 0.6rem)" />
+      {#each columns as column}
+        <col />
+      {/each}
+    </colgroup>
+
     {#if showHeaders && columns.some(col => col.title)}
       <thead>
         <tr>
@@ -106,10 +132,8 @@
 
           {#each columns as column}
             {@const value = item[column.key]}
-            <td class:right={column.right}>
-              {#if typeof value !== 'object'}
-                {value || ''}
-              {/if}
+            <td class:right={column.right} title={value}>
+              {formatValue(value)}
             </td>
           {/each}
         </tr>
@@ -161,6 +185,7 @@
   table {
     border-collapse: collapse;
     width: 100%;
+    /* table-layout: fixed; */
   }
 
   table thead {
@@ -178,6 +203,7 @@
 
   td, th {
     padding: 0.3rem;
+    text-overflow: ellipsis;
   }
   td.has-toggle {
     width: calc(20px + 0.3rem);

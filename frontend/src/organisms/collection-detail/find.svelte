@@ -5,6 +5,7 @@
   import { input } from '../../actions';
   import ObjectGrid from '../../components/objectgrid.svelte';
   import Icon from '../../components/icon.svelte';
+  import JsonViewer from '../../components/jsonviewer.svelte';
 
   export let collection;
 
@@ -21,6 +22,7 @@
   let submittedForm = {};
   let queryField;
   let activeKey = '';
+  let json = '';
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
 
   async function submitQuery() {
@@ -53,6 +55,12 @@
   function resetFocus() {
     queryField?.focus();
     queryField?.select();
+  }
+
+  function openJson(itemId) {
+    const item = result?.results?.filter(i => i._id == itemId);
+    console.log(item);
+    json = JSON.stringify(item, undefined, 2);
   }
 
   export function performQuery(q) {
@@ -103,7 +111,7 @@
   <div class="result">
     <div class="grid">
       {#key result}
-        <ObjectGrid data={result.results} bind:activeKey />
+        <ObjectGrid data={result.results} bind:activeKey on:trigger={e => openJson(e.detail)} />
       {/key}
     </div>
 
@@ -127,6 +135,8 @@
     </div>
   </div>
 </div>
+
+<JsonViewer bind:json />
 
 <style>
   .find {

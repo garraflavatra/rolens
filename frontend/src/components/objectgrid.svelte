@@ -69,4 +69,14 @@
   }
 </script>
 
-<Grid {columns} {items} {showHeaders} {contained} key="key" bind:activeKey />
+<Grid
+  key="key"
+  on:select
+  on:selectChild
+  on:trigger
+  bind:activeKey
+  {columns}
+  {items}
+  {showHeaders}
+  {contained}
+/>

@@ -53,6 +53,11 @@
     }
   }
 
+  function doubleClick(itemKey) {
+    toggleChildren(itemKey, false);
+    dispatch('trigger', itemKey);
+  }
+
   function showContextMenu(evt, item) {
     select(item[key]);
     contextMenu.show(evt, item.menu);
@@ -87,7 +92,7 @@
       {#each _items as item (item[key])}
         <tr
           on:click={() => select(item[key])}
-          on:dblclick={() => toggleChildren(item[key])}
+          on:dblclick={() => doubleClick(item[key])}
           on:contextmenu|preventDefault={evt => showContextMenu(evt, item)}
           class:selected={activeKey === item[key] && !activeChildKey}
         >

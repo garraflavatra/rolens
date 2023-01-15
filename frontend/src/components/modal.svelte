@@ -8,7 +8,7 @@
 </script>
 
 {#if show}
-  <div class="modal outer" on:mousedown|self={close} transition:fade>
+  <div class="modal outer" on:mousedown|self={() => show = false} transition:fade>
     <div class="inner" transition:fly={{ y: 100 }}>
       <header>
         {#if title}
@@ -18,7 +18,7 @@
           <Icon name="x" />
         </button>
       </header>
-      <div class="slot content" class:p-0={!contentPadding}> <slot /> </div>
+      <div class="slot content" class:padded={contentPadding}> <slot /> </div>
       {#if $$slots.footerLeft || $$slots.footerRight}
         <footer>
           <slot name="footer" />
@@ -52,6 +52,7 @@
     margin-bottom: auto;
     width: 100%;
     border-radius: 10px;
+    overflow: hidden;
     display: flex;
     flex-flow: column;
     cursor: auto;
@@ -79,9 +80,11 @@
   }
 
   .content {
-    padding: 1rem;
     overflow-y: auto;
     max-height: 100%;
+  }
+  .content.padded {
+    padding: 1rem;
   }
 
   footer {

@@ -19,8 +19,6 @@
   $: database = connection?.databases[activeDbKey];
   $: collection = database?.collections?.[activeCollKey];
 
-  $: console.log(connection?.databases);
-
   async function openConnection(hostKey) {
     busy.start();
     const databases = await OpenConnection(hostKey);

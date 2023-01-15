@@ -8,6 +8,7 @@
   import ContextMenu from './components/contextmenu.svelte';
   import Modal from './components/modal.svelte';
   import { input } from './actions';
+  import BlankState from './components/blankstate.svelte';
 
   const connections = {};
   let hosts = {};
@@ -106,7 +107,7 @@
   });
 </script>
 
-<main>
+<main class:empty={!host || !connection}>
   <AddressBar {hosts} bind:activeHostKey on:select={e => openConnection(e.detail)} bind:modalOpen={addressBarModalOpen} />
 
   {#if host && connection}
@@ -162,6 +163,8 @@
         collectionKey={activeCollKey}
       />
     </div>
+  {:else}
+    <BlankState label="A database client is nothing without a host" image="/fish.svg" />
   {/if}
 </main>
 
@@ -203,6 +206,10 @@
     gap: 0.5rem;
     padding: 0.5rem;
   }
+  main.empty {
+    grid-template: 3rem auto / 1fr;
+  }
+
   main > :global(.addressbar) {
     grid-column: 1 / 3;
   }

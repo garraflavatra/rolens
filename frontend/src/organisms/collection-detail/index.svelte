@@ -1,4 +1,5 @@
 <script>
+  import BlankState from '../../components/blankstate.svelte';
   import { tick } from 'svelte';
   import TabBar from '../../components/tabbar.svelte';
   import Find from './find.svelte';
@@ -50,7 +51,7 @@
       </div>
     {/key}
   {:else}
-    No collection selected
+    <BlankState label="Select a collection to continue" />
   {/if}
 </div>
 
@@ -60,6 +61,9 @@
     display: grid;
     grid-template: auto 1fr / 1fr;
     gap: 0.5rem;
+  }
+  .collection.empty {
+    grid-template: 1fr / 1fr;
   }
 
   .container {

@@ -28,7 +28,13 @@ body {
 }
 
 p {
-    margin: 0 0 0.7rem 0;
+    margin: 1rem 0;
+}
+p:first-child {
+    margin-top: 0;
+}
+p:last-child {
+    margin-bottom: 0;
 }
 p strong {
     font-weight: 700;

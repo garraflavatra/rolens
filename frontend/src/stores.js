@@ -30,3 +30,5 @@ export const contextMenu = (() => {
     subscribe,
   };
 })();
+
+export const connections = writable({});

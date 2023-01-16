@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import Icon from './icon.svelte';
 

@@ -62,4 +62,10 @@
     background-color: #00008b;
     color: #fff;
   }
+
+  hr {
+    border: none;
+    border-top: 1px solid #aaa;
+    margin: 5px;
+  }
 </style>

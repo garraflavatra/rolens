@@ -1,7 +1,7 @@
 <script>
-  import BlankState from '../../components/blankstate.svelte';
+  import BlankState from '../../../components/blankstate.svelte';
   import { tick } from 'svelte';
-  import TabBar from '../../components/tabbar.svelte';
+  import TabBar from '../../../components/tabbar.svelte';
   import Find from './find.svelte';
   import Indexes from './indexes.svelte';
   import Insert from './insert.svelte';

@@ -1,11 +1,11 @@
 <script>
-  import { PerformFind } from '../../../wailsjs/go/app/App';
-  import CodeExample from '../../components/code-example.svelte';
+  import { PerformFind } from '../../../../wailsjs/go/app/App';
+  import CodeExample from '../../../components/code-example.svelte';
   import { onMount } from 'svelte';
-  import { input } from '../../actions';
-  import ObjectGrid from '../../components/objectgrid.svelte';
-  import Icon from '../../components/icon.svelte';
-  import CodeViewer from '../../components/codeviewer.svelte';
+  import { input } from '../../../actions';
+  import ObjectGrid from '../../../components/objectgrid.svelte';
+  import Icon from '../../../components/icon.svelte';
+  import CodeViewer from '../../../components/codeviewer.svelte';
 
   export let collection;
 

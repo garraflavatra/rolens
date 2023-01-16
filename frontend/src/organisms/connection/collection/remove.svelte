@@ -1,5 +1,5 @@
 <script>
-  import CodeExample from '../../components/code-example.svelte';
+  import CodeExample from '../../../components/code-example.svelte';
 
   export let collection;
 

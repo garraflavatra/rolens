@@ -45,6 +45,7 @@
   .contextmenu {
     position: fixed;
     background-color: rgba(230, 230, 230, 0.7);
+    -webkit-backdrop-filter: blur(30px);
     backdrop-filter: blur(30px);
     border-radius: 10px;
     padding: 5px;

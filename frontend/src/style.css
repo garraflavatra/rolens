@@ -1,3 +1,7 @@
+:root {
+    --darwin-titlebar-height: 36px;
+}
+
 html,
 body {
     height: 100vh;
@@ -10,7 +14,7 @@ body {
     cursor: default;
     font-size: 15px;
     line-height: 15px;
-    background-color: #eee;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 * {

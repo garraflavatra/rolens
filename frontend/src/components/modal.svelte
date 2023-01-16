@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import Icon from './icon.svelte';
 
@@ -47,8 +48,11 @@
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
     margin: 0;
-    padding-top: 1rem;
+    padding-top: 50px;
     cursor: pointer;
+  }
+  :global(#app.platform-darwin) .outer {
+    margin-top: var(--darwin-titlebar-height, 46px);
   }
 
   .inner {

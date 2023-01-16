@@ -12,6 +12,7 @@
 
   const connections = {};
   let hosts = {};
+  let environment;
 
   let activeHostKey = '';
   let activeDbKey = '';
@@ -104,108 +105,126 @@
   }
 
   onMount(() => {
+    window.runtime.Environment().then(e => environment = e);
     Hosts().then(h => hosts = h);
   });
 </script>
 
-<main class:empty={!host || !connection}>
-  <AddressBar {hosts} bind:activeHostKey on:select={e => openConnection(e.detail)} bind:modalOpen={addressBarModalOpen} />
+<div id="app" class="platform-{environment?.platform}">
+  {#if environment}
+    {#if environment.platform === 'darwin'}
+      <div class="darwin-titlebar"></div>
+    {/if}
 
-  {#if host && connection}
-    <div class="databaselist">
-      <Grid
-        columns={[ { key: 'id' }, { key: 'collCount', right: true } ]}
-        items={Object.keys(connection.databases).map(dbKey => ({
-          id: dbKey,
-          collCount: Object.keys(connection.databases[dbKey].collections || {}).length || '',
-          children: Object.keys(connection.databases[dbKey].collections).map(collKey => ({
-            id: collKey,
-            menu: [ { label: `Drop ${collKey}`, fn: () => dropCollection(dbKey, collKey) } ],
-          })).sort((a, b) => a.id.localeCompare(b)) || [],
-          menu: [ { label: `Drop ${dbKey}`, fn: () => dropDatabase(dbKey) } ],
-        }))}
-        actions={[
-          { icon: 'reload', fn: reload },
-          { icon: '+', fn: evt => {
-            if (activeDbKey) {
-              contextMenu.show(evt, [
-                { label: 'New database', fn: () => newDb = {} },
-                { label: 'New collection', fn: () => newColl = {} },
-              ]);
-            }
-            else {
-              newDb = {};
-            }
-          } },
-          { icon: '-', fn: evt => {
-            if (activeCollKey) {
-              contextMenu.show(evt, [
-                { label: 'Drop database', fn: () => dropDatabase(activeDbKey) },
-                { label: 'Drop collection', fn: () => dropCollection(activeDbKey, activeCollKey) },
-              ]);
-            }
-            else {
-              dropDatabase(activeDbKey);
-            }
-          }, disabled: !activeDbKey },
-        ]}
-        bind:activeKey={activeDbKey}
-        bind:activeChildKey={activeCollKey}
-        on:select={e => openDatabase(e.detail)}
-        on:selectChild={e => openCollection(e.detail)}
-      />
-    </div>
+    <main class:empty={!host || !connection}>
+      <AddressBar {hosts} bind:activeHostKey on:select={e => openConnection(e.detail)} bind:modalOpen={addressBarModalOpen} />
 
-    <div class="collection">
-      <CollectionDetail
-        {collection}
-        hostKey={activeHostKey}
-        dbKey={activeDbKey}
-        collectionKey={activeCollKey}
-      />
-    </div>
-  {:else}
-    <BlankState label="A database client is nothing without a host" image="/fish.svg" />
+      {#if host && connection}
+        <div class="databaselist">
+          <Grid
+            columns={[ { key: 'id' }, { key: 'collCount', right: true } ]}
+            items={Object.keys(connection.databases).map(dbKey => ({
+              id: dbKey,
+              collCount: Object.keys(connection.databases[dbKey].collections || {}).length || '',
+              children: Object.keys(connection.databases[dbKey].collections).map(collKey => ({
+                id: collKey,
+                menu: [ { label: `Drop ${collKey}`, fn: () => dropCollection(dbKey, collKey) } ],
+              })).sort((a, b) => a.id.localeCompare(b)) || [],
+              menu: [ { label: `Drop ${dbKey}`, fn: () => dropDatabase(dbKey) } ],
+            }))}
+            actions={[
+              { icon: 'reload', fn: reload },
+              { icon: '+', fn: evt => {
+                if (activeDbKey) {
+                  contextMenu.show(evt, [
+                    { label: 'New database', fn: () => newDb = {} },
+                    { label: 'New collection', fn: () => newColl = {} },
+                  ]);
+                }
+                else {
+                  newDb = {};
+                }
+              } },
+              { icon: '-', fn: evt => {
+                if (activeCollKey) {
+                  contextMenu.show(evt, [
+                    { label: 'Drop database', fn: () => dropDatabase(activeDbKey) },
+                    { label: 'Drop collection', fn: () => dropCollection(activeDbKey, activeCollKey) },
+                  ]);
+                }
+                else {
+                  dropDatabase(activeDbKey);
+                }
+              }, disabled: !activeDbKey },
+            ]}
+            bind:activeKey={activeDbKey}
+            bind:activeChildKey={activeCollKey}
+            on:select={e => openDatabase(e.detail)}
+            on:selectChild={e => openCollection(e.detail)}
+          />
+        </div>
+
+        <div class="collection">
+          <CollectionDetail
+            {collection}
+            hostKey={activeHostKey}
+            dbKey={activeDbKey}
+            collectionKey={activeCollKey}
+          />
+        </div>
+      {:else}
+        <BlankState label="A database client is nothing without a host" image="/fish.svg" />
+      {/if}
+    </main>
+
+    {#if newDb}
+      <Modal bind:show={newDb}>
+        <p><strong>Create a database</strong></p>
+        <p>Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.</p>
+        <form on:submit|preventDefault={createDatabase}>
+          <label class="field">
+            <input type="text" spellcheck="false" bind:value={newDb.name} use:input placeholder="New collection name" bind:this={newDbInput} />
+          </label>
+          <button class="btn create" type="submit">Create database</button>
+        </form>
+      </Modal>
+    {/if}
+
+    {#if newColl}
+      <Modal bind:show={newColl}>
+        <p><strong>Create a collections</strong></p>
+        <p>Note: collections in MongoDB do not exist until they have at least one item. Your new collection will not persist on the server; fill it to have it created.</p>
+        <form on:submit|preventDefault={createCollection}>
+          <label class="field">
+            <input type="text" spellcheck="false" bind:value={newColl.name} use:input placeholder="New collection name" bind:this={newCollInput} />
+          </label>
+          <button class="btn create" type="submit">Create collection</button>
+        </form>
+      </Modal>
+    {/if}
+
+    {#key $contextMenu}
+      <ContextMenu {...$contextMenu} on:close={contextMenu.hide} />
+    {/key}
   {/if}
-</main>
-
-{#if newDb}
-  <Modal bind:show={newDb}>
-    <p><strong>Create a database</strong></p>
-    <p>Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.</p>
-    <form on:submit|preventDefault={createDatabase}>
-      <label class="field">
-        <input type="text" spellcheck="false" bind:value={newDb.name} use:input placeholder="New collection name" bind:this={newDbInput} />
-      </label>
-      <button class="btn create" type="submit">Create database</button>
-    </form>
-  </Modal>
-{/if}
-
-{#if newColl}
-  <Modal bind:show={newColl}>
-    <p><strong>Create a collections</strong></p>
-    <p>Note: collections in MongoDB do not exist until they have at least one item. Your new collection will not persist on the server; fill it to have it created.</p>
-    <form on:submit|preventDefault={createCollection}>
-      <label class="field">
-        <input type="text" spellcheck="false" bind:value={newColl.name} use:input placeholder="New collection name" bind:this={newCollInput} />
-      </label>
-      <button class="btn create" type="submit">Create collection</button>
-    </form>
-  </Modal>
-{/if}
-
-{#key $contextMenu}
-  <ContextMenu {...$contextMenu} on:close={contextMenu.hide} />
-{/key}
+</div>
 
 <style>
+  .darwin-titlebar {
+    --wails-draggable: drag;
+    height: var(--darwin-titlebar-height, 36px);
+    background-color: #00002a;
+  }
+
   main {
     height: 100vh;
     display: grid;
     grid-template: 3rem auto / 250px 1fr;
     gap: 0.5rem;
     padding: 0.5rem;
+  }
+  #app.platform-darwin main {
+    height: calc(100vh - var(--darwin-titlebar-height, 46px));
   }
   main.empty {
     grid-template: 3rem auto / 1fr;

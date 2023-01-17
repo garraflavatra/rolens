@@ -70,6 +70,9 @@
     padding: 0 0.5rem;
     display: flex;
     align-items: stretch;
+    overflow: auto;
+    min-height: 0;
+    min-width: 0;
   }
   .container > :global(*) {
     width: 100%;

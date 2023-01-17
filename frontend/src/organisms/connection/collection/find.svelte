@@ -160,9 +160,15 @@
     display: grid;
     grid-template: 1fr auto / 1fr;
     gap: 0.5rem;
+    overflow: auto;
+    min-height: 0;
+    min-width: 0;
   }
   .result > .grid {
     overflow: auto;
+    min-height: 0;
+    min-width: 0;
+    border: 1px solid #ccc;
   }
   .result > .controls {
     display: flex;

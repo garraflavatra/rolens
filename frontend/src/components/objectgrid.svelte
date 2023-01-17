@@ -4,7 +4,6 @@
   export let data = [];
   export let key = '_id';
   export let showHeaders = false;
-  export let contained = true;
   export let activeKey = '';
 
   const columns = [
@@ -78,5 +77,4 @@
   {columns}
   {items}
   {showHeaders}
-  {contained}
 />

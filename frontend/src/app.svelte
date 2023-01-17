@@ -88,6 +88,11 @@
     grid-template: 3rem auto / 1fr;
   }
 
+  main > :global(*) {
+    overflow: auto;
+    min-height: 0;
+    min-width: 0;
+  }
   main > :global(.addressbar) {
     grid-column: 1 / 3;
   }

@@ -11,7 +11,6 @@
   export let activeChildKey = '';
   export let showHeaders = true;
   export let level = 0;
-  export let contained = false;
 
   const dispatch = createEventDispatcher();
   let childrenOpen = {};
@@ -87,7 +86,7 @@
   }
 </script>
 
-<div class:grid={level === 0} class:subgrid={level > 0} class:contained>
+<div class:grid={level === 0} class:subgrid={level > 0}>
   {#if actions?.length}
     <div class="actions">
       {#each actions as action}
@@ -169,9 +168,6 @@
     width: 100%;
     height: 100%;
     background-color: #fff;
-  }
-  .grid.contained {
-    border: 1px solid #ccc;
   }
   .subgrid {
     width: 100%;

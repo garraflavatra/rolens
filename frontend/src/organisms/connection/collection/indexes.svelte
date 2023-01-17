@@ -29,7 +29,9 @@
     <button class="btn">Create&hellip;</button>
   </div>
 
-  <ObjectGrid key="name" data={indexes} bind:activeKey on:trigger={e => openJson(e.detail)} />
+  <div class="grid">
+    <ObjectGrid key="name" data={indexes} bind:activeKey on:trigger={e => openJson(e.detail)} />
+  </div>
 </div>
 
 <CodeViewer bind:code={json} language="json" />
@@ -39,5 +41,11 @@
     display: grid;
     gap: 0.5rem;
     grid-template: auto 1fr / 1fr;
+  }
+
+  .indexes .grid {
+    min-height: 0;
+    min-width: 0;
+    border: 1px solid #ccc;
   }
 </style>

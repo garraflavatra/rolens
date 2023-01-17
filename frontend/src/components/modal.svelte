@@ -51,7 +51,7 @@
     cursor: pointer;
   }
   :global(#app.platform-darwin) .outer {
-    margin-top: var(--darwin-titlebar-height, 46px);
+    margin-top: var(--darwin-titlebar-height);
   }
 
   .inner {

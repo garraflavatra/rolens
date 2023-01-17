@@ -45,9 +45,9 @@
 </script>
 
 <div id="app" class="platform-{environment?.platform}">
-  {#if environment}
-    <div class="titlebar"></div>
+  <div class="titlebar"></div>
 
+  {#if environment}
     <main class:empty={!host || !connection}>
       <AddressBar {hosts} bind:activeHostKey on:select={e => openConnection(e.detail)} bind:modalOpen={addressBarModalOpen} />
 
@@ -71,7 +71,7 @@
     --wails-draggable: drag;
   }
   #app.platform-darwin .titlebar {
-    height: var(--darwin-titlebar-height, 36px);
+    height: var(--darwin-titlebar-height);
   }
 
   main {
@@ -82,7 +82,7 @@
     padding: 0.5rem;
   }
   #app.platform-darwin main {
-    height: calc(100vh - var(--darwin-titlebar-height, 46px));
+    height: calc(100vh - var(--darwin-titlebar-height));
   }
   main.empty {
     grid-template: 3rem auto / 1fr;

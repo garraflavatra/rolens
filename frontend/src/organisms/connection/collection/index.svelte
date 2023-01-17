@@ -60,14 +60,13 @@
     height: 100%;
     display: grid;
     grid-template: auto 1fr / 1fr;
-    gap: 0.5rem;
   }
   .collection.empty {
     grid-template: 1fr / 1fr;
   }
 
   .container {
-    padding: 0 0.5rem;
+    padding: 0.5rem;
     display: flex;
     align-items: stretch;
     overflow: auto;

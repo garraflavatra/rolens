@@ -8,7 +8,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-func (a *App) PerformInsert(hostKey, dbKey, collKey, jsonData string) interface{} {
+func (a *App) InsertItems(hostKey, dbKey, collKey, jsonData string) interface{} {
 	var data []interface{}
 
 	jsonData = strings.TrimSpace(jsonData)

@@ -14,10 +14,10 @@ export function GetIndexes(arg1:string,arg2:string,arg3:string):Promise<Array<pr
 
 export function Hosts():Promise<map[string]app.Host>;
 
+export function InsertItems(arg1:string,arg2:string,arg3:string,arg4:string):Promise<any>;
+
 export function OpenCollection(arg1:string,arg2:string,arg3:string):Promise<primitive.M>;
 
 export function OpenConnection(arg1:string):Promise<Array<string>>;
 
 export function OpenDatabase(arg1:string,arg2:string):Promise<Array<string>>;
-
-export function PerformInsert(arg1:string,arg2:string,arg3:string,arg4:string):Promise<any>;

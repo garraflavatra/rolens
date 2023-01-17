@@ -1,7 +1,7 @@
 <script>
   import { input } from '../../../actions';
   import { createEventDispatcher } from 'svelte';
-  import { PerformInsert } from '../../../../wailsjs/go/app/App';
+  import { InsertItems } from '../../../../wailsjs/go/app/App';
 
   export let collection;
 
@@ -10,7 +10,7 @@
   let insertedIds;
 
   async function insert() {
-    insertedIds = await PerformInsert(collection.hostKey, collection.dbKey, collection.key, json);
+    insertedIds = await InsertItems(collection.hostKey, collection.dbKey, collection.key, json);
   }
 
   function showDocs() {

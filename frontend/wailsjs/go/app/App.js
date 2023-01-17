@@ -22,6 +22,10 @@ export function Hosts() {
   return window['go']['app']['App']['Hosts']();
 }
 
+export function InsertItems(arg1, arg2, arg3, arg4) {
+  return window['go']['app']['App']['InsertItems'](arg1, arg2, arg3, arg4);
+}
+
 export function OpenCollection(arg1, arg2, arg3) {
   return window['go']['app']['App']['OpenCollection'](arg1, arg2, arg3);
 }
@@ -32,8 +36,4 @@ export function OpenConnection(arg1) {
 
 export function OpenDatabase(arg1, arg2) {
   return window['go']['app']['App']['OpenDatabase'](arg1, arg2);
-}
-
-export function PerformInsert(arg1, arg2, arg3, arg4) {
-  return window['go']['app']['App']['PerformInsert'](arg1, arg2, arg3, arg4);
 }

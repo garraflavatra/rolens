@@ -45,11 +45,10 @@
     dispatch('selectChild', childKey);
   }
 
-  function toggleChildren(itemKey, closeAll) {
+  function toggleChildren(itemKey, shift) {
     childrenOpen[itemKey] = !childrenOpen[itemKey];
-    if (closeAll) {
-      childrenOpen = {};
-      dispatch('closeAll');
+    if (shift) {
+      closeAll();
     }
   }
 
@@ -80,6 +79,11 @@
       return value;
     }
     return String(value).slice(0, 1000) + '…';
+  }
+
+  function closeAll() {
+    childrenOpen = {};
+    dispatch('closeAll');
   }
 </script>
 
@@ -150,7 +154,7 @@
                 items={item.children}
                 level={level + 1}
                 on:select={e => selectChild(item[key], e.detail)}
-                on:closeAll={() => (childrenOpen = {})}
+                on:closeAll={closeAll}
               />
             </td>
           </tr>

@@ -1,7 +1,7 @@
 <script>
   import CodeViewer from '../../../components/codeviewer.svelte';
   import ObjectGrid from '../../../components/objectgrid.svelte';
-  import { GetIndexes } from '../../../../wailsjs/go/app/App';
+  import { DropIndex, GetIndexes } from '../../../../wailsjs/go/app/App';
 
   export let collection;
 
@@ -16,8 +16,18 @@
     }
   }
 
-  function openJson(itemId) {
-    const item = indexes?.filter(i => i.name == itemId);
+  async function dropActive() {
+    if (!activeKey) {
+      return;
+    }
+    const success = await DropIndex(collection.hostKey, collection.dbKey, collection.key, activeKey);
+    if (success) {
+      await getIndexes();
+    }
+  }
+
+  function openJson(indexId) {
+    const item = indexes?.filter(i => i.name == indexId);
     json = JSON.stringify(item, undefined, 2);
   }
 </script>
@@ -25,7 +35,9 @@
 <div class="indexes">
   <div class="actions">
     <button class="btn" on:click={getIndexes}>Get indexes</button>
-    <button class="btn danger" disabled={!indexes?.length || !activeKey}>Drop selected</button>
+    <button class="btn danger" on:click={dropActive} disabled={!indexes?.length || !activeKey}>
+      Drop selected
+    </button>
     <button class="btn">Create&hellip;</button>
   </div>
 

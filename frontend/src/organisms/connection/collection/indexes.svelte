@@ -16,13 +16,14 @@
     }
   }
 
-  async function dropActive() {
-    if (!activeKey) {
+  async function drop(key = activeKey) {
+    if (!key) {
       return;
     }
-    const success = await DropIndex(collection.hostKey, collection.dbKey, collection.key, activeKey);
+    const success = await DropIndex(collection.hostKey, collection.dbKey, collection.key, key);
     if (success) {
       await getIndexes();
+      activeKey = '';
     }
   }
 
@@ -35,14 +36,17 @@
 <div class="indexes">
   <div class="actions">
     <button class="btn" on:click={getIndexes}>Get indexes</button>
-    <button class="btn danger" on:click={dropActive} disabled={!indexes?.length || !activeKey}>
+    <button class="btn danger" on:click={drop} disabled={!indexes?.length || !activeKey}>
       Drop selected
     </button>
-    <button class="btn">Create&hellip;</button>
+    <button class="btn">Create…</button>
   </div>
 
   <div class="grid">
-    <ObjectGrid key="name" data={indexes} bind:activeKey on:trigger={e => openJson(e.detail)} />
+    <ObjectGrid key="name" data={indexes.map(idx => ({
+      ...idx,
+      menu: [ { label: 'Drop this index…', fn: () => drop(idx.name) } ],
+    }))} bind:activeKey on:trigger={e => openJson(e.detail)} />
   </div>
 </div>
 

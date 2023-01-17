@@ -19,10 +19,11 @@
 
     if (Array.isArray(data)) {
       for (const item of data) {
-        const _item = {};
-        _item.key = item[key];
-        _item.children = dissectObject(item);
-        items = [ ...items, _item ];
+        const newItem = {};
+        newItem.key = item[key];
+        newItem.children = dissectObject(item);
+        newItem.menu = item.menu;
+        items = [ ...items, newItem ];
       }
     }
     else {
@@ -57,7 +58,7 @@
     return entries.map(([ key, value ]) => {
       key = key + '';
       const type = getType(value);
-      const child = { key, value, type };
+      const child = { key, value, type, menu: value.menu };
 
       if (type.startsWith('object') || type.startsWith('array')) {
         child.children = dissectObject(value);

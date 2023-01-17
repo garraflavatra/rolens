@@ -15,7 +15,7 @@ type findResult struct {
 	Results interface{} `json:"results"`
 }
 
-func (a *App) PerformFind(hostKey, dbKey, collKey string, formJson string) findResult {
+func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findResult {
 	var out findResult
 	var form struct {
 		Fields string `json:"fields"`

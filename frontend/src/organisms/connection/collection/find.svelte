@@ -1,5 +1,5 @@
 <script>
-  import { PerformFind } from '../../../../wailsjs/go/app/App';
+  import { FindItems } from '../../../../wailsjs/go/app/App';
   import CodeExample from '../../../components/code-example.svelte';
   import { onMount } from 'svelte';
   import { input } from '../../../actions';
@@ -27,7 +27,7 @@
 
   async function submitQuery() {
     activeKey = '';
-    result = await PerformFind(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
+    result = await FindItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
     if (result) {
       submittedForm = JSON.parse(JSON.stringify(form));
     }

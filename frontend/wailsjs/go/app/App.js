@@ -37,3 +37,7 @@ export function OpenConnection(arg1) {
 export function OpenDatabase(arg1, arg2) {
   return window['go']['app']['App']['OpenDatabase'](arg1, arg2);
 }
+
+export function RemoveItems(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['app']['App']['RemoveItems'](arg1, arg2, arg3, arg4, arg5);
+}

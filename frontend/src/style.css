@@ -55,6 +55,7 @@ p strong {
     border-right: none;
     display: inline-block;
     margin: 0;
+    background-color: #fff;
 }
 .field .label {
     background-color: #eee;
@@ -84,6 +85,10 @@ p strong {
 .field > textarea.invalid {
     background-color: rgba(255, 80, 80, 0.3);
     border-color: rgb(255, 80, 80);
+}
+.field > span.checkbox {
+    text-align: center;
+    min-width: 75px;
 }
 
 .btn {

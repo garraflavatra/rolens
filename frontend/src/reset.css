@@ -61,6 +61,8 @@ button {
 /* Inputs */
 input {
 	font: inherit;
+}
+input:not([type="checkbox"]) {
 	min-width: 100px;
 	width: 100%;
 }

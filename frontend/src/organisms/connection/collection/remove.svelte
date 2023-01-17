@@ -1,4 +1,5 @@
 <script>
+  import { input } from '../../../actions';
   import { RemoveItems } from '../../../../wailsjs/go/app/App';
   import CodeExample from '../../../components/code-example.svelte';
 
@@ -26,7 +27,14 @@
   </div>
 
   <label class="field">
-    <textarea cols="30" rows="10" bind:value={json} placeholder={'{}'} class="code"></textarea>
+    <textarea
+      cols="30"
+      rows="10"
+      placeholder={'{}'}
+      class="code"
+      bind:value={json}
+      use:input={{ json: true, autofocus: true }}
+    ></textarea>
   </label>
 
   <div class="flex">

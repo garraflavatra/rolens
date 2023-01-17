@@ -1,4 +1,4 @@
-export function input(node, { json } = { json: false }) {
+export function input(node, { json, autofocus } = { json: false, autofocus: false }) {
   const handleInput = () => {
     if (json) {
       try {
@@ -17,6 +17,10 @@ export function input(node, { json } = { json: false }) {
 
   node.addEventListener('focus', handleFocus);
   node.addEventListener('input', handleInput);
+
+  if (autofocus) {
+    node.focus();
+  }
 
   return {
     destroy: () => {

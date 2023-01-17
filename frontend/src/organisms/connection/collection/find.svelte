@@ -1,7 +1,6 @@
 <script>
   import { FindItems } from '../../../../wailsjs/go/app/App';
   import CodeExample from '../../../components/code-example.svelte';
-  import { onMount } from 'svelte';
   import { input } from '../../../actions';
   import ObjectGrid from '../../../components/objectgrid.svelte';
   import Icon from '../../../components/icon.svelte';
@@ -67,8 +66,6 @@
     console.log(form);
     submitQuery();
   }
-
-  onMount(resetFocus);
 </script>
 
 <div class="find">
@@ -76,7 +73,7 @@
     <div class="form-row one">
       <label class="field">
         <span class="label">Query or id</span>
-        <input type="text" class="code" bind:this={queryField} bind:value={form.query} use:input={{ json: true }} placeholder={defaults.query} />
+        <input type="text" class="code" bind:this={queryField} bind:value={form.query} use:input={{ json: true, autofocus: true }} placeholder={defaults.query} />
       </label>
 
       <label class="field">

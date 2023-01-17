@@ -80,18 +80,18 @@
       children: Object.keys(connection.databases[dbKey].collections).map(collKey => ({
         id: collKey,
         menu: [
-          { label: `Drop ${collKey}`, fn: () => dropCollection(dbKey, collKey) },
-          { label: `Drop ${dbKey}`, fn: () => dropDatabase(dbKey) },
+          { label: `Drop ${collKey}…`, fn: () => dropCollection(dbKey, collKey) },
+          { label: `Drop ${dbKey}…`, fn: () => dropDatabase(dbKey) },
           { separator: true },
-          { label: 'New database', fn: () => dispatch('newDatabase') },
-          { label: 'New collection', fn: () => dispatch('newCollection') },
+          { label: 'New database≥', fn: () => dispatch('newDatabase') },
+          { label: 'New collection≥', fn: () => dispatch('newCollection') },
         ],
       })).sort((a, b) => a.id.localeCompare(b)) || [],
       menu: [
-        { label: `Drop ${dbKey}`, fn: () => dropDatabase(dbKey) },
+        { label: `Drop ${dbKey}…`, fn: () => dropDatabase(dbKey) },
         { separator: true },
-        { label: 'New database', fn: () => dispatch('newDatabase') },
-        { label: 'New collection', fn: () => dispatch('newCollection') },
+        { label: 'New database…', fn: () => dispatch('newDatabase') },
+        { label: 'New collection…', fn: () => dispatch('newCollection') },
       ],
     }))}
     actions={[
@@ -99,8 +99,8 @@
       { icon: '+', fn: evt => {
         if (activeDbKey) {
           contextMenu.show(evt, [
-            { label: 'New database', fn: () => dispatch('newDatabase') },
-            { label: 'New collection', fn: () => dispatch('newCollection') },
+            { label: 'New database…', fn: () => dispatch('newDatabase') },
+            { label: 'New collection…', fn: () => dispatch('newCollection') },
           ]);
         }
         else {
@@ -110,8 +110,8 @@
       { icon: '-', fn: evt => {
         if (activeCollKey) {
           contextMenu.show(evt, [
-            { label: 'Drop database', fn: () => dropDatabase(activeDbKey) },
-            { label: 'Drop collection', fn: () => dropCollection(activeDbKey, activeCollKey) },
+            { label: 'Drop database…', fn: () => dropDatabase(activeDbKey) },
+            { label: 'Drop collection…', fn: () => dropCollection(activeDbKey, activeCollKey) },
           ]);
         }
         else {

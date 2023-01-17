@@ -7,7 +7,10 @@
 
 <div class="stats">
   <CodeExample code="db.stats()" />
-  <ObjectGrid data={collection.stats} />
+
+  <div class="grid">
+    <ObjectGrid data={collection.stats} />
+  </div>
 </div>
 
 <style>
@@ -15,5 +18,12 @@
     display: grid;
     gap: 0.5rem;
     grid-template: auto 1fr / 1fr;
+  }
+
+  .stats .grid {
+    overflow: auto;
+    min-height: 0;
+    min-width: 0;
+    border: 1px solid #ccc;
   }
 </style>

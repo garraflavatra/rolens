@@ -136,7 +136,7 @@
           {#each columns as column}
             {@const value = item[column.key]}
             <td class:right={column.right} title={value}>
-              {formatValue(value)}
+              <div class="value">{formatValue(value)}</div>
             </td>
           {/each}
         </tr>
@@ -210,6 +210,14 @@
   }
   td.subgrid-parent {
     padding: 0;
+  }
+
+  td .value {
+    height: 2.1ex;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 25em;
   }
 
   tbody tr.selected td {

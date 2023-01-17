@@ -5,6 +5,8 @@
   export let position = undefined;
 
   const dispatch = createEventDispatcher();
+  let selected = -1;
+  const buttons = [];
 
   function close() {
     dispatch('close');
@@ -14,23 +16,58 @@
     fn?.();
     close();
   }
+
+  function keydown(evt) {
+    if (evt.key === 'Escape') {
+      close();
+      return;
+    }
+    else if (!items?.length) {
+      return;
+    }
+
+    let delta = 0;
+    (evt.key === 'ArrowDown') && delta++;
+    (evt.key === 'ArrowUp') && delta--;
+
+    selected += delta;
+    if (selected >= items.length) {
+      selected = 0;
+    }
+    else if (items[selected].separator) {
+      selected += delta;
+    }
+
+    buttons[selected]?.focus?.();
+  }
 </script>
+
+<svelte:window on:keydown={keydown} />
 
 {#if items && position}
   <div class="backdrop" on:pointerdown={close}></div>
-  <ul class="contextmenu" role="" style:left="{position[0]}px" style:top="{position[1]}px">
-    {#each items as item}
-      {#if item.separator}
-        <hr />
-      {:else}
-        <li>
-          <button class="item" on:click={() => click(item.fn)}>
-            {item.label}
-          </button>
-        </li>
-      {/if}
-    {/each}
-  </ul>
+  <nav>
+    <ul class="contextmenu" role="" style:left="{position[0]}px" style:top="{position[1]}px">
+      {#each items as item, index}
+        {#if item.separator}
+          <hr />
+        {:else}
+          <li>
+            <button
+              class="item"
+              class:selected={selected === index}
+              bind:this={buttons[index]}
+              on:mouseenter={() => selected = index}
+              on:mouseleave={() => selected = -1}
+              on:click={() => click(item.fn)}
+            >
+              {item.label}
+            </button>
+          </li>
+        {/if}
+      {/each}
+    </ul>
+  </nav>
 {/if}
 
 <style>
@@ -58,7 +95,7 @@
     width: 100%;
     text-align: left;
   }
-  button:hover {
+  button.selected {
     background-color: #00008b;
     color: #fff;
   }

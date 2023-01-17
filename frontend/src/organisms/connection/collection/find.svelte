@@ -59,7 +59,6 @@
 
   function openJson(itemId) {
     const item = result?.results?.filter(i => i._id == itemId);
-    console.log(item);
     json = JSON.stringify(item, undefined, 2);
   }
 

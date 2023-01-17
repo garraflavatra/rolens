@@ -10,6 +10,10 @@ export function DropDatabase(arg1, arg2) {
   return window['go']['app']['App']['DropDatabase'](arg1, arg2);
 }
 
+export function GetIndexes(arg1, arg2, arg3) {
+  return window['go']['app']['App']['GetIndexes'](arg1, arg2, arg3);
+}
+
 export function Hosts() {
   return window['go']['app']['App']['Hosts']();
 }

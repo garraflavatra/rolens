@@ -15,13 +15,6 @@ import (
 	mongoOptions "go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// {
-// 	"3b7e3926-03ce-4407-bc3f-85ed2f01ee42": {
-// 		"name": "Localhost",
-// 		"uri": "mongodb://localhost:27017"
-// 	}
-// }
-
 type Host struct {
 	Name string `json:"name"`
 	URI  string `json:"uri"`

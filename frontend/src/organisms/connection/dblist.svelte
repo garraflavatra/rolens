@@ -74,6 +74,7 @@
 
 {#if host && connection}
   <Grid
+    striped={false}
     columns={[ { key: 'id' }, { key: 'collCount', right: true } ]}
     items={Object.keys(connection.databases).map(dbKey => ({
       id: dbKey,

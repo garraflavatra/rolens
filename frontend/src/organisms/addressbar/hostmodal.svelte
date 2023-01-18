@@ -60,6 +60,7 @@
     border-radius: 0;
     background: #eee;
     color: inherit;
+    border: none;
     border-left: 1px solid #ccc;
   }
   .host button:hover {

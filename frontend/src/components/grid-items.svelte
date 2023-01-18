@@ -9,6 +9,7 @@
   export let activeKey = '';
   export let activeChildKey = '';
   export let level = 0;
+  export let striped = true;
 
   const dispatch = createEventDispatcher();
   let childrenOpen = {};
@@ -90,6 +91,7 @@
     on:dblclick={() => doubleClick(item[key])}
     on:contextmenu|preventDefault={evt => showContextMenu(evt, item)}
     class:selected={activeKey === item[key] && !activeChildKey}
+    class:striped
   >
     <td class="has-toggle">
       {#if item.children?.length}
@@ -117,6 +119,7 @@
     <svelte:self
       {columns}
       {key}
+      {striped}
       bind:activeKey={activeChildKey}
       showHeaders={false}
       items={item.children}
@@ -128,6 +131,14 @@
 {/each}
 
 <style>
+  tr.striped:nth-of-type(even) td {
+    background-color: #eee;
+  }
+  tr.selected td {
+    background-color: #00008b !important;
+    color: #fff;
+  }
+
   td {
     padding: 0.3rem;
     text-overflow: ellipsis;
@@ -143,11 +154,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 25em;
-  }
-
-  tbody tr.selected td {
-    background-color: #00008b;
-    color: #fff;
   }
 
   button.toggle {

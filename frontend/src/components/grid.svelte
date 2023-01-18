@@ -9,10 +9,10 @@
   export let activeKey = '';
   export let activeChildKey = '';
   export let showHeaders = true;
-  export let level = 0;
+  export let striped = true;
 </script>
 
-<div class:grid={level === 0} class:subgrid={level > 0}>
+<div class="grid">
   {#if actions?.length}
     <div class="actions">
       {#each actions as action}
@@ -37,7 +37,7 @@
     {/if}
 
     <tbody>
-      <GridItems {items} {columns} {key} bind:activeKey bind:activeChildKey on:select on:selectChild on:trigger />
+      <GridItems {items} {columns} {key} {striped} bind:activeKey bind:activeChildKey on:select on:selectChild on:trigger />
     </tbody>
   </table>
 </div>
@@ -47,9 +47,6 @@
     width: 100%;
     height: 100%;
     background-color: #fff;
-  }
-  .subgrid {
-    width: 100%;
   }
 
   .actions {
@@ -64,7 +61,7 @@
   table {
     border-collapse: collapse;
     width: 100%;
-    /* table-layout: fixed; */
+    background-color: #fff;
   }
 
   table thead {

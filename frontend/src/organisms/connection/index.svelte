@@ -74,8 +74,9 @@
       <label class="field">
         <input type="text" spellcheck="false" bind:value={newDb.name} use:input placeholder="New collection name" bind:this={newDbInput} />
       </label>
-      <p>
+      <p class="modal-actions">
         <button class="btn create" type="submit" disabled={!newDb.name?.trim()}>Create database</button>
+        <button class="btn secondary" type="button" on:click={() => newDb = undefined}>Cancel</button>
       </p>
     </form>
   </Modal>
@@ -89,9 +90,17 @@
       <label class="field">
         <input type="text" spellcheck="false" bind:value={newColl.name} use:input placeholder="New collection name" bind:this={newCollInput} />
       </label>
-      <p>
+      <p class="modal-actions">
         <button class="btn create" type="submit" disabled={!newColl.name?.trim()}>Create collection</button>
+        <button class="btn secondary" type="button" on:click={() => newColl = undefined}>Cancel</button>
       </p>
     </form>
   </Modal>
 {/if}
+
+<style>
+  .modal-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+</style>

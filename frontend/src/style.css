@@ -105,6 +105,7 @@ p strong {
 
 .btn {
   background-color: #00008b;
+  border: 1px solid #00008b;
   padding: 0.5rem;
   border-radius: 10px;
   color: #fff;
@@ -118,6 +119,17 @@ p strong {
 }
 .btn.danger:focus {
   box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.2);
+}
+.btn.secondary {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: inherit;
+}
+.btn.secondary:hover {
+  background-color: #eee;
+}
+.btn.secondary:active {
+  background-color: #ddd;
 }
 .btn:disabled {
   opacity: 0.5;

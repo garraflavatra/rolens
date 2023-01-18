@@ -16,9 +16,9 @@
     }
   }
 
-  async function drop(key = activeKey) {
-    if (!key) {
-      return;
+  async function drop(key) {
+    if (typeof key !== 'string') {
+      key = activeKey;
     }
     const success = await DropIndex(collection.hostKey, collection.dbKey, collection.key, key);
     if (success) {
@@ -45,7 +45,7 @@
   <div class="grid">
     <ObjectGrid key="name" data={indexes.map(idx => ({
       ...idx,
-      menu: [ { label: 'Drop this index…', fn: () => drop(idx.name) } ],
+      menu: [ { label: 'Drop this index', fn: () => drop(idx.name) } ],
     }))} bind:activeKey on:trigger={e => openJson(e.detail)} />
   </div>
 </div>

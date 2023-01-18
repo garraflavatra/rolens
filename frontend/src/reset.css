@@ -59,13 +59,12 @@ button {
 }
 
 /* Inputs */
-input {
+input,
+textarea,
+select {
 	font: inherit;
 }
 input:not([type="checkbox"]) {
 	min-width: 100px;
 	width: 100%;
-}
-textarea {
-	font: inherit;
 }

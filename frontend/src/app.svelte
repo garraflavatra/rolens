@@ -44,6 +44,8 @@
   });
 </script>
 
+<svelte:window on:contextmenu|preventDefault />
+
 <div id="app" class="platform-{environment?.platform}">
   <div class="titlebar"></div>
 

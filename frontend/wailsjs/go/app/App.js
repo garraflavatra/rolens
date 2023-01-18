@@ -45,3 +45,7 @@ export function OpenDatabase(arg1, arg2) {
 export function RemoveItems(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['app']['App']['RemoveItems'](arg1, arg2, arg3, arg4, arg5);
 }
+
+export function UpdateItems(arg1, arg2, arg3, arg4) {
+  return window['go']['app']['App']['UpdateItems'](arg1, arg2, arg3, arg4);
+}

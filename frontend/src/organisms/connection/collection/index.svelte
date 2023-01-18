@@ -7,6 +7,7 @@
   import Insert from './insert.svelte';
   import Remove from './remove.svelte';
   import Stats from './stats.svelte';
+  import Update from './update.svelte';
 
   export let collection;
   export let hostKey;
@@ -45,6 +46,7 @@
         {#if tab === 'stats'} <Stats {collection} />
         {:else if tab === 'find'} <Find {collection} bind:this={find} />
         {:else if tab === 'insert'} <Insert {collection} on:performFind={catchQuery} />
+        {:else if tab === 'update'} <Update {collection} on:performFind={catchQuery} />
         {:else if tab === 'remove'} <Remove {collection} />
         {:else if tab === 'indexes'} <Indexes {collection} />
         {/if}

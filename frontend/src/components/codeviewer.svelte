@@ -5,6 +5,7 @@
   import Icon from './icon.svelte';
   import Modal from './modal.svelte';
   import 'highlight.js/styles/atom-one-dark.css';
+  import { onDestroy } from 'svelte';
 
   export let code = '';
   export let language = 'json';
@@ -17,11 +18,17 @@
   hljs.registerLanguage('json', hljsJSON);
   hljs.registerLanguage('js', hljsJavaScript);
 
-  $: highlighted = code ? hljs.highlight(language, code).value : '';
+  let copySucceeded = false;
+  let timeout;
+  $: highlighted = code ? hljs.highlight(code, { language }).value : '';
 
-  function copy() {
-    navigator.clipboard.writeText(code);
+  async function copy() {
+    await navigator.clipboard.writeText(code);
+    copySucceeded = true;
+    timeout = setTimeout(() => copySucceeded = false, 1500);
   }
+
+  onDestroy(() => clearTimeout(timeout));
 </script>
 
 {#if code}
@@ -29,7 +36,7 @@
     <div class="codeblock">
       <div class="buttons">
         <button class="btn" on:click={copy}>
-          <Icon name="clipboard" />
+          <Icon name={copySucceeded ? 'check' : 'clipboard'} />
         </button>
       </div>
       <pre><code class="hljs">{@html highlighted}</code></pre>

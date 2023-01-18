@@ -116,6 +116,7 @@ p strong {
 }
 .btn.danger {
   background-color: #c00;
+  border: 1px solid #c00;
 }
 .btn.danger:focus {
   box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.2);

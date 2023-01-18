@@ -20,12 +20,12 @@
   let result = {};
   let submittedForm = {};
   let queryField;
-  let activeKey = '';
+  let activePath = '';
   let json = '';
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
 
   async function submitQuery() {
-    activeKey = '';
+    activePath = [];
     result = await FindItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
     if (result) {
       submittedForm = JSON.parse(JSON.stringify(form));
@@ -47,8 +47,7 @@
   }
 
   function remove() {
-    // eslint-disable-next-line no-alert
-    alert('yet to be implemented');
+    // todo
   }
 
   function resetFocus() {
@@ -57,13 +56,15 @@
   }
 
   function openJson(itemId) {
-    const item = result?.results?.filter(i => i._id == itemId);
+    const item = result?.results?.find(i => i._id == itemId);
+    if (!item) {
+      return;
+    }
     json = JSON.stringify(item, undefined, 2);
   }
 
   export function performQuery(q) {
     form = { ...defaults, ...q };
-    console.log(form);
     submitQuery();
   }
 </script>
@@ -107,7 +108,7 @@
   <div class="result">
     <div class="grid">
       {#key result}
-        <ObjectGrid data={result.results} bind:activeKey on:trigger={e => openJson(e.detail)} />
+        <ObjectGrid data={result.results} bind:activePath on:trigger={e => openJson(e.detail?.itemKey)} />
       {/key}
     </div>
 
@@ -118,7 +119,7 @@
         {/key}
       </div>
       <div>
-        <button class="btn danger" on:click={remove} disabled={!activeKey}>
+        <button class="btn danger" on:click={remove} disabled={!activePath?.length}>
           <Icon name="-" />
         </button>
         <button class="btn" on:click={prev} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results?.length}>

@@ -6,8 +6,9 @@
   export let items = [];
   export let columns = [];
   export let key = '';
+  export let path = [];
   export let activeKey = '';
-  export let activeChildKey = '';
+  export let activePath = [];
   export let level = 0;
   export let striped = true;
 
@@ -33,19 +34,18 @@
 
   function select(itemKey) {
     activeKey = itemKey;
-    activeChildKey = '';
-    dispatch('select', itemKey);
+    if (level === 0) {
+      activePath = [ itemKey ];
+    }
+    else {
+      activePath = [ ...path, itemKey ];
+    }
+    dispatch('select', { level, itemKey });
   }
 
   function closeAll() {
     childrenOpen = {};
     dispatch('closeAll');
-  }
-
-  function selectChild(itemKey, childKey) {
-    select(itemKey);
-    activeChildKey = childKey;
-    dispatch('selectChild', childKey);
   }
 
   function toggleChildren(itemKey, shift) {
@@ -57,7 +57,7 @@
 
   function doubleClick(itemKey) {
     toggleChildren(itemKey, false);
-    dispatch('trigger', itemKey);
+    dispatch('trigger', { level, itemKey });
   }
 
   function showContextMenu(evt, item) {
@@ -85,12 +85,12 @@
   }
 </script>
 
-{#each _items as item (item[key])}
+{#each _items as item}
   <tr
     on:click={() => select(item[key])}
     on:dblclick={() => doubleClick(item[key])}
     on:contextmenu|preventDefault={evt => showContextMenu(evt, item)}
-    class:selected={activeKey === item[key] && !activeChildKey}
+    class:selected={!activePath[level + 1] && activePath.every(k => path.includes(k) || k === item[key]) && (activePath[level] === item[key])}
     class:striped
   >
     <td class="has-toggle">
@@ -120,12 +120,13 @@
       {columns}
       {key}
       {striped}
-      bind:activeKey={activeChildKey}
-      showHeaders={false}
+      path={[ ...path, item[key] ]}
       items={item.children}
       level={level + 1}
-      on:select={e => selectChild(item[key], e.detail)}
+      bind:activePath
       on:closeAll={closeAll}
+      on:select
+      on:trigger
     />
   {/if}
 {/each}

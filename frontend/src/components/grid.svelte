@@ -6,9 +6,7 @@
   export let items = [];
   export let actions = [];
   export let key = 'id';
-  export let activeKey = '';
-  export let activeChildKey = '';
-  export let showHeaders = true;
+  export let activePath = [];
   export let striped = true;
 </script>
 
@@ -25,19 +23,8 @@
   {/if}
 
   <table>
-    {#if showHeaders && columns.some(col => col.title)}
-      <thead>
-        <tr>
-          <th class="has-toggle"></th>
-          {#each columns as column}
-            <th scope="col">{column.title || ''}</th>
-          {/each}
-        </tr>
-      </thead>
-    {/if}
-
     <tbody>
-      <GridItems {items} {columns} {key} {striped} bind:activeKey bind:activeChildKey on:select on:selectChild on:trigger />
+      <GridItems {items} {columns} {key} {striped} bind:activePath on:select on:trigger />
     </tbody>
   </table>
 </div>
@@ -62,23 +49,5 @@
     border-collapse: collapse;
     width: 100%;
     background-color: #fff;
-  }
-
-  table thead {
-    border-bottom: 2px solid #ccc;
-  }
-
-  th {
-    font-weight: 600;
-    text-align: left;
-  }
-
-  tr {
-    cursor: pointer;
-  }
-
-  th {
-    padding: 0.3rem;
-    text-overflow: ellipsis;
   }
 </style>

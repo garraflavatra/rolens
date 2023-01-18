@@ -3,8 +3,7 @@
 
   export let data = [];
   export let key = '_id';
-  export let showHeaders = false;
-  export let activeKey = '';
+  export let activePath = [];
 
   const columns = [
     { key: 'key', label: 'Key' },
@@ -20,10 +19,9 @@
     if (Array.isArray(data)) {
       for (const item of data) {
         const newItem = {};
-        newItem.key = key;
-        newItem.value = item[key];
+        newItem.key = item[key];
         newItem.type = getType(item[key]);
-        newItem.children = dissectObject(item, key);
+        newItem.children = dissectObject(item);
         newItem.menu = item.menu;
         items = [ ...items, newItem ];
       }
@@ -55,12 +53,12 @@
     }
   }
 
-  function dissectObject(object, exclude) {
+  function dissectObject(object) {
     const entries = [ ...Array.isArray(object) ? object.entries() : Object.entries(object) ];
-    return entries.filter(([ key ]) => key != exclude).map(([ key, value ]) => {
+    return entries.map(([ key, value ]) => {
       key = key + '';
       const type = getType(value);
-      const child = { key, value, type, menu: value.menu };
+      const child = { key, value, type, menu: value?.menu };
 
       if (type.startsWith('object') || type.startsWith('array')) {
         child.children = dissectObject(value);
@@ -74,10 +72,8 @@
 <Grid
   key="key"
   on:select
-  on:selectChild
   on:trigger
-  bind:activeKey
+  bind:activePath
   {columns}
   {items}
-  {showHeaders}
 />

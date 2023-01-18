@@ -11,6 +11,9 @@
   export let activeCollKey = '';
 
   const dispatch = createEventDispatcher();
+  let dbAndCollKeys = [];
+  $: activeDbKey = dbAndCollKeys[0];
+  $: activeCollKey = dbAndCollKeys[1];
   $: host = hosts[activeHostKey];
   $: connection = $connections[activeHostKey];
   $: database = connection?.databases[activeDbKey];
@@ -60,6 +63,7 @@
   async function openCollection(collKey) {
     busy.start();
     const stats = await OpenCollection(activeHostKey, activeDbKey, collKey);
+    $connections[activeHostKey].databases[activeDbKey].collections[collKey] = $connections[activeHostKey].databases[activeDbKey].collections[collKey] || {};
     $connections[activeHostKey].databases[activeDbKey].collections[collKey].stats = stats;
     busy.end();
   }
@@ -76,10 +80,10 @@
   <Grid
     striped={false}
     columns={[ { key: 'id' }, { key: 'collCount', right: true } ]}
-    items={Object.keys(connection.databases).map(dbKey => ({
+    items={Object.keys(connection.databases).sort().map(dbKey => ({
       id: dbKey,
       collCount: Object.keys(connection.databases[dbKey].collections || {}).length || '',
-      children: Object.keys(connection.databases[dbKey].collections).map(collKey => ({
+      children: Object.keys(connection.databases[dbKey].collections).sort().map(collKey => ({
         id: collKey,
         menu: [
           { label: `Drop ${collKey}…`, fn: () => dropCollection(dbKey, collKey) },
@@ -88,7 +92,7 @@
           { label: 'New database…', fn: () => dispatch('newDatabase') },
           { label: 'New collection…', fn: () => dispatch('newCollection') },
         ],
-      })).sort((a, b) => a.id.localeCompare(b)) || [],
+      })) || [],
       menu: [
         { label: `Drop ${dbKey}…`, fn: () => dropDatabase(dbKey) },
         { separator: true },
@@ -121,9 +125,14 @@
         }
       }, disabled: !activeDbKey },
     ]}
-    bind:activeKey={activeDbKey}
-    bind:activeChildKey={activeCollKey}
-    on:select={e => openDatabase(e.detail)}
-    on:selectChild={e => openCollection(e.detail)}
+    bind:activePath={dbAndCollKeys}
+    on:select={e => {
+      if (e.detail?.level === 0) {
+        openDatabase(e.detail.itemKey);
+      }
+      else if (e.detail?.level === 1) {
+        openCollection(e.detail.itemKey);
+      }
+    }}
   />
 {/if}

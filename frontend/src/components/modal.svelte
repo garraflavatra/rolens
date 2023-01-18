@@ -50,7 +50,7 @@
     padding-top: 50px;
     cursor: pointer;
   }
-  :global(#app.platform-darwin) .outer {
+  :global(#root.platform-darwin) .outer {
     margin-top: var(--darwin-titlebar-height);
   }
 

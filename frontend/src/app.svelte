@@ -46,7 +46,7 @@
 
 <svelte:window on:contextmenu|preventDefault />
 
-<div id="app" class="platform-{environment?.platform}">
+<div id="root" class="platform-{environment?.platform}">
   <div class="titlebar"></div>
 
   {#if environment}
@@ -72,7 +72,7 @@
     background-color: #00002a;
     --wails-draggable: drag;
   }
-  #app.platform-darwin .titlebar {
+  #root.platform-darwin .titlebar {
     height: var(--darwin-titlebar-height);
   }
 
@@ -83,7 +83,7 @@
     gap: 0.5rem;
     padding: 0.5rem;
   }
-  #app.platform-darwin main {
+  #root.platform-darwin main {
     height: calc(100vh - var(--darwin-titlebar-height));
   }
   main.empty {

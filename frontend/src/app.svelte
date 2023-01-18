@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { Hosts, OpenConnection } from '../wailsjs/go/app/App';
+  import { Environment, WindowSetTitle } from '../wailsjs/runtime';
   import BlankState from './components/blankstate.svelte';
   import ContextMenu from './components/contextmenu.svelte';
   import AddressBar from './organisms/addressbar/index.svelte';
@@ -32,14 +33,14 @@
       });
       activeHostKey = hostKey;
       addressBarModalOpen = false;
-      window.runtime.WindowSetTitle(`${hosts[activeHostKey].name} - Mongodup`);
+      WindowSetTitle(`${hosts[activeHostKey].name} - Mongodup`);
     }
 
     busy.end();
   }
 
   onMount(() => {
-    window.runtime.Environment().then(e => environment = e);
+    Environment().then(e => environment = e);
     Hosts().then(h => hosts = h);
   });
 </script>

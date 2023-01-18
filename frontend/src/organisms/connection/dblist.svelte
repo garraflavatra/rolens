@@ -3,6 +3,7 @@
   import { createEventDispatcher } from 'svelte';
   import { DropCollection, DropDatabase, OpenCollection, OpenConnection, OpenDatabase } from '../../../wailsjs/go/app/App';
   import Grid from '../../components/grid.svelte';
+  import { WindowSetTitle } from '../../../wailsjs/runtime';
 
   export let hosts = {};
   export let activeHostKey = '';
@@ -32,7 +33,7 @@
       });
       activeHostKey = hostKey;
       dispatch('connected', hostKey);
-      window.runtime.WindowSetTitle(`${hosts[activeHostKey].name} - Mongodup`);
+      WindowSetTitle(`${hosts[activeHostKey].name} - Mongodup`);
     }
 
     busy.end();

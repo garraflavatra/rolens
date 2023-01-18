@@ -1,0 +1,4 @@
+[*]
+tab_width = 2
+insert_final_newline = true
+indent_style = space

@@ -1,141 +1,147 @@
 :root {
-    --darwin-titlebar-height: 36px;
+  --darwin-titlebar-height: 36px;
 }
 
 html,
 body {
-    height: 100vh;
-    overflow: hidden;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    margin: 0;
-    padding: 0;
-    -webkit-user-select: none;
-    user-select: none;
-    cursor: default;
-    font-size: 15px;
-    line-height: 15px;
-    background-color: rgba(0, 0, 0, 0);
+  height: 100vh;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+  font-size: 15px;
+  line-height: 15px;
+  background-color: rgba(0, 0, 0, 0);
 }
 
 * {
-    vertical-align: middle;
-    box-sizing: border-box;
-    overscroll-behavior: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-    touch-action: none;
+  vertical-align: middle;
+  box-sizing: border-box;
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  touch-action: none;
 }
 
 p {
-    margin: 1rem 0;
+  margin: 1rem 0;
 }
 p:first-child {
-    margin-top: 0;
+  margin-top: 0;
 }
 p:last-child {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 p strong {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 .loading {
-    cursor: wait;
+  cursor: wait;
 }
 
 .field {
-    display: flex;
-    white-space: nowrap;
-    align-items: stretch;
+  display: flex;
+  white-space: nowrap;
+  align-items: stretch;
 }
 .field > * {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-right: none;
-    display: inline-block;
-    margin: 0;
-    background-color: #fff;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-right: none;
+  display: inline-block;
+  margin: 0;
+  background-color: #fff;
 }
 .field .label {
-    background-color: #eee;
-    display: flex;
-    align-items: center;
+  background-color: #eee;
+  display: flex;
+  align-items: center;
 }
 .field > :first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 .field > :last-child {
-    border-right: 1px solid #ccc;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+  border-right: 1px solid #ccc;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 .field > input,
 .field > textarea,
 .field > select {
-    flex: 1;
+  flex: 1;
 }
 .field > input:focus,
 .field > textarea:focus,
 .field > select:focus {
-    outline: none;
-    border-color: #00008b;
-    box-shadow: 0 0 0 3px rgba(0, 0, 139, 0.2);
+  outline: none;
+  border-color: #00008b;
+  box-shadow: 0 0 0 3px rgba(0, 0, 139, 0.2);
 }
 .field > input.invalid,
 .field > textarea.invalid,
 .field > select.invalid {
-    background-color: rgba(255, 80, 80, 0.3);
-    border-color: rgb(255, 80, 80);
+  background-color: rgba(255, 80, 80, 0.3);
+  border-color: rgb(255, 80, 80);
 }
 .field > span.checkbox {
-    text-align: center;
-    min-width: 75px;
+  text-align: center;
+  min-width: 75px;
 }
 .field > select {
-    appearance: none;
-    padding: 0.5rem 2rem 0.5rem 0.5rem;
-    background: #fff;
-	background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.5rem center;
+  appearance: none;
+  padding: 0.5rem 2rem 0.5rem 0.5rem;
+  background: #fff;
+  background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
 }
 
 .btn {
-    background-color: #00008b;
-    padding: 0.5rem;
-    border-radius: 10px;
-    color: #fff;
+  background-color: #00008b;
+  padding: 0.5rem;
+  border-radius: 10px;
+  color: #fff;
 }
 .btn:focus {
-    box-shadow: 0 0 0 3px rgba(0, 0, 139, 0.2);
-    outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 139, 0.2);
+  outline: none;
 }
 .btn.danger {
-    background-color: #c00;
+  background-color: #c00;
 }
 .btn.danger:focus {
-    box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.2);
+  box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.2);
 }
 .btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .btn svg {
-    height: 15px;
-    width: auto;
-    vertical-align: bottom;
+  height: 15px;
+  width: auto;
+  vertical-align: bottom;
 }
 
-code, .code {
-    font-family: Menlo, monospace;
+code,
+.code {
+  font-family: Menlo, monospace;
 }
 
 @keyframes flashGreen {
-    0% { color: #0d0; }
-    100% { color: unset; }
+  0% {
+    color: #0d0;
+  }
+  100% {
+    color: unset;
+  }
 }
 .flash-green {
-    animation: 1s ease-out 0s 1 flashGreen;
+  animation: 1s ease-out 0s 1 flashGreen;
 }

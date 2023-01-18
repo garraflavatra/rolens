@@ -56,7 +56,8 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 
 	for _, param := range form.Parameters {
 		var unmarshalled bson.M
-		if json.Unmarshal([]byte(param.Value), &unmarshalled) == nil {
+		err = json.Unmarshal([]byte(param.Value), &unmarshalled)
+		if err == nil {
 			update[param.Type] = unmarshalled
 		} else {
 			fmt.Println(err.Error())
@@ -71,8 +72,6 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 
 	var result *mongo.UpdateResult
 	options := mongoOptions.Update().SetUpsert(form.Upsert)
-
-	fmt.Println(query, update)
 
 	if form.Many {
 		result, err = client.Database(dbKey).Collection(collKey).UpdateMany(ctx, query, update, options)

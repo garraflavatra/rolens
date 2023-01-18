@@ -35,16 +35,26 @@
       $bit: 'Bit',
     },
   };
+  const allOperators = Object.values(atomicUpdateOperators).map(Object.keys).flat();
 
-  const form = { query: '{}', parameters: [ {} ] };
+  const form = { query: '{}', parameters: [ { type: '$set' } ] };
+  let updatedCount;
+  $: code = buildCode(form);
 
-  $: code = `db.${collection.key}.${form.many ? 'updateMany' : 'updateOne'}()`;
+  function buildCode(form) {
+    const method = form.many ? 'updateMany' : 'updateOne';
+
+    let operation = '{ ' + form.parameters.filter(p => p.type).map(p => `${p.type}: ${p.value || '{}'}`).join(', ') + ' }';
+    if (operation === '{  }') {
+      operation = '';
+    }
+
+    const code = `db.${collection.key}.${method}(${form.query || '{}'}${operation ? ', ' + operation : ''});`;
+    return code;
+  }
 
   async function submitQuery() {
-    // form = { query: '{}', parameters: [ {} ] };
-
-    const result = await UpdateItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
-    console.log(result);
+    updatedCount = await UpdateItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
   }
 
   function removeParam(index) {
@@ -56,13 +66,21 @@
   }
 
   function addParameter(index) {
+    const usedOperators = form.parameters.map(p => p.type);
+    const operator = allOperators.find(o => !usedOperators.includes(o));
+
+    if (!operator) {
+      return;
+    }
+
+    const newItem = { type: operator };
     if (typeof index !== 'number') {
-      form.parameters = [ ...form.parameters, {} ];
+      form.parameters = [ ...form.parameters, newItem ];
     }
     else {
       form.parameters = [
         ...form.parameters.slice(0, index),
-        {},
+        newItem,
         ...form.parameters.slice(index),
       ];
     }
@@ -86,6 +104,16 @@
         <input type="checkbox" bind:checked={form.many} />
       </span>
     </label>
+
+    {#key updatedCount}
+      {#if typeof updatedCount === 'number'}
+        <div class="flash-green">
+          Updated {updatedCount} item{updatedCount === 1 ? '' : 's'}
+        </div>
+      {/if}
+    {/key}
+
+    <button class="btn" type="submit">Update</button>
   </div>
 
   <label class="field">
@@ -114,7 +142,7 @@
           <input type="text" class="code" bind:value={param.value} placeholder={'{}'} use:input={{ json: true }} />
         </label>
 
-        <button class="btn" on:click={() => addParameter()} type="button">
+        <button class="btn" disabled={form.parameters.length >= allOperators.length} on:click={() => addParameter()} type="button">
           <Icon name="+" />
         </button>
         <button class="btn" disabled={form.parameters.length < 2} on:click={() => removeParam(index)} type="button">
@@ -123,11 +151,6 @@
       </fieldset>
     {/each}
   </fieldset>
-
-  <div class="result">
-    <div></div>
-    <button class="btn" type="submit">Update</button>
-  </div>
 </form>
 
 <style>
@@ -140,6 +163,10 @@
   .options {
     display: flex;
     gap: 0.5rem;
+    align-items: center;
+  }
+  .options button {
+    margin-left: auto;
   }
 
   .parameters {
@@ -151,10 +178,5 @@
     display: grid;
     grid-template: 1fr / auto 1fr auto auto;
     gap: 0.5rem;
-  }
-
-  .result {
-    display: flex;
-    justify-content: space-between;
   }
 </style>

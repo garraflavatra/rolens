@@ -84,8 +84,8 @@
           { label: `Drop ${collKey}…`, fn: () => dropCollection(dbKey, collKey) },
           { label: `Drop ${dbKey}…`, fn: () => dropDatabase(dbKey) },
           { separator: true },
-          { label: 'New database≥', fn: () => dispatch('newDatabase') },
-          { label: 'New collection≥', fn: () => dispatch('newCollection') },
+          { label: 'New database…', fn: () => dispatch('newDatabase') },
+          { label: 'New collection…', fn: () => dispatch('newCollection') },
         ],
       })).sort((a, b) => a.id.localeCompare(b)) || [],
       menu: [

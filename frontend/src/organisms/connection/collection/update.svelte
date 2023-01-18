@@ -46,10 +46,11 @@
 
     let operation = '{ ' + form.parameters.filter(p => p.type).map(p => `${p.type}: ${p.value || '{}'}`).join(', ') + ' }';
     if (operation === '{  }') {
-      operation = '';
+      operation = '{}';
     }
 
-    const code = `db.${collection.key}.${method}(${form.query || '{}'}${operation ? ', ' + operation : ''});`;
+    const options = form.upsert ? ', { upsert: true }' : '';
+    const code = `db.${collection.key}.${method}(${form.query || '{}'}, ${operation}${options});`;
     return code;
   }
 

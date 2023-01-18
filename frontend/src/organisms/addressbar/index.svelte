@@ -27,7 +27,7 @@
   </div>
 </div>
 
-<HostModal bind:modalOpen on:select {hosts} />
+<HostModal bind:modalOpen bind:hosts on:select />
 
 <style>
   .addressbar {

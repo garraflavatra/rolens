@@ -4,6 +4,8 @@ import {app} from '../models';
 import {primitive} from '../models';
 import {map[string]app} from '../models';
 
+export function AddHost(arg1:string):Promise<void>;
+
 export function DropCollection(arg1:string,arg2:string,arg3:string):Promise<boolean>;
 
 export function DropDatabase(arg1:string,arg2:string):Promise<boolean>;
@@ -23,6 +25,8 @@ export function OpenCollection(arg1:string,arg2:string,arg3:string):Promise<prim
 export function OpenConnection(arg1:string):Promise<Array<string>>;
 
 export function OpenDatabase(arg1:string,arg2:string):Promise<Array<string>>;
+
+export function RemoveHost(arg1:string):Promise<void>;
 
 export function RemoveItems(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<number>;
 

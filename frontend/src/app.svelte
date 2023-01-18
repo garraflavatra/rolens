@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { Hosts, OpenConnection } from '../wailsjs/go/app/App';
+  import { OpenConnection } from '../wailsjs/go/app/App';
   import { Environment, WindowSetTitle } from '../wailsjs/runtime';
   import BlankState from './components/blankstate.svelte';
   import ContextMenu from './components/contextmenu.svelte';
@@ -41,7 +41,6 @@
 
   onMount(() => {
     Environment().then(e => environment = e);
-    Hosts().then(h => hosts = h);
   });
 </script>
 
@@ -52,7 +51,7 @@
 
   {#if environment}
     <main class:empty={!host || !connection}>
-      <AddressBar {hosts} bind:activeHostKey on:select={e => openConnection(e.detail)} bind:modalOpen={addressBarModalOpen} />
+      <AddressBar bind:hosts bind:activeHostKey on:select={e => openConnection(e.detail)} bind:modalOpen={addressBarModalOpen} />
 
       {#if host && connection}
         <Connection {hosts} bind:activeCollKey bind:activeDbKey {activeHostKey} />

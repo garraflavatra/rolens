@@ -5,6 +5,7 @@
   export let show = false;
   export let title = undefined;
   export let contentPadding = true;
+  export let width = '80vw';
 
   function keydown(event) {
     if (event.key === 'Escape') {
@@ -17,7 +18,7 @@
 
 {#if show}
   <div class="modal outer" on:mousedown|self={() => show = false} transition:fade>
-    <div class="inner" transition:fly={{ y: 100 }}>
+    <div class="inner" style:max-width={width || '80vw'} transition:fly={{ y: 100 }}>
       {#if title}
         <header>
           <div class="title">{title}</div>
@@ -55,7 +56,6 @@
   }
 
   .inner {
-    max-width: 80vw;
     max-height: 80vh;
     background-color: #fff;
     margin-left: auto;

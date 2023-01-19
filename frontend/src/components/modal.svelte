@@ -26,12 +26,13 @@
 
   function keydown(event) {
     if ((event.key === 'Escape') && (level === numberOfModalsOpen)) {
+      event.preventDefault();
       show = false;
     }
   }
 </script>
 
-<svelte:window on:keydown|preventDefault={keydown} />
+<svelte:window on:keydown={keydown} />
 
 {#if show}
   <div class="modal outer" on:mousedown|self={() => show = false} transition:fade>
@@ -94,7 +95,6 @@
   }
 
   header {
-    border-bottom: 1px solid #ccc;
     display: flex;
     align-items: center;
     padding: 1rem;
@@ -113,6 +113,9 @@
   }
   .content.padded {
     padding: 1rem;
+  }
+  header + .content.padded {
+    border-top: 1px solid #ccc;
   }
 
   footer {

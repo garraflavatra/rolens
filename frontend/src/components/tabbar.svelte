@@ -23,14 +23,9 @@
 </nav>
 
 <style>
-  .tabs {
-    border-bottom: 1px solid #ccc;
-    padding: 0 0.5rem;
-  }
   .tabs ul {
     overflow-x: scroll;
     display: flex;
-    gap: 0.5rem;
     list-style: none;
   }
   .tabs li {
@@ -41,10 +36,12 @@
     width: 100%;
     padding: 0.7rem 1rem;
     border: 1px solid #ccc;
-    border-bottom: none;
-    border-radius: 5px 5px 0 0;
+    border-right: none;
     cursor: pointer;
     background-color: #fff;
+  }
+  .tabs li:last-child button {
+    border-right: 1px solid #ccc;
   }
   .tabs li.active button {
     color: #fff;

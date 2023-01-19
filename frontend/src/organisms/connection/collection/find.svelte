@@ -1,10 +1,12 @@
 <script>
-  import { FindItems, RemoveItemById } from '../../../../wailsjs/go/app/App';
+  import { FindItems, Hosts, RemoveItemById, UpdateHost } from '../../../../wailsjs/go/app/App';
   import CodeExample from '../../../components/code-example.svelte';
   import { input } from '../../../actions';
   import ObjectGrid from '../../../components/objectgrid.svelte';
   import Icon from '../../../components/icon.svelte';
   import ObjectViewer from '../../../components/objectviewer.svelte';
+  import FindViewConfigModal from './find-viewconfig.svelte';
+  import { onMount } from 'svelte';
 
   export let collection;
 
@@ -17,12 +19,29 @@
   };
 
   let form = { ...defaults };
+  let view = 'list';
   let result = {};
   let submittedForm = {};
   let queryField;
   let activePath = [];
   let objectViewerData;
+  let viewConfigModalOpen = false;
+  let viewConfig = {};
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
+
+  $: collection && refresh();
+  $: updateConfig(viewConfig);
+
+  async function getViewConfig() {
+    try {
+      const hosts = await Hosts();
+      viewConfig = hosts?.[collection.hostKey]?.databases?.[collection.dbKey]?.collections?.[collection.key]?.viewConfig || {};
+      console.log(hosts, viewConfig);
+    }
+    catch (e) {
+      console.error(e);
+    }
+  }
 
   async function submitQuery() {
     activePath = [];
@@ -31,6 +50,27 @@
       submittedForm = JSON.parse(JSON.stringify(form));
     }
     resetFocus();
+  }
+
+  async function refresh() {
+    await getViewConfig();
+    await submitQuery();
+  }
+
+  async function updateConfig(viewConfig) {
+    try {
+      const hosts = await Hosts();
+      hosts[collection.hostKey].databases = hosts[collection.hostKey].databases || {};
+      hosts[collection.hostKey].databases[collection.dbKey] = hosts[collection.hostKey].databases[collection.dbKey] || {};
+      hosts[collection.hostKey].databases[collection.dbKey].collections = hosts[collection.hostKey].databases[collection.dbKey].collections || {};
+      hosts[collection.hostKey].databases[collection.dbKey].collections[collection.key] = hosts[collection.hostKey].databases[collection.dbKey].collections[collection.key] || {};
+      hosts[collection.hostKey].databases[collection.dbKey].collections[collection.key].viewConfig = viewConfig;
+      await UpdateHost(collection.hostKey, JSON.stringify(hosts[collection.hostKey]));
+    }
+    catch (e) {
+      console.error(e);
+    }
+    console.log(viewConfig);
   }
 
   function prev() {
@@ -66,10 +106,16 @@
     objectViewerData = item;
   }
 
+  function toggleView() {
+    view = view === 'table' ? 'list' : 'table';
+  }
+
   export function performQuery(q) {
     form = { ...defaults, ...q };
     submitQuery();
   }
+
+  onMount(refresh);
 </script>
 
 <div class="find">
@@ -111,7 +157,12 @@
   <div class="result">
     <div class="grid">
       {#key result}
-        <ObjectGrid data={result.results} bind:activePath on:trigger={e => openJson(e.detail?.itemKey)} />
+        <ObjectGrid
+          data={result.results}
+          hideObjectIndicators={viewConfig?.hideObjectIndicators}
+          bind:activePath
+          on:trigger={e => openJson(e.detail?.itemKey)}
+        />
       {/key}
     </div>
 
@@ -122,13 +173,19 @@
         {/key}
       </div>
       <div>
-        <button class="btn danger" on:click={removeActive} disabled={!activePath?.length}>
+        <button class="btn" on:click={() => viewConfigModalOpen = true} title="Configure view">
+          <Icon name="cog" />
+        </button>
+        <button class="btn" on:click={toggleView} title="Toggle view">
+          <Icon name={view} />
+        </button>
+        <button class="btn danger" on:click={removeActive} disabled={!activePath?.length} title="Drop selected item">
           <Icon name="-" />
         </button>
-        <button class="btn" on:click={prev} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results?.length}>
+        <button class="btn" on:click={prev} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results?.length} title="Previous {form.limit} items">
           <Icon name="chev-l" />
         </button>
-        <button class="btn" on:click={next} disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results?.length}>
+        <button class="btn" on:click={next} disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results?.length} title="Next {form.limit} items">
           <Icon name="chev-r" />
         </button>
       </div>
@@ -137,6 +194,7 @@
 </div>
 
 <ObjectViewer bind:data={objectViewerData} />
+<FindViewConfigModal bind:show={viewConfigModalOpen} activeView={view} bind:config={viewConfig} />
 
 <style>
   .find {

@@ -4,6 +4,7 @@
   export let data = [];
   export let key = '_id';
   export let activePath = [];
+  export let hideObjectIndicators = false;
 
   const columns = [
     { key: 'key', label: 'Key' },
@@ -76,4 +77,5 @@
   bind:activePath
   {columns}
   {items}
+  {hideObjectIndicators}
 />

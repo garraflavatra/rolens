@@ -11,14 +11,20 @@
   export let activePath = [];
   export let level = 0;
   export let striped = true;
+  export let hideObjectIndicators = false;
 
   const dispatch = createEventDispatcher();
   let childrenOpen = {};
+  let _items = [];
 
-  $: _items = objectToArray(items).map(item => {
-    item.children = objectToArray(item.children);
-    return item;
-  });
+  $: refresh(hideObjectIndicators, items);
+
+  function refresh(hideObjectIndicators, items) {
+    _items = objectToArray(items).map(item => {
+      item.children = objectToArray(item.children);
+      return item;
+    });
+  }
 
   function objectToArray(obj) {
     if (Array.isArray(obj)) {
@@ -56,7 +62,7 @@
   }
 
   function doubleClick(itemKey) {
-    toggleChildren(itemKey, false);
+    // toggleChildren(itemKey, false);
     dispatch('trigger', { level, itemKey });
   }
 
@@ -67,16 +73,19 @@
 
   function formatValue(value) {
     if (Array.isArray(value)) {
-      return '[...]';
-    }
-    if (typeof value === 'object') {
-      return '{...}';
-    }
-    if (value === undefined || value === null) {
-      return '';
+      return hideObjectIndicators ? '' : '[...]';
     }
     if (typeof value === 'number' || typeof value === 'boolean') {
       return String(value);
+    }
+    if ((value === undefined) || (value === null)) {
+      return '';
+    }
+    if (new Date(value).toString() !== 'Invalid Date') {
+      return new Date(value);
+    }
+    if (typeof value === 'object') {
+      return hideObjectIndicators ? '' : '{...}';
     }
     if (String(value).length <= 1000) {
       return value;
@@ -118,6 +127,7 @@
   {#if item.children && childrenOpen[item[key]]}
     <svelte:self
       {columns}
+      {hideObjectIndicators}
       {key}
       {striped}
       path={[ ...path, item[key] ]}
@@ -150,7 +160,7 @@
   }
 
   td .value {
-    height: 2.1ex;
+    height: 15px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

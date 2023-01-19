@@ -16,8 +16,19 @@ import (
 )
 
 type Host struct {
-	Name string `json:"name"`
-	URI  string `json:"uri"`
+	Name      string `json:"name"`
+	URI       string `json:"uri"`
+	Databases map[string]struct {
+		Collections map[string]struct {
+			ViewConfig struct {
+				HideObjectIndicators bool `json:"hideObjectIndicators"`
+				Columns              []struct {
+					Key   string `json:"key"`
+					Width int64  `json:"width"`
+				} `json:"columns"`
+			} `json:"viewConfig"`
+		} `json:"collections"`
+	} `json:"databases"`
 }
 
 func updateHostsFile(newData map[string]Host) error {
@@ -81,7 +92,7 @@ func (a *App) AddHost(jsonData string) error {
 			Type:  runtime.InfoDialog,
 			Title: "Malformed JSON",
 		})
-		return errors.New("could not retrieve existing host list")
+		return errors.New("invalid JSON")
 	}
 
 	id, err := uuid.NewRandom()
@@ -93,9 +104,40 @@ func (a *App) AddHost(jsonData string) error {
 		return errors.New("could not generate a UUID")
 	}
 
-	fmt.Println(hosts)
-
 	hosts[id.String()] = newHost
+	err = updateHostsFile(hosts)
+	if err != nil {
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:  runtime.InfoDialog,
+			Title: "Could not update host list",
+		})
+		return errors.New("could not update host list")
+	}
+
+	return nil
+}
+
+func (a *App) UpdateHost(hostKey string, jsonData string) error {
+	hosts, err := a.Hosts()
+	if err != nil {
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:  runtime.InfoDialog,
+			Title: "Could not retrieve hosts",
+		})
+		return errors.New("could not retrieve existing host list")
+	}
+
+	var host Host
+	err = json.Unmarshal([]byte(jsonData), &host)
+	if err != nil {
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:  runtime.InfoDialog,
+			Title: "Malformed JSON",
+		})
+		return errors.New("invalid JSON")
+	}
+
+	hosts[hostKey] = host
 	err = updateHostsFile(hosts)
 	if err != nil {
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{

@@ -8,6 +8,7 @@
   export let key = 'id';
   export let activePath = [];
   export let striped = true;
+  export let hideObjectIndicators = false;
 </script>
 
 <div class="grid">
@@ -24,7 +25,16 @@
 
   <table>
     <tbody>
-      <GridItems {items} {columns} {key} {striped} bind:activePath on:select on:trigger />
+      <GridItems
+        {items}
+        {columns}
+        {key}
+        {striped}
+        {hideObjectIndicators}
+        bind:activePath
+        on:select
+        on:trigger
+      />
     </tbody>
   </table>
 </div>

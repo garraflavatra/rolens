@@ -1,17 +1,11 @@
 <script>
-  import CodeViewer from './codeviewer.svelte';
-
   export let code = '';
-
-  let modalCode = '';
 </script>
 
-<div class="examplecode" on:pointerdown={() => modalCode = code}>
+<div class="examplecode">
   <strong>CLI command</strong>
   <code>{code}</code>
 </div>
-
-<CodeViewer bind:code={modalCode} language="js" />
 
 <style>
   .examplecode {

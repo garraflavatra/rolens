@@ -4,7 +4,7 @@
   import { input } from '../../../actions';
   import ObjectGrid from '../../../components/objectgrid.svelte';
   import Icon from '../../../components/icon.svelte';
-  import CodeViewer from '../../../components/codeviewer.svelte';
+  import ObjectViewer from '../../../components/objectviewer.svelte';
 
   export let collection;
 
@@ -21,7 +21,7 @@
   let submittedForm = {};
   let queryField;
   let activePath = '';
-  let json = '';
+  let objectViewerData;
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
 
   async function submitQuery() {
@@ -57,10 +57,7 @@
 
   function openJson(itemId) {
     const item = result?.results?.find(i => i._id == itemId);
-    if (!item) {
-      return;
-    }
-    json = JSON.stringify(item, undefined, 2);
+    objectViewerData = item;
   }
 
   export function performQuery(q) {
@@ -133,7 +130,7 @@
   </div>
 </div>
 
-<CodeViewer bind:code={json} language="json" />
+<ObjectViewer bind:data={objectViewerData} />
 
 <style>
   .find {

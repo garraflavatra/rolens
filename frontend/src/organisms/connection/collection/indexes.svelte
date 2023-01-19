@@ -1,5 +1,5 @@
 <script>
-  import CodeViewer from '../../../components/codeviewer.svelte';
+  import ObjectViewer from '../../../components/objectviewer.svelte';
   import ObjectGrid from '../../../components/objectgrid.svelte';
   import { DropIndex, GetIndexes } from '../../../../wailsjs/go/app/App';
 
@@ -7,7 +7,7 @@
 
   let indexes = [];
   let activeKey = '';
-  let json = '';
+  let objectViewerData = '';
 
   async function getIndexes() {
     const result = await GetIndexes(collection.hostKey, collection.dbKey, collection.key);
@@ -29,7 +29,7 @@
 
   function openJson(indexId) {
     const item = indexes?.filter(i => i.name == indexId);
-    json = JSON.stringify(item, undefined, 2);
+    objectViewerData = item;
   }
 </script>
 
@@ -50,7 +50,7 @@
   </div>
 </div>
 
-<CodeViewer bind:code={json} language="json" />
+<ObjectViewer bind:data={objectViewerData} />
 
 <style>
   .indexes {

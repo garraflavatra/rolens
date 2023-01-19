@@ -59,7 +59,7 @@ func (a *App) RemoveItems(hostKey, dbKey, collKey, jsonData string, many bool) i
 		fmt.Println(err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
-			Title:   "Encountered an error while performing query",
+			Title:   "Encountered an error while removing items",
 			Message: err.Error(),
 		})
 		return 0
@@ -84,7 +84,7 @@ func (a *App) RemoveItemById(hostKey, dbKey, collKey, itemId string) bool {
 		fmt.Println(err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
-			Title:   "Encountered an error while performing query",
+			Title:   "Encountered an error while removing item" + itemId,
 			Message: err.Error(),
 		})
 		return false

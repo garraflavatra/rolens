@@ -14,6 +14,7 @@
   let error = '';
   let createHostModalOpen = false;
   $: host = hosts?.[activeHostKey];
+  $: hostCount = Object.keys(hosts).length;
 
   $: if (!modalOpen) {
     error = '';
@@ -47,13 +48,20 @@
   onMount(getHosts);
 </script>
 
-<Modal bind:show={modalOpen} title={Object.keys(hosts).length && 'Hosts'} width="60vw">
-  {#if error}
-    <p class="error">
-      <strong>Oops!</strong> {error}
+<Modal bind:show={modalOpen} title={hostCount && 'Hosts'} width="60vw">
+  <div class="status">
+    <p class:error>
+      {#if error}
+        <strong>Oops!</strong> {error}
+      {:else}
+        {hostCount} host{hostCount === 1 ? '' : 's'}
+      {/if}
     </p>
-  {/if}
-  {#if Object.keys(hosts).length}
+    <button class="btn" on:click={() => createHostModalOpen = true}>
+      Create new host
+    </button>
+  </div>
+  {#if hostCount}
     <ul class="hosts">
       {#each Object.entries(hosts) as [hostKey, host]}
         <li>
@@ -85,6 +93,11 @@
     gap: 0.5rem;
   }
 
+  .status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   .error {
     color: #c00;
   }

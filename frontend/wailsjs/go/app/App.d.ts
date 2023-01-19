@@ -28,6 +28,8 @@ export function OpenDatabase(arg1:string,arg2:string):Promise<Array<string>>;
 
 export function RemoveHost(arg1:string):Promise<void>;
 
+export function RemoveItemById(arg1:string,arg2:string,arg3:string,arg4:string):Promise<boolean>;
+
 export function RemoveItems(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<number>;
 
 export function UpdateItems(arg1:string,arg2:string,arg3:string,arg4:string):Promise<number>;

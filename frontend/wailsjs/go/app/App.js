@@ -50,6 +50,10 @@ export function RemoveHost(arg1) {
   return window['go']['app']['App']['RemoveHost'](arg1);
 }
 
+export function RemoveItemById(arg1, arg2, arg3, arg4) {
+  return window['go']['app']['App']['RemoveItemById'](arg1, arg2, arg3, arg4);
+}
+
 export function RemoveItems(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['app']['App']['RemoveItems'](arg1, arg2, arg3, arg4, arg5);
 }

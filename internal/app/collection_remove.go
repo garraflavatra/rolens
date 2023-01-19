@@ -67,3 +67,28 @@ func (a *App) RemoveItems(hostKey, dbKey, collKey, jsonData string, many bool) i
 
 	return res.DeletedCount
 }
+
+func (a *App) RemoveItemById(hostKey, dbKey, collKey, itemId string) bool {
+	client, ctx, close, err := a.connectToHost(hostKey)
+	if err != nil {
+		fmt.Println(err.Error())
+		return false
+	}
+
+	defer close()
+
+	filter := bson.M{"_id": itemId}
+	err = client.Database(dbKey).Collection(collKey).FindOneAndDelete(ctx, filter).Err()
+
+	if err != nil && err != mongo.ErrNoDocuments {
+		fmt.Println(err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:    runtime.ErrorDialog,
+			Title:   "Encountered an error while performing query",
+			Message: err.Error(),
+		})
+		return false
+	}
+
+	return err == nil
+}

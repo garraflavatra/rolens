@@ -1,5 +1,5 @@
 <script>
-  import { FindItems } from '../../../../wailsjs/go/app/App';
+  import { FindItems, RemoveItemById } from '../../../../wailsjs/go/app/App';
   import CodeExample from '../../../components/code-example.svelte';
   import { input } from '../../../actions';
   import ObjectGrid from '../../../components/objectgrid.svelte';
@@ -20,7 +20,7 @@
   let result = {};
   let submittedForm = {};
   let queryField;
-  let activePath = '';
+  let activePath = [];
   let objectViewerData;
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
 
@@ -46,8 +46,14 @@
     submitQuery();
   }
 
-  function remove() {
-    // todo
+  async function removeActive() {
+    if (!activePath[0]) {
+      return;
+    }
+    const ok = await RemoveItemById(collection.hostKey, collection.dbKey, collection.key, activePath[0]);
+    if (ok) {
+      await submitQuery();
+    }
   }
 
   function resetFocus() {
@@ -116,7 +122,7 @@
         {/key}
       </div>
       <div>
-        <button class="btn danger" on:click={remove} disabled={!activePath?.length}>
+        <button class="btn danger" on:click={removeActive} disabled={!activePath?.length}>
           <Icon name="-" />
         </button>
         <button class="btn" on:click={prev} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results?.length}>

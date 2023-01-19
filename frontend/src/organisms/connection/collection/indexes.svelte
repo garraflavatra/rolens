@@ -28,7 +28,7 @@
   }
 
   function openJson(indexId) {
-    const item = indexes?.filter(i => i.name == indexId);
+    const item = indexes?.find(i => i.name == indexId);
     objectViewerData = item;
   }
 </script>
@@ -46,7 +46,7 @@
     <ObjectGrid key="name" data={indexes.map(idx => ({
       ...idx,
       menu: [ { label: 'Drop this index', fn: () => drop(idx.name) } ],
-    }))} bind:activeKey on:trigger={e => openJson(e.detail)} />
+    }))} bind:activeKey on:trigger={e => openJson(e.detail.itemKey)} />
   </div>
 </div>
 

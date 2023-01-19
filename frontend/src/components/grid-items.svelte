@@ -141,7 +141,7 @@
   }
 
   td {
-    padding: 0.3rem;
+    padding: 2px;
     text-overflow: ellipsis;
     cursor: pointer;
   }
@@ -164,8 +164,8 @@
     vertical-align: top;
   }
   button.toggle :global(svg) {
-    width: 15px;
-    height: 15px;
+    width: 13px;
+    height: 13px;
     vertical-align: top;
   }
 

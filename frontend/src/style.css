@@ -13,8 +13,8 @@ body {
   -webkit-user-select: none;
   user-select: none;
   cursor: default;
-  font-size: 15px;
-  line-height: 15px;
+  font-size: 13px;
+  line-height: 13px;
   background-color: rgba(0, 0, 0, 0);
 }
 
@@ -137,7 +137,7 @@ p strong {
   cursor: not-allowed;
 }
 .btn svg {
-  height: 15px;
+  height: 13px;
   width: auto;
   vertical-align: bottom;
 }

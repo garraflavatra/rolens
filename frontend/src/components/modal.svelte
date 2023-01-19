@@ -1,3 +1,7 @@
+<script context="module">
+  let numberOfModalsOpen = 0;
+</script>
+
 <script>
   import { fade, fly } from 'svelte/transition';
   import Icon from './icon.svelte';
@@ -7,14 +11,27 @@
   export let contentPadding = true;
   export let width = '80vw';
 
+  const level = numberOfModalsOpen + 1;
+  let isNew = true;
+
+  $: if (show) {
+    numberOfModalsOpen++;
+  }
+  else if (!isNew) {
+    numberOfModalsOpen--;
+  }
+  else {
+    isNew = false;
+  }
+
   function keydown(event) {
-    if (event.key === 'Escape') {
+    if ((event.key === 'Escape') && (level === numberOfModalsOpen)) {
       show = false;
     }
   }
 </script>
 
-<svelte:window on:keydown={keydown} />
+<svelte:window on:keydown|preventDefault={keydown} />
 
 {#if show}
   <div class="modal outer" on:mousedown|self={() => show = false} transition:fade>

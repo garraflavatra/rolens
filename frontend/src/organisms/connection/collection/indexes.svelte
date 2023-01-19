@@ -6,7 +6,7 @@
   export let collection;
 
   let indexes = [];
-  let activeKey = '';
+  let activePath = [];
   let objectViewerData = '';
 
   async function getIndexes() {
@@ -18,12 +18,12 @@
 
   async function drop(key) {
     if (typeof key !== 'string') {
-      key = activeKey;
+      key = activePath[0];
     }
     const success = await DropIndex(collection.hostKey, collection.dbKey, collection.key, key);
     if (success) {
       await getIndexes();
-      activeKey = '';
+      activePath[0] = '';
     }
   }
 
@@ -36,7 +36,7 @@
 <div class="indexes">
   <div class="actions">
     <button class="btn" on:click={getIndexes}>Get indexes</button>
-    <button class="btn danger" on:click={drop} disabled={!indexes?.length || !activeKey}>
+    <button class="btn danger" on:click={drop} disabled={!indexes?.length || !activePath[0]}>
       Drop selected
     </button>
     <button class="btn">Create…</button>
@@ -46,7 +46,7 @@
     <ObjectGrid key="name" data={indexes.map(idx => ({
       ...idx,
       menu: [ { label: 'Drop this index', fn: () => drop(idx.name) } ],
-    }))} bind:activeKey on:trigger={e => openJson(e.detail.itemKey)} />
+    }))} bind:activePath on:trigger={e => openJson(e.detail.itemKey)} />
   </div>
 </div>
 

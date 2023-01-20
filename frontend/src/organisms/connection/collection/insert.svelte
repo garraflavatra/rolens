@@ -2,6 +2,7 @@
   import { input } from '../../../actions';
   import { createEventDispatcher } from 'svelte';
   import { InsertItems } from '../../../../wailsjs/go/app/App';
+  import Icon from '../../../components/icon.svelte';
 
   export let collection;
 
@@ -44,7 +45,9 @@
       {#if insertedIds}
         <button class="btn" type="button" on:click={showDocs}>View inserted docs</button>
       {/if}
-      <button type="submit" class="btn" disabled={!json}>Insert</button>
+      <button type="submit" class="btn" disabled={!json}>
+        <Icon name="+" /> Insert
+      </button>
     </div>
   </div>
 </form>

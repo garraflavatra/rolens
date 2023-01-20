@@ -7,6 +7,7 @@
   import ObjectViewer from '../../../components/objectviewer.svelte';
   import FindViewConfigModal from './find-viewconfig.svelte';
   import { onMount } from 'svelte';
+  import Grid from '../../../components/grid.svelte';
 
   export let collection;
 
@@ -28,6 +29,8 @@
   let viewConfigModalOpen = false;
   let viewConfig = {};
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
+  $: lastPage = (submittedForm.limit && result?.results?.length) ? Math.max(0, Math.ceil((result.total - submittedForm.limit) / submittedForm.limit)) : 0;
+  $: activePage = (submittedForm.limit && submittedForm.skip && result?.results?.length) ? submittedForm.skip / submittedForm.limit : 0;
 
   $: collection && refresh();
   $: updateConfig(viewConfig);
@@ -37,6 +40,21 @@
       const hosts = await Hosts();
       viewConfig = hosts?.[collection.hostKey]?.databases?.[collection.dbKey]?.collections?.[collection.key]?.viewConfig || {};
       console.log(hosts, viewConfig);
+    }
+    catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function updateConfig(viewConfig) {
+    try {
+      const hosts = await Hosts();
+      hosts[collection.hostKey].databases = hosts[collection.hostKey].databases || {};
+      hosts[collection.hostKey].databases[collection.dbKey] = hosts[collection.hostKey].databases[collection.dbKey] || {};
+      hosts[collection.hostKey].databases[collection.dbKey].collections = hosts[collection.hostKey].databases[collection.dbKey].collections || {};
+      hosts[collection.hostKey].databases[collection.dbKey].collections[collection.key] = hosts[collection.hostKey].databases[collection.dbKey].collections[collection.key] || {};
+      hosts[collection.hostKey].databases[collection.dbKey].collections[collection.key].viewConfig = viewConfig;
+      await UpdateHost(collection.hostKey, JSON.stringify(hosts[collection.hostKey]));
     }
     catch (e) {
       console.error(e);
@@ -57,22 +75,6 @@
     await submitQuery();
   }
 
-  async function updateConfig(viewConfig) {
-    try {
-      const hosts = await Hosts();
-      hosts[collection.hostKey].databases = hosts[collection.hostKey].databases || {};
-      hosts[collection.hostKey].databases[collection.dbKey] = hosts[collection.hostKey].databases[collection.dbKey] || {};
-      hosts[collection.hostKey].databases[collection.dbKey].collections = hosts[collection.hostKey].databases[collection.dbKey].collections || {};
-      hosts[collection.hostKey].databases[collection.dbKey].collections[collection.key] = hosts[collection.hostKey].databases[collection.dbKey].collections[collection.key] || {};
-      hosts[collection.hostKey].databases[collection.dbKey].collections[collection.key].viewConfig = viewConfig;
-      await UpdateHost(collection.hostKey, JSON.stringify(hosts[collection.hostKey]));
-    }
-    catch (e) {
-      console.error(e);
-    }
-    console.log(viewConfig);
-  }
-
   function prev() {
     form.skip -= form.limit;
     if (form.skip < 0) {
@@ -83,6 +85,16 @@
 
   function next() {
     form.skip += form.limit;
+    submitQuery();
+  }
+
+  function first() {
+    form.skip = 0;
+    submitQuery();
+  }
+
+  function last() {
+    form.skip = lastPage * submittedForm.limit;
     submitQuery();
   }
 
@@ -140,12 +152,12 @@
 
       <label class="field">
         <span class="label">Skip</span>
-        <input type="number" min="0" bind:value={form.skip} use:input placeholder={defaults.skip} />
+        <input type="number" min="0" bind:value={form.skip} use:input placeholder={defaults.skip} list="skipstops" />
       </label>
 
       <label class="field">
         <span class="label">Limit</span>
-        <input type="number" min="0" bind:value={form.limit} use:input placeholder={defaults.limit} />
+        <input type="number" min="0" bind:value={form.limit} use:input placeholder={defaults.limit} list="limits" />
       </label>
 
       <button type="submit" class="btn">Run</button>
@@ -157,12 +169,23 @@
   <div class="result">
     <div class="grid">
       {#key result}
-        <ObjectGrid
-          data={result.results}
-          hideObjectIndicators={viewConfig?.hideObjectIndicators}
-          bind:activePath
-          on:trigger={e => openJson(e.detail?.itemKey)}
-        />
+        {#if view === 'table'}
+          <Grid
+            key="_id"
+            columns={viewConfig.columns?.map(c => ({ key: c.key, title: c.key })) || []}
+            showHeaders={true}
+            items={result.results || []}
+            bind:activePath
+            on:trigger={e => openJson(e.detail?.itemKey)}
+          />
+        {:else if view === 'list'}
+          <ObjectGrid
+            data={result.results}
+            hideObjectIndicators={viewConfig?.hideObjectIndicators}
+            bind:activePath
+            on:trigger={e => openJson(e.detail?.itemKey)}
+          />
+        {/if}
       {/key}
     </div>
 
@@ -177,16 +200,22 @@
           <Icon name="cog" />
         </button>
         <button class="btn" on:click={toggleView} title="Toggle view">
-          <Icon name={view} />
+          <Icon name={view === 'table' ? 'list' : 'table'} />
         </button>
         <button class="btn danger" on:click={removeActive} disabled={!activePath?.length} title="Drop selected item">
           <Icon name="-" />
         </button>
-        <button class="btn" on:click={prev} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results?.length} title="Previous {form.limit} items">
+        <button class="btn" on:click={first} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results || (activePage === 0)} title="First page">
+          <Icon name="chevs-l" />
+        </button>
+        <button class="btn" on:click={prev} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results || (activePage === 0)} title="Previous {submittedForm.limit} items">
           <Icon name="chev-l" />
         </button>
-        <button class="btn" on:click={next} disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results?.length} title="Next {form.limit} items">
+        <button class="btn" on:click={next} disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results || !lastPage || (activePage >= lastPage)} title="Next {submittedForm.limit} items">
           <Icon name="chev-r" />
+        </button>
+        <button class="btn" on:click={last} disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results || !lastPage || (activePage >= lastPage)} title="Last page">
+          <Icon name="chevs-r" />
         </button>
       </div>
     </div>
@@ -194,7 +223,21 @@
 </div>
 
 <ObjectViewer bind:data={objectViewerData} />
-<FindViewConfigModal bind:show={viewConfigModalOpen} activeView={view} bind:config={viewConfig} />
+<FindViewConfigModal bind:show={viewConfigModalOpen} activeView={view} bind:config={viewConfig} firstItem={result.results?.[0]} />
+
+<datalist id="limits">
+  {#each [ 1, 5, 10, 25, 50, 100, 200 ] as value}
+    <option {value} />
+  {/each}
+</datalist>
+
+{#if submittedForm?.limit}
+  <datalist id="skipstops">
+    {#each Array(lastPage).fill('').map((_, i) => i * submittedForm.limit) as value}
+      <option {value} />
+    {/each}
+  </datalist>
+{/if}
 
 <style>
   .find {

@@ -42,10 +42,10 @@
       }
       return 'integer';
     }
-    else if (new Date(value).toString() !== 'Invalid Date') {
-      return 'date';
-    }
-    else if (typeof value === 'object') {
+    // else if (new Date(value).toString() !== 'Invalid Date') {
+    //   return 'date';
+    // }
+    else if ((typeof value === 'object') && (value !== null)) {
       const keys = Object.keys(value);
       return `object (${keys.length} item${keys.length === 1 ? '' : 's'})`;
     }

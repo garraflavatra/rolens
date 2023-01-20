@@ -9,6 +9,7 @@
   export let activePath = [];
   export let striped = true;
   export let hideObjectIndicators = false;
+  export let showHeaders = false;
 </script>
 
 <div class="grid">
@@ -24,6 +25,17 @@
   {/if}
 
   <table>
+    {#if showHeaders && columns.some(col => col.title)}
+      <thead>
+        <tr>
+          <th class="has-toggle"></th>
+          {#each columns as column}
+            <th scope="col">{column.title || ''}</th>
+          {/each}
+        </tr>
+      </thead>
+    {/if}
+
     <tbody>
       <GridItems
         {items}
@@ -59,5 +71,16 @@
     border-collapse: collapse;
     width: 100%;
     background-color: #fff;
+  }
+
+  table thead {
+    border-bottom: 2px solid #ccc;
+  }
+  th {
+    font-weight: 600;
+    text-align: left;
+  }
+  th {
+    padding: 2px;
   }
 </style>

@@ -2,6 +2,7 @@
   import { contextMenu } from '../stores';
   import { createEventDispatcher } from 'svelte';
   import Icon from './icon.svelte';
+  import { resolveKeypath } from '../utils';
 
   export let items = [];
   export let columns = [];
@@ -30,7 +31,7 @@
     if (Array.isArray(obj)) {
       return obj;
     }
-    else if (typeof obj === 'object') {
+    else if ((typeof obj === 'object') && (obj !== null)) {
       return Object.entries(obj).map(([ k, item ]) => ({ ...item, [key]: k }));
     }
     else {
@@ -81,10 +82,10 @@
     if ((value === undefined) || (value === null)) {
       return '';
     }
-    if (new Date(value).toString() !== 'Invalid Date') {
-      return new Date(value);
-    }
-    if (typeof value === 'object') {
+    // if (new Date(value).toString() !== 'Invalid Date') {
+    //   return new Date(value);
+    // }
+    if ((typeof value === 'object') && (value !== null)) {
       return hideObjectIndicators ? '' : '{...}';
     }
     if (String(value).length <= 1000) {
@@ -115,7 +116,7 @@
     </td>
 
     {#each columns as column, columnIndex}
-      {@const value = item[column.key]}
+      {@const value = column.key?.includes('.') ? resolveKeypath(item, column.key) : item[column.key]}
       <td class:right={column.right} title={value}>
         <div class="value" style:margin-left="{level * 10}px">
           {formatValue(value)}

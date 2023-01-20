@@ -8,9 +8,19 @@
 
   let copySucceeded = false;
   let timeout;
+  let _data;
+
+  $: if (data) {
+    _data = JSON.parse(JSON.stringify(data));
+    for (const key of Object.keys(_data)) {
+      if (typeof _data[key] === 'undefined') {
+        delete _data[key];
+      }
+    }
+  }
 
   async function copy() {
-    await navigator.clipboard.writeText(JSON.stringify(data));
+    await navigator.clipboard.writeText(JSON.stringify(_data));
     copySucceeded = true;
     timeout = setTimeout(() => copySucceeded = false, 1500);
   }
@@ -19,7 +29,7 @@
 </script>
 
 {#if data}
-  <Modal bind:show={data} title="Object viewer" contentPadding={false}>
+  <Modal bind:show={data} title="Object viewer">
     <div class="objectviewer">
       <div class="buttons">
         <button class="btn" on:click={copy}>
@@ -27,7 +37,7 @@
         </button>
       </div>
       <div class="code">
-        <ObjectTree {data} />
+        <ObjectTree data={_data} />
       </div>
     </div>
   </Modal>
@@ -37,14 +47,10 @@
   .objectviewer {
     position: relative;
   }
-  .code {
-    padding: 1rem;
-  }
   .buttons {
     position: absolute;
     top: 0;
     right: 0;
-    margin: 1rem;
   }
   .buttons button {
     margin-left: 1rem;

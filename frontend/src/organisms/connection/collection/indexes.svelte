@@ -2,12 +2,15 @@
   import ObjectViewer from '../../../components/objectviewer.svelte';
   import ObjectGrid from '../../../components/objectgrid.svelte';
   import { DropIndex, GetIndexes } from '../../../../wailsjs/go/app/App';
+  import Icon from '../../../components/icon.svelte';
 
   export let collection;
 
   let indexes = [];
   let activePath = [];
   let objectViewerData = '';
+
+  $: collection && getIndexes();
 
   async function getIndexes() {
     const result = await GetIndexes(collection.hostKey, collection.dbKey, collection.key);
@@ -35,11 +38,15 @@
 
 <div class="indexes">
   <div class="actions">
-    <button class="btn" on:click={getIndexes}>Get indexes</button>
-    <button class="btn danger" on:click={drop} disabled={!indexes?.length || !activePath[0]}>
-      Drop selected
+    <button class="btn" on:click={getIndexes}>
+      <Icon name="reload" /> Reload
     </button>
-    <button class="btn">Create…</button>
+    <button class="btn">
+      <Icon name="+" /> Create index…
+    </button>
+    <button class="btn danger" on:click={drop} disabled={!indexes?.length || !activePath[0]}>
+      <Icon name="x" /> Drop selected
+    </button>
   </div>
 
   <div class="grid">

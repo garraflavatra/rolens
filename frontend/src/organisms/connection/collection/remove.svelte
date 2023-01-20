@@ -2,6 +2,7 @@
   import { input } from '../../../actions';
   import { RemoveItems } from '../../../../wailsjs/go/app/App';
   import CodeExample from '../../../components/code-example.svelte';
+  import Icon from '../../../components/icon.svelte';
 
   export let collection;
 
@@ -45,7 +46,9 @@
         {/if}
       {/key}
     </div>
-    <button type="submit" class="btn">Remove</button>
+    <button type="submit" class="btn danger">
+      <Icon name="-" /> Remove
+    </button>
   </div>
 </form>
 

@@ -114,7 +114,9 @@
       {/if}
     {/key}
 
-    <button class="btn" type="submit">Update</button>
+    <button class="btn" type="submit">
+      <Icon name="check" /> Update
+    </button>
   </div>
 
   <label class="field">

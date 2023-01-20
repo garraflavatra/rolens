@@ -210,8 +210,8 @@ func (a *App) connectToHost(hostKey string) (*mongo.Client, context.Context, fun
 		fmt.Println(err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
-			Title:   "Could not connect",
-			Message: "Failed to establish a connection with " + h.Name,
+			Title:   "Could not connect to " + h.Name,
+			Message: err.Error(),
 		})
 		return nil, nil, nil, errors.New("could not establish a connection with " + h.Name)
 	}

@@ -4,7 +4,7 @@
   import Icon from '../../components/icon.svelte';
   import { Hosts, RemoveHost } from '../../../wailsjs/go/app/App';
   import Welcome from './welcome.svelte';
-  import CreateHostModal from './createhostmodal.svelte';
+  import HostDetail from './hostdetail.svelte';
 
   export let hosts = {};
   export let activeHostKey = '';
@@ -12,7 +12,9 @@
 
   const dispatch = createEventDispatcher();
   let error = '';
-  let createHostModalOpen = false;
+  let hostDetailModalOpen = false;
+  let hostDetailModalHost;
+  let hostDetailModalKey = '';
   $: host = hosts?.[activeHostKey];
   $: hostCount = Object.keys(hosts).length;
 
@@ -33,6 +35,18 @@
     catch (e) {
       error = e;
     }
+  }
+
+  function createHost() {
+    hostDetailModalHost = undefined;
+    hostDetailModalKey = '';
+    hostDetailModalOpen = true;
+  }
+
+  function editHost(hostKey) {
+    hostDetailModalHost = hosts[hostKey];
+    hostDetailModalKey = hostKey;
+    hostDetailModalOpen = true;
   }
 
   async function removeHost(hostKey) {
@@ -57,7 +71,7 @@
         {hostCount} host{hostCount === 1 ? '' : 's'}
       {/if}
     </p>
-    <button class="btn" on:click={() => createHostModalOpen = true}>
+    <button class="btn" on:click={createHost}>
       Create new host
     </button>
   </div>
@@ -66,10 +80,10 @@
       {#each Object.entries(hosts) as [hostKey, host]}
         <li>
           <div class="host">
-            <button class="btn secondary" on:click={() => select(hostKey)} title="Connect to {host.name}">
+            <button class="btn secondary" title="Connect to {host.name}" on:click={() => select(hostKey)}>
               {host.name}
             </button>
-            <button class="btn secondary" title="Edit {host.name}">
+            <button class="btn secondary" title="Edit {host.name}" on:click={() => editHost(hostKey)}>
               <Icon name="edit" />
             </button>
             <button class="btn secondary" title="Remove {host.name}" on:click={() => removeHost(hostKey)}>
@@ -80,11 +94,16 @@
       {/each}
     </ul>
   {:else}
-    <Welcome on:createHost={() => createHostModalOpen = true} />
+    <Welcome on:createHost={createHost} />
   {/if}
 </Modal>
 
-<CreateHostModal bind:show={createHostModalOpen} on:reload={getHosts} />
+<HostDetail
+  host={hostDetailModalHost}
+  hostKey={hostDetailModalKey}
+  on:reload={getHosts}
+  bind:show={hostDetailModalOpen}
+/>
 
 <style>
   .hosts {

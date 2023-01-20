@@ -1,17 +1,24 @@
 <script>
+  import { input } from '../../actions';
   import { createEventDispatcher } from 'svelte';
-  import { AddHost } from '../../../wailsjs/go/app/App';
+  import { AddHost, UpdateHost } from '../../../wailsjs/go/app/App';
   import Modal from '../../components/modal.svelte';
 
   export let show = false;
+  export let host = undefined;
+  export let hostKey = '';
 
-  const dispatch = createEventDispatcher('reload');
-  let form = {};
+  const dispatch = createEventDispatcher();
+  let form = { ...(host || {}) };
   let error = '';
   $: valid = validate(form);
 
   $: if (show || !show) {
-    form = {};
+    init();
+  }
+
+  function init() {
+    form = { ...(host || {}) };
   }
 
   function validate(form) {
@@ -24,7 +31,12 @@
     }
 
     try {
-      await AddHost(JSON.stringify(form));
+      if (host && hostKey) {
+        await UpdateHost(hostKey, JSON.stringify(form));
+      }
+      else {
+        await AddHost(JSON.stringify(form));
+      }
       show = false;
       dispatch('reload');
     }
@@ -34,16 +46,16 @@
   }
 </script>
 
-<Modal bind:show title="Create a new host">
+<Modal bind:show title={host ? `Edit ${host.name}` : 'Create a new host'}>
   <form on:submit|preventDefault={submit}>
     <label class="field">
       <span class="label">Label</span>
-      <input type="text" placeholder="mywebsite.com MongoDB" bind:value={form.name} />
+      <input type="text" placeholder="mywebsite.com MongoDB" bind:value={form.name} use:input={{ autofocus: true }} />
     </label>
 
     <label class="field">
       <span class="label">Connection string</span>
-      <input type="text" placeholder="mongodb://..." bind:value={form.uri} spellcheck="false" />
+      <input type="text" placeholder="mongodb://..." bind:value={form.uri} spellcheck="false" use:input />
     </label>
 
     <div class="result">
@@ -52,7 +64,9 @@
           <div class="error">{error}</div>
         {/if}
       </div>
-      <button class="btn" disabled={!valid} type="submit">Create</button>
+      <button class="btn" disabled={!valid} type="submit">
+        {host ? 'Save' : 'Create'}
+      </button>
     </div>
   </form>
 </Modal>

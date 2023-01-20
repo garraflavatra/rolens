@@ -162,7 +162,7 @@ func (a *App) RemoveHost(key string) error {
 
 	sure, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 		Title:         "Confirm",
-		Message:       "Are you sure you want to remove " + key + "?",
+		Message:       "Are you sure you want to remove " + hosts[key].Name + "?",
 		Buttons:       []string{"Yes", "No"},
 		DefaultButton: "Yes",
 		CancelButton:  "No",

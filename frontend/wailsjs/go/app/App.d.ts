@@ -3,6 +3,7 @@
 import {app} from '../models';
 import {primitive} from '../models';
 import {map[string]app} from '../models';
+import {menu} from '../models';
 
 export function AddHost(arg1:string):Promise<void>;
 
@@ -19,6 +20,8 @@ export function GetIndexes(arg1:string,arg2:string,arg3:string):Promise<Array<pr
 export function Hosts():Promise<map[string]app.Host>;
 
 export function InsertItems(arg1:string,arg2:string,arg3:string,arg4:string):Promise<any>;
+
+export function Menu():Promise<menu.Menu>;
 
 export function OpenCollection(arg1:string,arg2:string,arg3:string):Promise<primitive.M>;
 

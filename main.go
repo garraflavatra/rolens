@@ -29,6 +29,7 @@ func main() {
 		MinHeight:        600,
 		BackgroundColour: &options.RGBA{R: 0, G: 0, B: 139, A: 1},
 		OnStartup:        app.Startup,
+		Menu:             app.Menu(),
 
 		AssetServer: &assetserver.Options{
 			Assets: assets,

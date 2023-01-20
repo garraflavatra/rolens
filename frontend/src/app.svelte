@@ -1,13 +1,13 @@
 <script>
   import { OpenConnection } from '../wailsjs/go/app/App';
-  import { WindowSetTitle } from '../wailsjs/runtime';
+  import { EventsOn, WindowSetTitle } from '../wailsjs/runtime';
   import BlankState from './components/blankstate.svelte';
   import ContextMenu from './components/contextmenu.svelte';
+  import About from './organisms/about/index.svelte';
   import AddressBar from './organisms/addressbar/index.svelte';
   import Connection from './organisms/connection/index.svelte';
   import Settings from './organisms/settings/index.svelte';
-  import { busy, contextMenu, connections, environment, applicationSettings } from './stores';
-  import { controlKeyDown } from './utils';
+  import { applicationSettings, busy, connections, contextMenu, environment } from './stores';
 
   let hosts = {};
   let activeHostKey = '';
@@ -15,11 +15,16 @@
   let activeCollKey = '';
   let addressBarModalOpen = true;
   let settingsModalOpen = false;
+  let aboutModalOpen = false;
 
   $: host = hosts[activeHostKey];
   $: connection = $connections[activeHostKey];
   $: database = connection?.databases[activeDbKey];
   $: collection = database?.collections?.[activeCollKey];
+
+  EventsOn('OpenPrefrences', () => settingsModalOpen = true);
+  EventsOn('OpenHostsModal', () => addressBarModalOpen = true);
+  EventsOn('OpenAboutModal', () => aboutModalOpen = true);
 
   async function openConnection(hostKey) {
     busy.start();
@@ -38,15 +43,9 @@
     busy.end();
   }
 
-  function keydown(e) {
-    if (controlKeyDown(e) && e.key === ',') {
-      settingsModalOpen = true;
-      e.preventDefault();
-    }
-  }
 </script>
 
-<svelte:window on:contextmenu|preventDefault on:keydown={keydown} />
+<svelte:window on:contextmenu|preventDefault />
 
 <div id="root" class="platform-{$environment?.platform}">
   <div class="titlebar"></div>
@@ -66,6 +65,7 @@
       <ContextMenu {...$contextMenu} on:close={contextMenu.hide} />
     {/key}
     <Settings bind:show={settingsModalOpen} />
+    <About bind:show={aboutModalOpen} />
   {/if}
 </div>
 

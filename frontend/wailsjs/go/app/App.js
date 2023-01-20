@@ -34,6 +34,10 @@ export function InsertItems(arg1, arg2, arg3, arg4) {
   return window['go']['app']['App']['InsertItems'](arg1, arg2, arg3, arg4);
 }
 
+export function Menu() {
+  return window['go']['app']['App']['Menu']();
+}
+
 export function OpenCollection(arg1, arg2, arg3) {
   return window['go']['app']['App']['OpenCollection'](arg1, arg2, arg3);
 }

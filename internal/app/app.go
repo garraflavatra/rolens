@@ -41,14 +41,14 @@ func (a *App) Menu() *menu.Menu {
 		wailsRuntime.EventsEmit(a.ctx, "OpenHostsModal")
 	})
 
+	if runtime.GOOS == "darwin" {
+		appMenu.Append(menu.EditMenu())
+	}
+
 	helpMenu := appMenu.AddSubmenu("Help")
 	helpMenu.AddText("User guide", nil, func(cd *menu.CallbackData) {
 		wailsRuntime.BrowserOpenURL(a.ctx, "")
 	})
-
-	if runtime.GOOS == "darwin" {
-		appMenu.Append(menu.EditMenu())
-	}
 
 	return appMenu
 }

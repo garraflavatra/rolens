@@ -32,6 +32,10 @@ export function RemoveItemById(arg1:string,arg2:string,arg3:string,arg4:string):
 
 export function RemoveItems(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<number>;
 
+export function Settings():Promise<app.Settings>;
+
 export function UpdateHost(arg1:string,arg2:string):Promise<void>;
 
 export function UpdateItems(arg1:string,arg2:string,arg3:string,arg4:string):Promise<number>;
+
+export function UpdateSettings(arg1:string):Promise<app.Settings>;

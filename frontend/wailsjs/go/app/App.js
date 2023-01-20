@@ -58,10 +58,18 @@ export function RemoveItems(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['app']['App']['RemoveItems'](arg1, arg2, arg3, arg4, arg5);
 }
 
+export function Settings() {
+  return window['go']['app']['App']['Settings']();
+}
+
 export function UpdateHost(arg1, arg2) {
   return window['go']['app']['App']['UpdateHost'](arg1, arg2);
 }
 
 export function UpdateItems(arg1, arg2, arg3, arg4) {
   return window['go']['app']['App']['UpdateItems'](arg1, arg2, arg3, arg4);
+}
+
+export function UpdateSettings(arg1) {
+  return window['go']['app']['App']['UpdateSettings'](arg1);
 }

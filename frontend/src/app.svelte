@@ -1,21 +1,20 @@
 <script>
-  import { onMount } from 'svelte';
   import { OpenConnection } from '../wailsjs/go/app/App';
-  import { Environment, WindowSetTitle } from '../wailsjs/runtime';
+  import { WindowSetTitle } from '../wailsjs/runtime';
   import BlankState from './components/blankstate.svelte';
   import ContextMenu from './components/contextmenu.svelte';
   import AddressBar from './organisms/addressbar/index.svelte';
   import Connection from './organisms/connection/index.svelte';
-  import { busy, contextMenu, connections } from './stores';
+  import Settings from './organisms/settings/index.svelte';
+  import { busy, contextMenu, connections, environment, applicationSettings } from './stores';
+  import { controlKeyDown } from './utils';
 
   let hosts = {};
-  let environment;
-
   let activeHostKey = '';
   let activeDbKey = '';
   let activeCollKey = '';
-
   let addressBarModalOpen = true;
+  let settingsModalOpen = false;
 
   $: host = hosts[activeHostKey];
   $: connection = $connections[activeHostKey];
@@ -39,17 +38,20 @@
     busy.end();
   }
 
-  onMount(() => {
-    Environment().then(e => environment = e);
-  });
+  function keydown(e) {
+    if (controlKeyDown(e) && e.key === ',') {
+      settingsModalOpen = true;
+      e.preventDefault();
+    }
+  }
 </script>
 
-<svelte:window on:contextmenu|preventDefault />
+<svelte:window on:contextmenu|preventDefault on:keydown={keydown} />
 
-<div id="root" class="platform-{environment?.platform}">
+<div id="root" class="platform-{$environment?.platform}">
   <div class="titlebar"></div>
 
-  {#if environment}
+  {#if $environment && $applicationSettings}
     <main class:empty={!host || !connection}>
       <AddressBar bind:hosts bind:activeHostKey on:select={e => openConnection(e.detail)} bind:modalOpen={addressBarModalOpen} />
 
@@ -63,6 +65,7 @@
     {#key $contextMenu}
       <ContextMenu {...$contextMenu} on:close={contextMenu.hide} />
     {/key}
+    <Settings bind:show={settingsModalOpen} />
   {/if}
 </div>
 

@@ -1,7 +1,6 @@
 <script>
   import { onMount, tick } from 'svelte';
   import { Hosts } from '../../../wailsjs/go/app/App';
-  import { Environment } from '../../../wailsjs/runtime';
   import { input } from '../../actions';
   import Modal from '../../components/modal.svelte';
   import DatabaseList from './dblist.svelte';
@@ -13,7 +12,6 @@
   export let activeDbKey = '';
   export let activeCollKey = '';
 
-  let environment;
   let addressBarModalOpen = true;
   let dbList;
 
@@ -43,7 +41,6 @@
   }
 
   onMount(() => {
-    Environment().then(e => environment = e);
     Hosts().then(h => hosts = h);
   });
 </script>

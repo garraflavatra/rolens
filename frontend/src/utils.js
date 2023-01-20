@@ -1,3 +1,6 @@
+import { get } from 'svelte/store';
+import { environment } from './stores';
+
 export function resolveKeypath(object, path) {
   // Get a value from an object with a JSON path, from Webdesq core
 
@@ -18,4 +21,15 @@ export function resolveKeypath(object, path) {
   }
 
   return result;
+}
+
+export function controlKeyDown(event) {
+  const env = get(environment);
+  // @ts-ignore
+  if (env?.platform === 'darwin') {
+    return event?.metaKey;
+  }
+  else {
+    return event?.ctrlKey;
+  }
 }

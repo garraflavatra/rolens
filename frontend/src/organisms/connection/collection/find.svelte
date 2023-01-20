@@ -8,15 +8,16 @@
   import FindViewConfigModal from './find-viewconfig.svelte';
   import { onMount } from 'svelte';
   import Grid from '../../../components/grid.svelte';
+  import { applicationSettings } from '../../../stores';
 
   export let collection;
 
   const defaults = {
     query: '{}',
-    sort: '{ "_id": 1 }',
+    sort: $applicationSettings.defaultSort || '{ "_id": 1 }',
     fields: '{}',
     skip: 0,
-    limit: 15,
+    limit: $applicationSettings.defaultLimit || 15,
   };
 
   let form = { ...defaults };
@@ -72,7 +73,9 @@
 
   async function refresh() {
     await getViewConfig();
-    await submitQuery();
+    if ($applicationSettings.autosubmitQuery) {
+      await submitQuery();
+    }
   }
 
   function prev() {

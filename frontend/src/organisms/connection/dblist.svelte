@@ -36,7 +36,7 @@
       });
       activeHostKey = hostKey;
       dispatch('connected', hostKey);
-      WindowSetTitle(`${hosts[activeHostKey].name} - Mongodup`);
+      WindowSetTitle(`${hosts[activeHostKey].name} - Rolens`);
     }
 
     busy.end();

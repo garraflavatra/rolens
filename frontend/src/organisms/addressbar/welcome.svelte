@@ -9,7 +9,7 @@
 </script>
 
 <div class="welcome">
-  <p class="title">Welcome to Mongodup!</p>
+  <p class="title">Welcome to Rolens!</p>
   <button class="btn" on:click={createHost}>Create your first host</button>
 </div>
 

@@ -33,11 +33,11 @@ func appDataDirectory() (string, error) {
 
 	switch goRuntime.GOOS {
 	case "windows":
-		prefDir = filepath.Join(homeDir, "/AppData/Local/Mongodup")
+		prefDir = filepath.Join(homeDir, "/AppData/Local/Rolens")
 	case "darwin":
-		prefDir = filepath.Join(homeDir, "/Library/Application Support/Mongodup")
+		prefDir = filepath.Join(homeDir, "/Library/Application Support/Rolens")
 	case "linux":
-		prefDir = filepath.Join(homeDir, "/.config/Mongodup")
+		prefDir = filepath.Join(homeDir, "/.config/Rolens")
 	default:
 		err = errors.New("unsupported platform")
 	}

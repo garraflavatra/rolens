@@ -3,7 +3,7 @@ package main
 import (
 	"embed"
 
-	"github.com/garraflavatra/mongodup/internal/app"
+	"github.com/garraflavatra/rolens/internal/app"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -22,7 +22,7 @@ func main() {
 	app := app.NewApp()
 
 	err := wails.Run(&options.App{
-		Title:            "Mongodup",
+		Title:            "Rolens",
 		Width:            1000,
 		Height:           600,
 		MinWidth:         1000,
@@ -44,7 +44,7 @@ func main() {
 			WebviewIsTransparent: true,
 			WindowIsTranslucent:  true,
 			About: &mac.AboutInfo{
-				Title:   "Mongodup - MongoDB client",
+				Title:   "Rolens - Multiplatform MongoDB client",
 				Message: "© 2023 Romein van Buren",
 				Icon:    appIcon,
 			},

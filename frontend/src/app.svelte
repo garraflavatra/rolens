@@ -37,7 +37,7 @@
       });
       activeHostKey = hostKey;
       addressBarModalOpen = false;
-      WindowSetTitle(`${hosts[activeHostKey].name} - Mongodup`);
+      WindowSetTitle(`${hosts[activeHostKey].name} - Rolens`);
     }
 
     busy.end();

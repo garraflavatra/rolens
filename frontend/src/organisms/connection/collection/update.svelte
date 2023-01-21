@@ -42,15 +42,18 @@
   $: code = buildCode(form);
 
   function buildCode(form) {
-    const method = form.many ? 'updateMany' : 'updateOne';
-
     let operation = '{ ' + form.parameters.filter(p => p.type).map(p => `${p.type}: ${p.value || '{}'}`).join(', ') + ' }';
     if (operation === '{  }') {
       operation = '{}';
     }
 
-    const options = form.upsert ? ', { upsert: true }' : '';
-    const code = `db.${collection.key}.${method}(${form.query || '{}'}, ${operation}${options});`;
+    let options = (form.upsert || form.many) ? ', { ' : '';
+    form.upsert && (options += 'upsert: true');
+    form.upsert && form.many && (options += ', ');
+    form.many && (options += 'multi: true');
+    (form.upsert || form.many) && (options += ' }');
+
+    const code = `db.${collection.key}.update(${form.query || '{}'}, ${operation}${options});`;
     return code;
   }
 

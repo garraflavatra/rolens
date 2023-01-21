@@ -10,6 +10,7 @@
   export let title = undefined;
   export let contentPadding = true;
   export let width = '80vw';
+  export let overflow = true;
 
   const level = numberOfModalsOpen + 1;
   let isNew = true;
@@ -46,7 +47,7 @@
         </header>
       {/if}
 
-      <div class="slot content" class:padded={contentPadding}> <slot /> </div>
+      <div class="slot content" class:padded={contentPadding} class:overflow> <slot /> </div>
 
       {#if $$slots.footer}
         <footer> <slot name="footer" /> </footer>
@@ -81,7 +82,6 @@
     margin-bottom: auto;
     width: 100%;
     border-radius: 10px;
-    overflow: hidden;
     display: flex;
     flex-flow: column;
     cursor: auto;
@@ -108,8 +108,10 @@
   }
 
   .content {
-    overflow-y: auto;
     max-height: 100%;
+  }
+  .content.overflow {
+    overflow-y: auto;
   }
   .content.padded {
     padding: 1rem;

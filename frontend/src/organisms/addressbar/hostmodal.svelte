@@ -62,20 +62,20 @@
   onMount(getHosts);
 </script>
 
-<Modal bind:show={modalOpen} title={hostCount && 'Hosts'} width="60vw">
-  <div class="status">
-    <p class:error>
-      {#if error}
-        <strong>Oops!</strong> {error}
-      {:else}
-        {hostCount} host{hostCount === 1 ? '' : 's'}
-      {/if}
-    </p>
-    <button class="btn" on:click={createHost}>
-      Create new host
-    </button>
-  </div>
+<Modal bind:show={modalOpen} title={hostCount && 'Hosts'} width="60vw" overflow={false}>
   {#if hostCount}
+    <div class="status">
+      <p class:error>
+        {#if error}
+          <strong>Oops!</strong> {error}
+        {:else}
+          {hostCount} host{hostCount === 1 ? '' : 's'}
+        {/if}
+      </p>
+      <button class="btn" on:click={createHost}>
+        Create new host
+      </button>
+    </div>
     <ul class="hosts">
       {#each Object.entries(hosts) as [hostKey, host]}
         <li>

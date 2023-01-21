@@ -45,7 +45,10 @@
     // else if (new Date(value).toString() !== 'Invalid Date') {
     //   return 'date';
     // }
-    else if ((typeof value === 'object') && (value !== null)) {
+    else if (value === null) {
+      return 'null';
+    }
+    else if (typeof value === 'object') {
       const keys = Object.keys(value);
       return `object (${keys.length} item${keys.length === 1 ? '' : 's'})`;
     }

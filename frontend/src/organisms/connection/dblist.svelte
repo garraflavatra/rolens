@@ -82,9 +82,11 @@
     columns={[ { key: 'id' }, { key: 'collCount', right: true } ]}
     items={Object.keys(connection.databases).sort().map(dbKey => ({
       id: dbKey,
+      icon: 'db',
       collCount: Object.keys(connection.databases[dbKey].collections || {}).length || '',
       children: Object.keys(connection.databases[dbKey].collections).sort().map(collKey => ({
         id: collKey,
+        icon: 'list',
         menu: [
           { label: `Drop ${collKey}…`, fn: () => dropCollection(dbKey, collKey) },
           { label: `Drop ${dbKey}…`, fn: () => dropDatabase(dbKey) },

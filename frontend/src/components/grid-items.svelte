@@ -115,6 +115,12 @@
       {/if}
     </td>
 
+    <td class="has-icon">
+      <div style:margin-left="{level * 10}px">
+        <Icon name={item.icon} />
+      </div>
+    </td>
+
     {#each columns as column, columnIndex}
       {@const value = column.key?.includes('.') ? resolveKeypath(item, column.key) : item[column.key]}
       <td class:right={column.right} title={value}>
@@ -157,7 +163,15 @@
     cursor: pointer;
   }
   td.has-toggle {
-    width: calc(20px + 0.3rem);
+    width: 20px;
+  }
+  td.has-icon {
+    padding: 0;
+    width: 17px;
+  }
+  td.has-icon :global(svg) {
+    width: 13px;
+    height: 13px;
   }
 
   td .value {

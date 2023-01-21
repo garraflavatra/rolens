@@ -29,6 +29,7 @@
       <thead>
         <tr>
           <th class="has-toggle"></th>
+          <th class="has-icon"></th>
           {#each columns as column}
             <th scope="col">{column.title || ''}</th>
           {/each}

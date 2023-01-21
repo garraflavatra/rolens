@@ -5,6 +5,7 @@
   export let key = '_id';
   export let activePath = [];
   export let hideObjectIndicators = false;
+  export let getRootMenu = () => undefined;
 
   const columns = [
     { key: 'key', label: 'Key' },
@@ -23,7 +24,7 @@
         newItem.key = item[key];
         newItem.type = getType(item[key]);
         newItem.children = dissectObject(item);
-        newItem.menu = item.menu;
+        newItem.menu = getRootMenu(key, item[key]);
         items = [ ...items, newItem ];
       }
     }

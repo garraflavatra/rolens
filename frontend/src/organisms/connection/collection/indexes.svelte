@@ -50,10 +50,13 @@
   </div>
 
   <div class="grid">
-    <ObjectGrid key="name" data={indexes.map(idx => ({
-      ...idx,
-      menu: [ { label: 'Drop this index', fn: () => drop(idx.name) } ],
-    }))} bind:activePath on:trigger={e => openJson(e.detail.itemKey)} />
+    <ObjectGrid
+      key="name"
+      data={indexes}
+      getRootMenu={(_, idx) => [ { label: 'Drop this index', fn: () => drop(idx.name) } ]}
+      bind:activePath
+      on:trigger={e => openJson(e.detail.itemKey)}
+    />
   </div>
 </div>
 

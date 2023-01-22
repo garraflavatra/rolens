@@ -63,11 +63,6 @@ p strong {
   display: flex;
   align-items: center;
 }
-.field svg {
-  width: 13px;
-  height: 13px;
-  margin-right: 2px;
-}
 .field > :first-child {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
@@ -140,11 +135,6 @@ p strong {
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-.btn svg {
-  height: 13px;
-  width: auto;
-  vertical-align: bottom;
 }
 
 code,

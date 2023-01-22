@@ -36,10 +36,10 @@ func (a *App) Menu() *menu.Menu {
 		wailsRuntime.Quit(a.ctx)
 	})
 
-	fileMenu := appMenu.AddSubmenu("File")
-	fileMenu.AddText("Hosts…", keys.CmdOrCtrl("k"), func(cd *menu.CallbackData) {
-		wailsRuntime.EventsEmit(a.ctx, "OpenHostsModal")
-	})
+	// fileMenu := appMenu.AddSubmenu("File")
+	// fileMenu.AddText("Hosts…", keys.CmdOrCtrl("k"), func(cd *menu.CallbackData) {
+	// 	wailsRuntime.EventsEmit(a.ctx, "OpenHostsModal")
+	// })
 
 	if runtime.GOOS == "darwin" {
 		appMenu.Append(menu.EditMenu())

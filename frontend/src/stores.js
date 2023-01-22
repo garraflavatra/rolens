@@ -25,7 +25,7 @@ export const contextMenu = (() => {
   const { set, subscribe } = writable();
 
   return {
-    show: (evt, menu) => set(menu ? {
+    show: (evt, menu) => set(Object.keys(menu || {}).length ? {
       position: [ evt.clientX, evt.clientY ],
       items: menu,
     } : undefined),

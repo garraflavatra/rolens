@@ -19,7 +19,6 @@ body {
 }
 
 * {
-  vertical-align: middle;
   box-sizing: border-box;
   overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;

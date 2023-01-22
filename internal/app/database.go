@@ -13,6 +13,7 @@ func (a *App) OpenDatabase(hostKey, dbKey string) (collections []string) {
 		fmt.Println(err.Error())
 		return nil
 	}
+
 	collections, err = client.Database(dbKey).ListCollectionNames(ctx, bson.D{})
 	if err != nil {
 		fmt.Println(err.Error())
@@ -23,6 +24,7 @@ func (a *App) OpenDatabase(hostKey, dbKey string) (collections []string) {
 		})
 		return nil
 	}
+
 	defer close()
 	return collections
 }
@@ -44,6 +46,7 @@ func (a *App) DropDatabase(hostKey, dbKey string) bool {
 		fmt.Println(err.Error())
 		return false
 	}
+
 	err = client.Database(dbKey).Drop(ctx)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -54,6 +57,7 @@ func (a *App) DropDatabase(hostKey, dbKey string) bool {
 		})
 		return false
 	}
+
 	defer close()
 	return true
 }

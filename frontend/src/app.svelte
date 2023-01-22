@@ -1,19 +1,15 @@
 <script>
-  import { OpenConnection } from '../wailsjs/go/app/App';
-  import { EventsOn, WindowSetTitle } from '../wailsjs/runtime';
-  import BlankState from './components/blankstate.svelte';
+  import { EventsOn } from '../wailsjs/runtime';
   import ContextMenu from './components/contextmenu.svelte';
   import About from './organisms/about/index.svelte';
-  import AddressBar from './organisms/addressbar/index.svelte';
   import Connection from './organisms/connection/index.svelte';
   import Settings from './organisms/settings/index.svelte';
-  import { applicationSettings, busy, connections, contextMenu, environment } from './stores';
+  import { applicationSettings, connections, contextMenu, environment } from './stores';
 
-  let hosts = {};
-  let activeHostKey = '';
+  const hosts = {};
+  const activeHostKey = '';
   let activeDbKey = '';
   let activeCollKey = '';
-  let addressBarModalOpen = true;
   let settingsModalOpen = false;
   let aboutModalOpen = false;
 
@@ -23,26 +19,7 @@
   $: collection = database?.collections?.[activeCollKey];
 
   EventsOn('OpenPrefrences', () => settingsModalOpen = true);
-  EventsOn('OpenHostsModal', () => addressBarModalOpen = true);
   EventsOn('OpenAboutModal', () => aboutModalOpen = true);
-
-  async function openConnection(hostKey) {
-    busy.start();
-    const databases = await OpenConnection(hostKey);
-
-    if (databases) {
-      $connections[hostKey] = { databases: {} };
-      databases.forEach(dbKey => {
-        $connections[hostKey].databases[dbKey] = { collections: {} };
-      });
-      activeHostKey = hostKey;
-      addressBarModalOpen = false;
-      WindowSetTitle(`${hosts[activeHostKey].name} - Rolens`);
-    }
-
-    busy.end();
-  }
-
 </script>
 
 <svelte:window on:contextmenu|preventDefault />
@@ -52,13 +29,7 @@
 
   {#if $environment && $applicationSettings}
     <main class:empty={!host || !connection}>
-      <AddressBar bind:hosts bind:activeHostKey on:select={e => openConnection(e.detail)} bind:modalOpen={addressBarModalOpen} />
-
-      {#if host && connection}
-        <Connection {hosts} bind:activeCollKey bind:activeDbKey {activeHostKey} />
-      {:else}
-        <BlankState label="A database client is nothing without a host" image="/fish.svg" />
-      {/if}
+      <Connection {hosts} bind:activeCollKey bind:activeDbKey {activeHostKey} />
     </main>
 
     {#key $contextMenu}
@@ -82,15 +53,10 @@
   main {
     height: 100vh;
     display: grid;
-    grid-template: 3rem auto / 250px 1fr;
-    gap: 0.5rem;
-    padding: 0.5rem;
+    grid-template: 1fr / 250px 1fr;
   }
   #root.platform-darwin main {
     height: calc(100vh - var(--darwin-titlebar-height));
-  }
-  main.empty {
-    grid-template: 3rem auto / 1fr;
   }
 
   main > :global(*) {

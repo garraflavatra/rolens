@@ -3,7 +3,7 @@
   import { createEventDispatcher } from 'svelte';
   import { DropCollection, DropDatabase, OpenCollection, OpenConnection, OpenDatabase } from '../../../wailsjs/go/app/App';
   import Grid from '../../components/grid.svelte';
-  import { WindowSetTitle } from '../../../wailsjs/runtime';
+  import { WindowSetTitle } from '../../../wailsjs/runtime/runtime';
 
   export let hosts = {};
   export let activeHostKey = '';
@@ -11,9 +11,10 @@
   export let activeCollKey = '';
 
   const dispatch = createEventDispatcher();
-  let dbAndCollKeys = [];
-  $: activeDbKey = dbAndCollKeys[0];
-  $: activeCollKey = dbAndCollKeys[1];
+  let activeGridPath = [];
+  $: activeHostKey = activeGridPath[0] || activeHostKey;
+  $: activeDbKey = activeGridPath[1];
+  $: activeCollKey = activeGridPath[2];
   $: host = hosts[activeHostKey];
   $: connection = $connections[activeHostKey];
   $: database = connection?.databases[activeDbKey];
@@ -74,67 +75,64 @@
     await reload();
     busy.end();
   }
+
+  function buildMenu(hostKey, dbKey, collKey, context = [ 'new', 'edit', 'drop' ]) {
+    // context: n = new, d = drop
+    const menu = [];
+
+    if (context.includes('edit')) {
+      hostKey     && menu.push({ label: `Edit host ${hosts[hostKey].name}…`, fn: () => dispatch('editHost', hostKey) });
+      collKey     && menu.push({ label: `Rename collection ${collKey}…`, fn: () => dispatch('editCollection', collKey) });
+    }
+    if (context.includes('drop')) {
+      menu.length && menu.push({ separator: true });
+      dbKey       && menu.push({ label: `Drop database ${dbKey}…`, fn: () => dropDatabase(dbKey) });
+      collKey     && menu.push({ label: `Drop collection ${collKey}…`, fn: () => dropCollection(dbKey, collKey) });
+    }
+    if (context.includes('new')) {
+      menu.length && menu.push({ separator: true });
+      hostKey     && menu.push({ label: 'New database…', fn: () => dispatch('newDatabase') });
+      dbKey       && menu.push({ label: 'New collection…', fn: () => dispatch('newCollection') });
+    }
+
+    return menu;
+  }
 </script>
 
-{#if host && connection}
-  <Grid
-    striped={false}
-    columns={[ { key: 'id' }, { key: 'collCount', right: true } ]}
-    items={Object.keys(connection.databases).sort().map(dbKey => ({
+<Grid
+  striped={false}
+  columns={[ { key: 'name' }, { key: 'count', right: true } ]}
+  items={Object.keys(hosts).map(hostKey => ({
+    id: hostKey,
+    name: hosts[hostKey].name,
+    icon: 'server',
+    children: Object.keys(connection?.databases || {}).sort().map(dbKey => ({
       id: dbKey,
+      name: dbKey,
       icon: 'db',
-      collCount: Object.keys(connection.databases[dbKey].collections || {}).length || '',
+      count: Object.keys(connection.databases[dbKey].collections || {}).length || '',
       children: Object.keys(connection.databases[dbKey].collections).sort().map(collKey => ({
         id: collKey,
+        name: collKey,
         icon: 'list',
-        menu: [
-          { label: `Drop ${collKey}…`, fn: () => dropCollection(dbKey, collKey) },
-          { label: `Drop ${dbKey}…`, fn: () => dropDatabase(dbKey) },
-          { separator: true },
-          { label: 'New database…', fn: () => dispatch('newDatabase') },
-          { label: 'New collection…', fn: () => dispatch('newCollection') },
-        ],
+        menu: buildMenu(hostKey, dbKey, collKey),
       })) || [],
-      menu: [
-        { label: `Drop ${dbKey}…`, fn: () => dropDatabase(dbKey) },
-        { separator: true },
-        { label: 'New database…', fn: () => dispatch('newDatabase') },
-        { label: 'New collection…', fn: () => dispatch('newCollection') },
-      ],
-    }))}
-    actions={[
-      { icon: 'reload', fn: reload },
-      { icon: '+', fn: evt => {
-        if (activeDbKey) {
-          contextMenu.show(evt, [
-            { label: 'New database…', fn: () => dispatch('newDatabase') },
-            { label: 'New collection…', fn: () => dispatch('newCollection') },
-          ]);
-        }
-        else {
-          dispatch('newDatabase');
-        }
-      } },
-      { icon: '-', fn: evt => {
-        if (activeCollKey) {
-          contextMenu.show(evt, [
-            { label: 'Drop database…', fn: () => dropDatabase(activeDbKey) },
-            { label: 'Drop collection…', fn: () => dropCollection(activeDbKey, activeCollKey) },
-          ]);
-        }
-        else {
-          dropDatabase(activeDbKey);
-        }
-      }, disabled: !activeDbKey },
-    ]}
-    bind:activePath={dbAndCollKeys}
-    on:select={e => {
-      if (e.detail?.level === 0) {
-        openDatabase(e.detail.itemKey);
-      }
-      else if (e.detail?.level === 1) {
-        openCollection(e.detail.itemKey);
-      }
-    }}
-  />
-{/if}
+      menu: buildMenu(hostKey, dbKey),
+    })),
+  }))}
+  actions={[
+    { icon: 'reload', fn: reload },
+    { icon: '+', fn: evt => contextMenu.show(evt, buildMenu(activeHostKey, activeDbKey, activeCollKey, 'new')) },
+    { icon: 'edit', fn: evt => contextMenu.show(evt, buildMenu(activeHostKey, activeDbKey, activeCollKey, 'edit')), disabled: !activeHostKey },
+    { icon: '-', fn: evt => contextMenu.show(evt, buildMenu(activeHostKey, activeDbKey, activeCollKey, 'drop')), disabled: !activeDbKey },
+  ]}
+  bind:activePath={activeGridPath}
+  on:select={e => {
+    const key = e.detail.itemKey;
+    switch (e.detail?.level) {
+      case 0: return openConnection(key);
+      case 1: return openDatabase(key);
+      case 2: return openCollection(key);
+    }
+  }}
+/>

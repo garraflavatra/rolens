@@ -13,19 +13,48 @@ func (a *App) OpenCollection(hostKey, dbKey, collKey string) (result bson.M) {
 		fmt.Println(err.Error())
 		return nil
 	}
+
 	command := bson.M{"collStats": collKey}
 	err = client.Database(dbKey).RunCommand(ctx, command).Decode(&result)
 	if err != nil {
 		fmt.Println(err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
-			Title:   "Could not retrieve collection list for " + dbKey,
+			Title:   "Could not retrieve collection stats for " + collKey,
 			Message: err.Error(),
 		})
 		return nil
 	}
+
 	defer close()
 	return result
+}
+
+func (a *App) RenameCollection(hostKey, dbKey, collKey, newCollKey string) bool {
+	client, ctx, close, err := a.connectToHost(hostKey)
+	if err != nil {
+		fmt.Println(err.Error())
+		return false
+	}
+
+	var result bson.M
+	command := bson.D{
+		bson.E{Key: "renameCollection", Value: fmt.Sprintf("%v.%v", dbKey, collKey)},
+		bson.E{Key: "to", Value: fmt.Sprintf("%v.%v", dbKey, newCollKey)},
+	}
+	err = client.Database("admin").RunCommand(ctx, command).Decode(&result)
+	if err != nil {
+		fmt.Println(err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:    runtime.ErrorDialog,
+			Title:   "Could not rename " + collKey,
+			Message: err.Error(),
+		})
+		return false
+	}
+
+	defer close()
+	return true
 }
 
 func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
@@ -50,7 +79,7 @@ func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
 		fmt.Println(err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
-			Title:   "Could not drop " + dbKey,
+			Title:   "Could not drop " + collKey,
 			Message: err.Error(),
 		})
 		return false

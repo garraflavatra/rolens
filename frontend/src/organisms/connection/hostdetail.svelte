@@ -5,13 +5,14 @@
   import Modal from '../../components/modal.svelte';
 
   export let show = false;
-  export let host = undefined;
   export let hostKey = '';
+  export let hosts = {};
 
   const dispatch = createEventDispatcher();
-  let form = { ...(host || {}) };
+  let form = {};
   let error = '';
   $: valid = validate(form);
+  $: host = hosts[hostKey];
 
   $: if (show || !show) {
     init();

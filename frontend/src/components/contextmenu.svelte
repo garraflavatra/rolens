@@ -5,11 +5,16 @@
   export let position = undefined;
 
   const dispatch = createEventDispatcher();
-  let selected = -1;
   const buttons = [];
+  let selected = -1;
+
+  $: if (items && position) {
+    selected = 0;
+  }
 
   function close() {
     dispatch('close');
+    selected = -1;
   }
 
   function click(fn) {

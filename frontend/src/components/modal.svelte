@@ -124,18 +124,4 @@
     padding: 1rem;
     border-top: 1px solid #ccc;
   }
-
-  @media (max-width: 600px) {
-    .outer {
-      padding: 0;
-    }
-
-    .inner {
-      max-width: 100%;
-      max-height: 100%;
-      width: 100%;
-      margin-top: auto;
-      margin-bottom: 0;
-    }
-  }
 </style>

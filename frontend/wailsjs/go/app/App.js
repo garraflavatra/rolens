@@ -6,6 +6,10 @@ export function AddHost(arg1) {
   return window['go']['app']['App']['AddHost'](arg1);
 }
 
+export function CreateIndex(arg1, arg2, arg3, arg4) {
+  return window['go']['app']['App']['CreateIndex'](arg1, arg2, arg3, arg4);
+}
+
 export function DropCollection(arg1, arg2, arg3) {
   return window['go']['app']['App']['DropCollection'](arg1, arg2, arg3);
 }

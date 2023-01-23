@@ -41,6 +41,8 @@ export function RenameCollection(arg1:string,arg2:string,arg3:string,arg4:string
 
 export function Settings():Promise<app.Settings>;
 
+export function TruncateCollection(arg1:string,arg2:string,arg3:string):Promise<boolean>;
+
 export function UpdateHost(arg1:string,arg2:string):Promise<void>;
 
 export function UpdateItems(arg1:string,arg2:string,arg3:string,arg4:string):Promise<number>;

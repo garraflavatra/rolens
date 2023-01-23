@@ -1,7 +1,7 @@
 <script>
   import { busy, connections } from '../../stores';
   import { createEventDispatcher } from 'svelte';
-  import { DropCollection, DropDatabase, OpenCollection, OpenConnection, OpenDatabase } from '../../../wailsjs/go/app/App';
+  import { DropCollection, DropDatabase, OpenCollection, OpenConnection, OpenDatabase, TruncateCollection } from '../../../wailsjs/go/app/App';
   import Grid from '../../components/grid.svelte';
   import { WindowSetTitle } from '../../../wailsjs/runtime/runtime';
 
@@ -69,6 +69,13 @@
     busy.end();
   }
 
+  async function truncateCollection(dbKey, collKey) {
+    busy.start();
+    await TruncateCollection(activeHostKey, dbKey, collKey);
+    await reload();
+    busy.end();
+  }
+
   async function dropCollection(dbKey, collKey) {
     busy.start();
     await DropCollection(activeHostKey, dbKey, collKey);
@@ -94,21 +101,22 @@
         name: collKey,
         icon: 'list',
         menu: [
-          { label: `Rename ${collKey} collection…`, fn: () => dispatch('renameCollection', collKey) },
-          { label: `Drop ${collKey}…`, fn: () => dropCollection(dbKey, collKey) },
+          { label: 'Rename collection…', fn: () => dispatch('renameCollection', collKey) },
+          { label: 'Truncate collection…', fn: () => truncateCollection(dbKey, collKey) },
+          { label: 'Drop collection…', fn: () => dropCollection(dbKey, collKey) },
           { separator: true },
           { label: 'New collection…', fn: () => dispatch('newCollection') },
         ],
       })) || [],
       menu: [
-        { label: `Drop database ${dbKey}…`, fn: () => dropDatabase(dbKey) },
+        { label: 'Drop database…', fn: () => dropDatabase(dbKey) },
         { separator: true },
         { label: 'New database…', fn: () => dispatch('newDatabase') },
       ],
     })),
     menu: [
       { label: 'New database…', fn: () => dispatch('newDatabase') },
-        { separator: true },
+      { separator: true },
       { label: `Edit host ${hosts[hostKey].name}…`, fn: () => dispatch('editHost', hostKey) },
     ],
   }))}

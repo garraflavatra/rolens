@@ -57,6 +57,39 @@ func (a *App) RenameCollection(hostKey, dbKey, collKey, newCollKey string) bool 
 	return true
 }
 
+func (a *App) TruncateCollection(hostKey, dbKey, collKey string) bool {
+	sure, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+		Title:         "Confirm",
+		Message:       "Are you sure you want to remove all items from " + collKey + "?",
+		Buttons:       []string{"Yes", "No"},
+		DefaultButton: "Yes",
+		CancelButton:  "No",
+	})
+	if sure != "Yes" {
+		return false
+	}
+
+	client, ctx, close, err := a.connectToHost(hostKey)
+	if err != nil {
+		fmt.Println(err.Error())
+		return false
+	}
+
+	_, err = client.Database(dbKey).Collection(collKey).DeleteMany(ctx, bson.D{})
+	if err != nil {
+		fmt.Println(err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:    runtime.ErrorDialog,
+			Title:   "Could not truncate " + collKey,
+			Message: err.Error(),
+		})
+		return false
+	}
+
+	defer close()
+	return true
+}
+
 func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
 	sure, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 		Title:         "Confirm",
@@ -74,6 +107,7 @@ func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
 		fmt.Println(err.Error())
 		return false
 	}
+
 	err = client.Database(dbKey).Collection(collKey).Drop(ctx)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -84,6 +118,7 @@ func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
 		})
 		return false
 	}
+
 	defer close()
 	return true
 }

@@ -74,6 +74,10 @@ export function Settings() {
   return window['go']['app']['App']['Settings']();
 }
 
+export function TruncateCollection(arg1, arg2, arg3) {
+  return window['go']['app']['App']['TruncateCollection'](arg1, arg2, arg3);
+}
+
 export function UpdateHost(arg1, arg2) {
   return window['go']['app']['App']['UpdateHost'](arg1, arg2);
 }

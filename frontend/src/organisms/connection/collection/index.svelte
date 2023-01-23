@@ -8,6 +8,7 @@
   import Remove from './remove.svelte';
   import Stats from './stats.svelte';
   import Update from './update.svelte';
+  import { EventsOn } from '../../../../wailsjs/runtime/runtime';
 
   export let collection;
   export let hostKey;
@@ -22,6 +23,8 @@
     collection.dbKey = dbKey;
     collection.key = collectionKey;
   }
+
+  EventsOn('OpenCollectionTab', name => (tab = name || tab));
 
   async function catchQuery(event) {
     tab = 'find';

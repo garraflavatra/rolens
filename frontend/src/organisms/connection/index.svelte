@@ -8,6 +8,7 @@
   import CollectionDetail from './collection/index.svelte';
   import HostDetail from './hostdetail.svelte';
   import Icon from '../../components/icon.svelte';
+  import { EventsOn } from '../../../wailsjs/runtime/runtime';
 
   export let hosts = {};
   export let activeHostKey = '';
@@ -72,6 +73,9 @@
     busy.end();
   }
 
+  EventsOn('CreateHost', createHost);
+  EventsOn('CreateDatabase', () => newDb = {});
+  EventsOn('CreateCollection', () => newColl = {});
   onMount(getHosts);
 </script>
 

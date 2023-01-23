@@ -274,6 +274,7 @@
     min-height: 0;
     min-width: 0;
     border: 1px solid #ccc;
+    background-color: #fff;
   }
   .result > .controls {
     display: flex;

@@ -2,32 +2,69 @@
   import TabBar from '../../../components/tabbar.svelte';
   import Modal from '../../../components/modal.svelte';
   import Icon from '../../../components/icon.svelte';
+  import { views } from '../../../stores';
+  import { randomString } from '../../../utils';
+  import { input } from '../../../actions';
 
+  export let collection;
   export let show = false;
-  export let activeView = 'list';
-  export let config = {
-    hideObjectIndicators: false,
-    columns: [],
-  };
+  export let activeViewKey = 'list';
   export let firstItem = {};
 
-  let activeTab = activeView || 'list';
+  $: tabs = Object.entries($views).filter(v => (
+    v[0] === 'list' || (
+      v[1].host === collection.hostKey &&
+      v[1].database === collection.dbKey &&
+      v[1].collection === collection.key
+    )
+  )).sort((a, b) => sortTabKeys(a[0], b[0]))
+    .map(([ key, v ]) => ({ key, title: v.name, closable: key !== 'list' }));
 
-  $: activeView && (activeTab = activeView);
-  $: if (!config.columns || (config.columns.length === 0)) {
-    config.columns = [ { key: '_id' } ];
+  function sortTabKeys(a, b) {
+    if (a === 'list') {
+      return -1;
+    }
+    if (b === 'list') {
+      return 1;
+    }
+    else {
+      return a.localeCompare(b);
+    }
+  }
+
+  function createView() {
+    const newViewKey = randomString();
+    $views[newViewKey] = {
+      name: 'Table view',
+      host: collection.hostKey,
+      database: collection.dbKey,
+      collection: collection.key,
+      type: 'table',
+      columns: [ { key: '_id' } ],
+    };
+    activeViewKey = newViewKey;
+  }
+
+  function removeView(viewKey) {
+    const keys = Object.keys($views).sort(sortTabKeys);
+    const oldIndex = keys.indexOf(viewKey);
+    const newKey = keys[oldIndex - 1];
+    console.log(keys, oldIndex, newKey);
+    activeViewKey = newKey;
+    delete $views[viewKey];
+    $views = $views;
   }
 
   function addColumn(before) {
     if (typeof before === 'number') {
-      config.columns = [
-        ...config.columns.slice(0, before),
+      $views[activeViewKey].columns = [
+        ...$views[activeViewKey].columns.slice(0, before),
         {},
-        ...config.columns.slice(before),
+        ...$views[activeViewKey].columns.slice(before),
       ];
     }
     else {
-      config.columns = [ ...config.columns, {} ];
+      $views[activeViewKey].columns = [ ...$views[activeViewKey].columns, {} ];
     }
   }
 
@@ -35,67 +72,85 @@
     if ((typeof firstItem !== 'object') || (firstItem === null)) {
       return;
     }
-    config.columns = Object.keys(firstItem).map(key => ({ key }));
+    $views[activeViewKey].columns = Object.keys(firstItem).map(key => ({ key }));
   }
 
   function moveColumn(oldIndex, delta) {
-    const column = config.columns[oldIndex];
+    const column = $views[activeViewKey].columns[oldIndex];
     const newIndex = oldIndex + delta;
 
-    config.columns.splice(oldIndex, 1);
-    config.columns.splice(newIndex, 0, column);
-    config.columns = config.columns;
+    $views[activeViewKey].columns.splice(oldIndex, 1);
+    $views[activeViewKey].columns.splice(newIndex, 0, column);
+    $views[activeViewKey].columns = $views[activeViewKey].columns;
   }
 
   function removeColumn(index) {
-    config.columns.splice(index, 1);
-    config.columns = config.columns;
+    $views[activeViewKey].columns.splice(index, 1);
+    $views[activeViewKey].columns = $views[activeViewKey].columns;
   }
 </script>
 
 <Modal title="View configuration" bind:show contentPadding={false}>
   <TabBar
-    tabs={[
-      { key: 'list', title: 'List view' },
-      { key: 'table', title: 'Table view columns' },
-    ]}
-    bind:selectedKey={activeTab}
+    {tabs}
+    canAddTab={true}
+    on:addTab={createView}
+    on:closeTab={e => removeView(e.detail)}
+    bind:selectedKey={activeViewKey}
   />
 
   <div class="options">
-    {#if activeTab === 'list'}
-      <div class="flex">
-        <input type="checkbox" id="hideObjectIndicators" bind:checked={config.hideObjectIndicators} />
-        <label for="hideObjectIndicators">
-          Hide object indicators ({'{...}'} and [...]) in list view and show nothing instead
+    {#if $views[activeViewKey]}
+      <div class="meta">
+        {#key activeViewKey}
+          <label class="field">
+            <span class="label">View name</span>
+            <input type="text" use:input={{ autofocus: true }} bind:value={$views[activeViewKey].name} disabled={activeViewKey === 'list'} />
+          </label>
+        {/key}
+        <label class="field">
+          <span class="label">View type</span>
+          <select bind:value={$views[activeViewKey].type} disabled={activeViewKey === 'list'}>
+            <option value="list">List view</option>
+            <option value="table">Table view</option>
+          </select>
         </label>
       </div>
-    {:else if activeTab === 'table'}
-      {#each config.columns as column, columnIndex}
-        <div class="column">
-          <label class="field">
-            <input type="text" bind:value={column.key} placeholder="Column keypath" />
+
+      {#if $views[activeViewKey].type === 'list'}
+        <div class="flex">
+          <input type="checkbox" id="hideObjectIndicators" bind:checked={$views[activeViewKey].hideObjectIndicators} />
+          <label for="hideObjectIndicators">
+            Hide object indicators ({'{...}'} and [...]) in list view and show nothing instead
           </label>
-          <button class="btn" type="button" on:click={() => addColumn(columnIndex)} title="Add column before this one">
-            <Icon name="+" />
-          </button>
-          <button class="btn" type="button" on:click={() => moveColumn(columnIndex, -1)} disabled={columnIndex === 0} title="Move column one position up">
-            <Icon name="chev-u" />
-          </button>
-          <button class="btn" type="button" on:click={() => moveColumn(columnIndex, 1)} disabled={columnIndex === config.columns.length - 1} title="Move column one position down">
-            <Icon name="chev-d" />
-          </button>
-          <button class="btn danger" type="button" on:click={() => removeColumn(columnIndex)} title="Remove this column">
-            <Icon name="x" />
-          </button>
         </div>
-      {/each}
-      <button class="btn" on:click={addColumn}>
-        <Icon name="+" /> Add column
-      </button>
-      <button class="btn" on:click={addSuggestedColumns} disabled={!firstItem}>
-        <Icon name="zap" /> Add suggested columns
-      </button>
+      {:else if $views[activeViewKey].type === 'table'}
+        {#each $views[activeViewKey].columns as column, columnIndex}
+          <div class="column">
+            <label class="field">
+              <input type="text" use:input bind:value={column.key} placeholder="Column keypath" />
+            </label>
+            <button class="btn" type="button" on:click={() => addColumn(columnIndex)} title="Add column before this one">
+              <Icon name="+" />
+            </button>
+            <button class="btn" type="button" on:click={() => moveColumn(columnIndex, -1)} disabled={columnIndex === 0} title="Move column one position up">
+              <Icon name="chev-u" />
+            </button>
+            <button class="btn" type="button" on:click={() => moveColumn(columnIndex, 1)} disabled={columnIndex === $views[activeViewKey].columns.length - 1} title="Move column one position down">
+              <Icon name="chev-d" />
+            </button>
+            <button class="btn danger" type="button" on:click={() => removeColumn(columnIndex)} title="Remove this column">
+              <Icon name="x" />
+            </button>
+          </div>
+        {/each}
+        <button class="btn" on:click={addColumn}>
+          <Icon name="+" /> Add column
+        </button>
+        <button class="btn" on:click={addSuggestedColumns} disabled={!firstItem}>
+          <Icon name="zap" /> Add suggested columns
+        </button>
+      {/if}
     {/if}
   </div>
 </Modal>
@@ -105,9 +160,17 @@
     padding: 1rem;
   }
 
+  .meta {
+    display: grid;
+    grid-template: 1fr / 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
   .flex {
     display: flex;
     gap: 0.5rem;
+    align-items: center;
   }
 
   .column {

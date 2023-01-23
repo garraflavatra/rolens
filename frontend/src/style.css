@@ -44,6 +44,13 @@ p strong {
   cursor: wait;
 }
 
+input:disabled,
+select:disabled {
+  cursor: not-allowed;
+  opacity: 1;
+  color: #444;
+}
+
 .field {
   display: flex;
   white-space: nowrap;

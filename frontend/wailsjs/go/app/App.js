@@ -66,6 +66,10 @@ export function RemoveItems(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['app']['App']['RemoveItems'](arg1, arg2, arg3, arg4, arg5);
 }
 
+export function RemoveView(arg1) {
+  return window['go']['app']['App']['RemoveView'](arg1);
+}
+
 export function RenameCollection(arg1, arg2, arg3, arg4) {
   return window['go']['app']['App']['RenameCollection'](arg1, arg2, arg3, arg4);
 }
@@ -88,4 +92,12 @@ export function UpdateItems(arg1, arg2, arg3, arg4) {
 
 export function UpdateSettings(arg1) {
   return window['go']['app']['App']['UpdateSettings'](arg1);
+}
+
+export function UpdateViewStore(arg1) {
+  return window['go']['app']['App']['UpdateViewStore'](arg1);
+}
+
+export function Views() {
+  return window['go']['app']['App']['Views']();
 }

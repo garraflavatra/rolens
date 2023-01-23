@@ -1,5 +1,5 @@
 <script>
-  import { FindItems, Hosts, RemoveItemById, UpdateHost } from '../../../../wailsjs/go/app/App';
+  import { FindItems, RemoveItemById } from '../../../../wailsjs/go/app/App';
   import CodeExample from '../../../components/code-example.svelte';
   import { input } from '../../../actions';
   import ObjectGrid from '../../../components/objectgrid.svelte';
@@ -8,7 +8,7 @@
   import FindViewConfigModal from './find-viewconfig.svelte';
   import { onMount } from 'svelte';
   import Grid from '../../../components/grid.svelte';
-  import { applicationSettings } from '../../../stores';
+  import { applicationSettings, views } from '../../../stores';
 
   export let collection;
 
@@ -21,46 +21,18 @@
   };
 
   let form = { ...defaults };
-  let view = 'list';
+  let activeViewKey = 'list';
   let result = {};
   let submittedForm = {};
   let queryField;
   let activePath = [];
   let objectViewerData;
   let viewConfigModalOpen = false;
-  let viewConfig = {};
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
   $: lastPage = (submittedForm.limit && result?.results?.length) ? Math.max(0, Math.ceil((result.total - submittedForm.limit) / submittedForm.limit)) : 0;
   $: activePage = (submittedForm.limit && submittedForm.skip && result?.results?.length) ? submittedForm.skip / submittedForm.limit : 0;
 
   $: collection && refresh();
-  $: updateConfig(viewConfig);
-
-  async function getViewConfig() {
-    try {
-      const hosts = await Hosts();
-      viewConfig = hosts?.[collection.hostKey]?.databases?.[collection.dbKey]?.collections?.[collection.key]?.viewConfig || {};
-      console.log(hosts, viewConfig);
-    }
-    catch (e) {
-      console.error(e);
-    }
-  }
-
-  async function updateConfig(viewConfig) {
-    try {
-      const hosts = await Hosts();
-      hosts[collection.hostKey].databases = hosts[collection.hostKey].databases || {};
-      hosts[collection.hostKey].databases[collection.dbKey] = hosts[collection.hostKey].databases[collection.dbKey] || {};
-      hosts[collection.hostKey].databases[collection.dbKey].collections = hosts[collection.hostKey].databases[collection.dbKey].collections || {};
-      hosts[collection.hostKey].databases[collection.dbKey].collections[collection.key] = hosts[collection.hostKey].databases[collection.dbKey].collections[collection.key] || {};
-      hosts[collection.hostKey].databases[collection.dbKey].collections[collection.key].viewConfig = viewConfig;
-      await UpdateHost(collection.hostKey, JSON.stringify(hosts[collection.hostKey]));
-    }
-    catch (e) {
-      console.error(e);
-    }
-  }
 
   async function submitQuery() {
     activePath = [];
@@ -72,7 +44,6 @@
   }
 
   async function refresh() {
-    await getViewConfig();
     if ($applicationSettings.autosubmitQuery) {
       await submitQuery();
     }
@@ -119,10 +90,6 @@
   function openJson(itemId) {
     const item = result?.results?.find(i => i._id == itemId);
     objectViewerData = item;
-  }
-
-  function toggleView() {
-    view = view === 'table' ? 'list' : 'table';
   }
 
   export function performQuery(q) {
@@ -172,19 +139,19 @@
   <div class="result">
     <div class="grid">
       {#key result}
-        {#if view === 'table'}
+        {#if activeViewKey === 'table'}
           <Grid
             key="_id"
-            columns={viewConfig.columns?.map(c => ({ key: c.key, title: c.key })) || []}
+            columns={$views[activeViewKey]?.columns?.map(c => ({ key: c.key, title: c.key })) || []}
             showHeaders={true}
             items={result.results || []}
             bind:activePath
             on:trigger={e => openJson(e.detail?.itemKey)}
           />
-        {:else if view === 'list'}
+        {:else if activeViewKey === 'list'}
           <ObjectGrid
             data={result.results}
-            hideObjectIndicators={viewConfig?.hideObjectIndicators}
+            hideObjectIndicators={$views[activeViewKey]?.hideObjectIndicators}
             bind:activePath
             on:trigger={e => openJson(e.detail?.itemKey)}
           />
@@ -201,9 +168,6 @@
       <div>
         <button class="btn" on:click={() => viewConfigModalOpen = true} title="Configure view">
           <Icon name="cog" />
-        </button>
-        <button class="btn" on:click={toggleView} title="Toggle view">
-          <Icon name={view === 'table' ? 'list' : 'table'} />
         </button>
         <button class="btn danger" on:click={removeActive} disabled={!activePath?.length} title="Drop selected item">
           <Icon name="-" />
@@ -226,7 +190,12 @@
 </div>
 
 <ObjectViewer bind:data={objectViewerData} />
-<FindViewConfigModal bind:show={viewConfigModalOpen} activeView={view} bind:config={viewConfig} firstItem={result.results?.[0]} />
+<FindViewConfigModal
+  bind:show={viewConfigModalOpen}
+  bind:activeViewKey
+  firstItem={result.results?.[0]}
+  {collection}
+/>
 
 <datalist id="limits">
   {#each [ 1, 5, 10, 25, 50, 100, 200 ] as value}

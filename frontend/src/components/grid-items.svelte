@@ -40,14 +40,16 @@
   }
 
   function select(itemKey) {
-    activeKey = itemKey;
-    if (level === 0) {
-      activePath = [ itemKey ];
+    if (activeKey !== itemKey) {
+      activeKey = itemKey;
+      if (level === 0) {
+        activePath = [ itemKey ];
+      }
+      else {
+        activePath = [ ...path, itemKey ];
+      }
+      dispatch('select', { level, itemKey });
     }
-    else {
-      activePath = [ ...path, itemKey ];
-    }
-    dispatch('select', { level, itemKey });
   }
 
   function closeAll() {

@@ -1,8 +1,10 @@
 <script>
   import { createEventDispatcher } from 'svelte';
+  import Icon from './icon.svelte';
 
   export let tabs = [];
   export let selectedKey = {};
+  export let canAddTab = false;
 
   const dispatch = createEventDispatcher();
 
@@ -15,24 +17,52 @@
 <nav class="tabs">
   <ul>
     {#each tabs as tab (tab.key)}
-      <li class="tab" class:active={tab.key === selectedKey}>
-        <button on:click={() => select(tab.key)}>{tab.title}</button>
+      <li class:active={tab.key === selectedKey}>
+        <button class="tab" on:click={() => select(tab.key)}>{tab.title}</button>
+        {#if tab.closable}
+          <button class="close" on:click={() => dispatch('closeTab', tab.key)}>
+            <Icon name="x" />
+          </button>
+        {/if}
       </li>
     {/each}
+
+    {#if canAddTab}
+      <li class="tab add">
+        <button class="tab" on:click={() => dispatch('addTab')}>
+          <Icon name="+" />
+        </button>
+      </li>
+    {/if}
   </ul>
 </nav>
 
 <style>
-  .tabs ul {
+  ul {
     overflow-x: scroll;
     display: flex;
     list-style: none;
   }
-  .tabs li {
+  li {
     display: inline-block;
     flex-grow: 1;
+    position: relative;
   }
-  .tabs li button {
+
+  li.add {
+    flex: 0 1;
+  }
+
+  .tabs :global(svg) {
+    width: 13px;
+    height: 13px;
+    vertical-align: bottom;
+  }
+  li.active :global(svg) {
+    color: #fff;
+  }
+
+  button.tab {
     width: 100%;
     padding: 0.7rem 1rem;
     border: 1px solid #ccc;
@@ -40,13 +70,33 @@
     cursor: pointer;
     background-color: #fff;
   }
-  .tabs li:last-child button {
+  button.tab:hover {
+    background-color: #eee;
+  }
+  button.tab:active {
+    background-color: #ddd;
+  }
+  li:last-child button.tab {
     border-right: 1px solid #ccc;
   }
-  .tabs li.active button {
+  li.active button.tab {
     color: #fff;
     background-color: #00008b;
     border-color: #00008b;
     cursor: not-allowed;
+  }
+
+  button.close {
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    padding: 3px;
+    border-radius: 2px;
+  }
+  button.close:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  button.close:active {
+    background-color: rgba(0, 0, 0, 0.2);
   }
 </style>

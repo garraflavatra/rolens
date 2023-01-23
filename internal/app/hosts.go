@@ -12,19 +12,8 @@ import (
 )
 
 type Host struct {
-	Name      string `json:"name"`
-	URI       string `json:"uri"`
-	Databases map[string]struct {
-		Collections map[string]struct {
-			ViewConfig struct {
-				HideObjectIndicators bool `json:"hideObjectIndicators"`
-				Columns              []struct {
-					Key   string `json:"key"`
-					Width int64  `json:"width"`
-				} `json:"columns"`
-			} `json:"viewConfig"`
-		} `json:"collections"`
-	} `json:"databases"`
+	Name string `json:"name"`
+	URI  string `json:"uri"`
 }
 
 func updateHostsFile(newData map[string]Host) error {

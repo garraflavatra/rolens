@@ -75,18 +75,20 @@
   onMount(getHosts);
 </script>
 
-<HostTree
-  {hosts}
-  bind:activeHostKey
-  bind:activeCollKey
-  bind:activeDbKey
-  bind:this={hostTree}
-  on:newHost={createHost}
-  on:newDatabase={() => newDb = {}}
-  on:newCollection={() => newColl = {}}
-  on:editHost={e => editHost(e.detail)}
-  on:editCollection={e => openEditCollModal(e.detail)}
-/>
+<div class="tree">
+  <HostTree
+    {hosts}
+    bind:activeHostKey
+    bind:activeCollKey
+    bind:activeDbKey
+    bind:this={hostTree}
+    on:newHost={createHost}
+    on:newDatabase={() => newDb = {}}
+    on:newCollection={() => newColl = {}}
+    on:editHost={e => editHost(e.detail)}
+    on:renameCollection={e => openEditCollModal(e.detail)}
+  />
+</div>
 
 <CollectionDetail
   collection={$connections[activeHostKey]?.databases[activeDbKey]?.collections?.[activeCollKey]}
@@ -154,6 +156,11 @@
   .modal-actions {
     display: flex;
     justify-content: space-between;
+  }
+
+  .tree {
+    padding: 0.5rem;
+    background-color: #fff;
   }
 
   .rename {

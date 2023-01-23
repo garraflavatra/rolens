@@ -1,10 +1,10 @@
 <script>
   import GridItems from './grid-items.svelte';
-  import Icon from './icon.svelte';
+  // import Icon from './icon.svelte';
 
   export let columns = [];
   export let items = [];
-  export let actions = [];
+  // export let actions = [];
   export let key = 'id';
   export let activePath = [];
   export let striped = true;
@@ -13,7 +13,7 @@
 </script>
 
 <div class="grid">
-  {#if actions?.length}
+  <!-- {#if actions?.length}
     <div class="actions">
       {#each actions as action}
         <button class="btn" on:click={action.fn} disabled={action.disabled}>
@@ -22,7 +22,7 @@
         </button>
       {/each}
     </div>
-  {/if}
+  {/if} -->
 
   <table>
     {#if showHeaders && columns.some(col => col.title)}
@@ -59,14 +59,14 @@
     background-color: #fff;
   }
 
-  .actions {
+  /* .actions {
     margin-bottom: 0.5rem;
     padding: 0.5rem;
     border-bottom: 1px solid #ccc;
   }
   .actions button {
     margin-right: 0.2rem;
-  }
+  } */
 
   table {
     border-collapse: collapse;

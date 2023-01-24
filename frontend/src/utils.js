@@ -48,3 +48,16 @@ export function randomString(length = 12) {
 
   return output;
 }
+
+export function isBsonBuiltin(value) {
+  return (
+    (typeof value === 'object') &&
+    (value !== null) &&
+    (typeof value._bsontype === 'string') &&
+    (typeof value.inspect === 'function')
+  );
+}
+
+export function isDate(value) {
+  return (value instanceof Date) && !isNaN(value.getTime());
+}

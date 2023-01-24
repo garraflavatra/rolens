@@ -9,6 +9,7 @@
   import { onMount } from 'svelte';
   import Grid from '../../../components/grid.svelte';
   import { applicationSettings, views } from '../../../stores';
+  import { EJSON } from 'bson';
 
   export let collection;
 
@@ -36,8 +37,10 @@
 
   async function submitQuery() {
     activePath = [];
-    result = await FindItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
-    if (result) {
+    const newResult = await FindItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
+    if (newResult) {
+      newResult.results = newResult.results?.map(s => EJSON.parse(s, { relaxed: false }));
+      result = newResult;
       submittedForm = JSON.parse(JSON.stringify(form));
     }
     resetFocus();

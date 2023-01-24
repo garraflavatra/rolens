@@ -1,4 +1,5 @@
 <script>
+  import { isBsonBuiltin, isDate } from '../utils';
   import Grid from './grid.svelte';
 
   export let data = [];
@@ -16,12 +17,13 @@
   let items = [];
 
   $: if (data) {
+    // items = dissectObject(data).map(item => ({ ...item, menu: getRootMenu(item.key, item) }));
     items = [];
 
     if (Array.isArray(data)) {
       for (const item of data) {
         const newItem = {};
-        newItem.key = item[key];
+        newItem.key = stringifyValue(item[key]);
         newItem.type = getType(item[key]);
         newItem.children = dissectObject(item);
         newItem.menu = getRootMenu(key, item[key]);
@@ -34,7 +36,13 @@
   }
 
   function getType(value) {
-    if (Array.isArray(value)) {
+    if (isBsonBuiltin(value)) {
+      return value._bsontype;
+    }
+    else if (isDate(value)) {
+      return 'Date';
+    }
+    else if (Array.isArray(value)) {
       return `array (${value.length} item${value.length === 1 ? '' : 's'})`;
     }
     else if (typeof value === 'number') {
@@ -43,9 +51,6 @@
       }
       return 'integer';
     }
-    // else if (new Date(value).toString() !== 'Invalid Date') {
-    //   return 'date';
-    // }
     else if (value === null) {
       return 'null';
     }
@@ -58,12 +63,40 @@
     }
   }
 
+  function stringifyValue(value) {
+    if (isBsonBuiltin(value)) {
+      value = value.inspect?.();
+      if (value.startsWith('new ')) {
+        value = value.slice(4);
+      }
+
+      if (value.startsWith('Int32(')) {
+        value = value.slice(6, -1);
+      }
+      else if (value.startsWith('Double(')) {
+        value = value.slice(7, -1);
+      }
+      else if (value.startsWith('Binary(Buffer.from(')) {
+        value = `BinData(${JSON.stringify(value.sub_type || 0)}, ${value.slice(18, -1)}`;
+      }
+    }
+    else if (isDate(value)) {
+      value = value.toString();
+    }
+    return value;
+  }
+
   function dissectObject(object) {
     const entries = [ ...Array.isArray(object) ? object.entries() : Object.entries(object) ];
     return entries.map(([ key, value ]) => {
-      key = key + '';
       const type = getType(value);
-      const child = { key, value, type, menu: value?.menu };
+      key = key + '';
+      const child = {
+        key,
+        type,
+        value: stringifyValue(value),
+        menu: value?.menu,
+      };
 
       if (type.startsWith('object') || type.startsWith('array')) {
         child.children = dissectObject(value);

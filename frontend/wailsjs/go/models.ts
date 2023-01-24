@@ -18,7 +18,7 @@ export namespace app {
 	}
 	export class findResult {
 	    total: number;
-	    results: any;
+	    results: string[];
 	
 	    static createFrom(source: any = {}) {
 	        return new findResult(source);

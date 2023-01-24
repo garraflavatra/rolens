@@ -11,8 +11,8 @@ import (
 )
 
 type findResult struct {
-	Total   int64       `json:"total"`
-	Results interface{} `json:"results"`
+	Total   int64    `json:"total"`
+	Results []string `json:"results"`
 }
 
 func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findResult {
@@ -123,7 +123,23 @@ func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findRes
 		return out
 	}
 
-	out.Results = results
+	out.Results = make([]string, 0)
 	out.Total = total
+	for _, r := range results {
+		marshalled, err := bson.MarshalExtJSON(r, true, true)
+		if err != nil {
+			fmt.Println(err.Error())
+			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+				Type:    runtime.ErrorDialog,
+				Title:   "Failed to marshal BSON",
+				Message: err.Error(),
+			})
+			return out
+		}
+		out.Results = append(out.Results, string(marshalled))
+	}
+
+	fmt.Println(out.Results)
+
 	return out
 }

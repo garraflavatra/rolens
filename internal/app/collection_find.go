@@ -47,7 +47,7 @@ func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findRes
 	var projection bson.M
 	var sort bson.M
 
-	err = json.Unmarshal([]byte(form.Query), &query)
+	err = bson.UnmarshalExtJSON([]byte(form.Query), true, &query)
 	if err != nil {
 		fmt.Println(err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{

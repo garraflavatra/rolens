@@ -43,7 +43,7 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 	var query bson.M
 	update := bson.M{}
 
-	err = json.Unmarshal([]byte(form.Query), &query)
+	err = bson.UnmarshalExtJSON([]byte(form.Query), true, &query)
 	if err != nil {
 		fmt.Println(err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{

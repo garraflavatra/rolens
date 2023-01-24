@@ -1,7 +1,6 @@
 package app
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -27,7 +26,7 @@ func (a *App) RemoveItems(hostKey, dbKey, collKey, jsonData string, many bool) i
 			return 0
 		}
 	} else {
-		err = json.Unmarshal([]byte(jsonData), &filter)
+		err = bson.UnmarshalExtJSON([]byte(jsonData), true, &filter)
 		if err != nil {
 			fmt.Println(err.Error())
 			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{

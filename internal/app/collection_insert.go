@@ -1,11 +1,11 @@
 package app
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func (a *App) InsertItems(hostKey, dbKey, collKey, jsonData string) interface{} {
@@ -16,7 +16,7 @@ func (a *App) InsertItems(hostKey, dbKey, collKey, jsonData string) interface{} 
 		jsonData = "[" + jsonData + "]"
 	}
 
-	err := json.Unmarshal([]byte(jsonData), &data)
+	err := bson.UnmarshalExtJSON([]byte(jsonData), true, &data)
 	if err != nil {
 		fmt.Println(err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{

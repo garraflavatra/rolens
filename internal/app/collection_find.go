@@ -139,7 +139,5 @@ func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findRes
 		out.Results = append(out.Results, string(marshalled))
 	}
 
-	fmt.Println(out.Results)
-
 	return out
 }

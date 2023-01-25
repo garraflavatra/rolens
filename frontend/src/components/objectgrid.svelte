@@ -77,7 +77,7 @@
         value = value.slice(7, -1);
       }
       else if (value.startsWith('Binary(Buffer.from(')) {
-        value = `BinData(${JSON.stringify(value.sub_type || 0)}, ${value.slice(18, -1)}`;
+        value = `BinData(${JSON.stringify(value.sub_type || 0)}, ${value.slice(19, -1)}`;
       }
     }
     else if (isDate(value)) {

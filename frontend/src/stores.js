@@ -1,6 +1,5 @@
 import { writable } from 'svelte/store';
-import { Environment } from '../wailsjs/runtime/runtime';
-import { Settings, UpdateSettings, UpdateViewStore, Views } from '../wailsjs/go/app/App';
+import { Environment, Settings, UpdateSettings, UpdateViewStore, Views } from '../wailsjs/go/app/App';
 
 export const busy = (() => {
   const { update, subscribe } = writable(0);
@@ -57,6 +56,7 @@ export const environment = (() => {
   const reload = async() => {
     const newEnv = await Environment();
     set(newEnv);
+    console.log(newEnv);
     return newEnv;
   };
 

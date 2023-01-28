@@ -9,6 +9,8 @@
   import HostDetail from './hostdetail.svelte';
   import Icon from '../../components/icon.svelte';
   import { EventsOn } from '../../../wailsjs/runtime/runtime';
+  import ExportInfo from './export/exportinfo.svelte';
+  import DumpInfo from './export/dumpinfo.svelte';
 
   export let hosts = {};
   export let activeHostKey = '';
@@ -24,6 +26,9 @@
 
   let collToRename = '';
   let newCollKey = '';
+
+  let exportInfo;
+  let dumpInfo;
 
   async function getHosts() {
     hosts = await Hosts();
@@ -54,7 +59,6 @@
 
   async function renameCollection() {
     busy.start();
-    console.log(newCollKey);
     const ok = await RenameCollection(activeHostKey, activeDbKey, collToRename, newCollKey);
     if (ok) {
       activeCollKey = newCollKey;
@@ -71,6 +75,22 @@
     newColl = undefined;
     await hostTree.reload();
     busy.end();
+  }
+
+  function exportCollection(collKey) {
+    exportInfo = {
+      hostKey: activeHostKey,
+      dbKey: activeDbKey,
+      collKeys: [ collKey ],
+    };
+  }
+
+  function dumpCollection(collKey) {
+    dumpInfo = {
+      hostKey: activeHostKey,
+      dbKey: activeDbKey,
+      collKeys: [ collKey ],
+    };
   }
 
   EventsOn('CreateHost', createHost);
@@ -91,6 +111,8 @@
     on:newCollection={() => newColl = {}}
     on:editHost={e => editHost(e.detail)}
     on:renameCollection={e => openEditCollModal(e.detail)}
+    on:exportCollection={e => exportCollection(e.detail)}
+    on:dumpCollection={e => dumpCollection(e.detail)}
   />
 </div>
 
@@ -107,6 +129,9 @@
   hostKey={activeHostKey}
   {hosts}
 />
+
+<ExportInfo bind:info={exportInfo} {hosts} />
+<DumpInfo bind:info={dumpInfo} {hosts} />
 
 {#if newDb}
   <Modal bind:show={newDb}>

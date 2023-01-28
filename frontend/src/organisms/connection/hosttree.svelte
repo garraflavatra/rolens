@@ -101,6 +101,9 @@
         name: collKey,
         icon: 'list',
         menu: [
+          { label: 'Export collection (JSON/CSV, mongoexport)…', fn: () => dispatch('exportCollection', collKey) },
+          { label: 'Dump collection (BSON, mongodump)…', fn: () => dispatch('dumpCollection', collKey) },
+          { separator: true },
           { label: 'Rename collection…', fn: () => dispatch('renameCollection', collKey) },
           { label: 'Truncate collection…', fn: () => truncateCollection(dbKey, collKey) },
           { label: 'Drop collection…', fn: () => dropCollection(dbKey, collKey) },

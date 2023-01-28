@@ -13,6 +13,7 @@
   export let level = 0;
   export let striped = true;
   export let hideObjectIndicators = false;
+  export let hideChildrenToggles = false;
 
   const dispatch = createEventDispatcher();
   let childrenOpen = {};
@@ -105,17 +106,19 @@
     class:selected={!activePath[level + 1] && activePath.every(k => path.includes(k) || k === item[key]) && (activePath[level] === item[key])}
     class:striped
   >
-    <td class="has-toggle">
-      {#if item.children?.length}
-        <button
-          class="toggle"
-          on:click={evt => toggleChildren(item[key], evt.shiftKey)}
-          style:transform="translateX({level * 10}px)"
-        >
-          <Icon name={childrenOpen[item[key]] ? 'chev-d' : 'chev-r'} />
-        </button>
-      {/if}
-    </td>
+    {#if !hideChildrenToggles}
+      <td class="has-toggle">
+        {#if item.children?.length}
+          <button
+            class="toggle"
+            on:click={evt => toggleChildren(item[key], evt.shiftKey)}
+            style:transform="translateX({level * 10}px)"
+          >
+            <Icon name={childrenOpen[item[key]] ? 'chev-d' : 'chev-r'} />
+          </button>
+        {/if}
+      </td>
+    {/if}
 
     <td class="has-icon">
       <div style:margin-left="{level * 10}px">

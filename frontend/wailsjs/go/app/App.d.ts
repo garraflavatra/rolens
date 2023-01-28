@@ -15,6 +15,8 @@ export function DropDatabase(arg1:string,arg2:string):Promise<boolean>;
 
 export function DropIndex(arg1:string,arg2:string,arg3:string,arg4:string):Promise<boolean>;
 
+export function Environment():Promise<app.EnvironmentInfo>;
+
 export function FindItems(arg1:string,arg2:string,arg3:string,arg4:string):Promise<app.findResult>;
 
 export function GetIndexes(arg1:string,arg2:string,arg3:string):Promise<Array<primitive.M>>;

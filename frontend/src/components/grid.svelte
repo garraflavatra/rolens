@@ -8,8 +8,9 @@
   export let key = 'id';
   export let activePath = [];
   export let striped = true;
-  export let hideObjectIndicators = false;
   export let showHeaders = false;
+  export let hideObjectIndicators = false;
+  export let hideChildrenToggles = false;
 </script>
 
 <div class="grid">
@@ -28,8 +29,12 @@
     {#if showHeaders && columns.some(col => col.title)}
       <thead>
         <tr>
-          <th class="has-toggle"></th>
+          {#if !hideChildrenToggles}
+            <th class="has-toggle"></th>
+          {/if}
+
           <th class="has-icon"></th>
+
           {#each columns as column}
             <th scope="col">{column.title || ''}</th>
           {/each}
@@ -44,6 +49,7 @@
         {key}
         {striped}
         {hideObjectIndicators}
+        {hideChildrenToggles}
         bind:activePath
         on:select
         on:trigger

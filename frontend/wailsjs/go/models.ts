@@ -1,5 +1,25 @@
 export namespace app {
 	
+	export class EnvironmentInfo {
+	    arch: string;
+	    buildType: string;
+	    platform: string;
+	    hasMongoExport: boolean;
+	    hasMongoDump: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new EnvironmentInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.arch = source["arch"];
+	        this.buildType = source["buildType"];
+	        this.platform = source["platform"];
+	        this.hasMongoExport = source["hasMongoExport"];
+	        this.hasMongoDump = source["hasMongoDump"];
+	    }
+	}
 	export class Settings {
 	    defaultLimit: number;
 	    defaultSort: string;

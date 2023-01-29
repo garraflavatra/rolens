@@ -48,7 +48,6 @@
     busy.start();
     $connections[activeHostKey].databases[newDb.name] = { collections: {} };
     newDb = undefined;
-    await hostTree.reload();
     busy.end();
   }
 
@@ -73,7 +72,6 @@
     busy.start();
     $connections[activeHostKey].databases[activeDbKey].collections[newColl.name] = {};
     newColl = undefined;
-    await hostTree.reload();
     busy.end();
   }
 

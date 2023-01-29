@@ -115,6 +115,7 @@
         { label: 'Drop database…', fn: () => dropDatabase(dbKey) },
         { separator: true },
         { label: 'New database…', fn: () => dispatch('newDatabase') },
+        { label: 'New collection…', fn: () => dispatch('newCollection') },
       ],
     })),
     menu: [

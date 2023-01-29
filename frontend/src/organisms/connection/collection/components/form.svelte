@@ -8,7 +8,7 @@
   export let valid = false;
 
   const validity = {};
-  $: valid = Object.values(validity).every(v => !!v);
+  $: valid = Object.values(validity).every(v => v !== false);
 
   const iconMap = {
     string: 'text',
@@ -49,7 +49,7 @@
       </div>
       <div class="input">
         <FormInput {column} bind:value={keypathProxy[column.key]} bind:valid={validity[column.key]} />
-        <button type="button" class="btn" title="Reset value" on:click={() => reset(column.key)} disabled={!keypathProxy[column.key]}>
+        <button type="button" class="btn" title="Reset value" on:click={() => reset(column.key)} disabled={keypathProxy[column.key] === undefined}>
           <Icon name="reload" />
         </button>
       </div>
@@ -89,6 +89,7 @@
     font-size: 10px;
     padding: 3px 5px;
     font-weight: 600;
+    line-height: 1;
   }
   .tag.invalid {
     background-color: rgba(255, 80, 80, 0.3);

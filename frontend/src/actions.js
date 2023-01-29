@@ -42,7 +42,7 @@ export function input(node, { autofocus, type, onValid, onInvalid, mandatory } =
         return checkInteger() || checkNumberBoundaries(uint64);
 
       case 'string':
-        if (mandatory && (node.value == '')) {
+        if (mandatory && (!node.value)) {
           return 'This field cannot empty';
         }
         return false;

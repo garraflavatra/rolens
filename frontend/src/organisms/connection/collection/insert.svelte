@@ -19,15 +19,14 @@
   $: viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
   $: oppositeViewType = viewType === 'table' ? 'form' : 'table';
 
+  $: if (collection.viewKey !== 'list') {
+    json = JSON.stringify(newItems, undefined, 2);
+  }
+
   async function insert() {
-    if (collection.viewKey === 'list') {
-      insertedIds = await InsertItems(collection.hostKey, collection.dbKey, collection.key, json);
-    }
-    else {
-      insertedIds = await InsertItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(newItems));
-      if (insertedIds) {
-        newItems = [];
-      }
+    insertedIds = await InsertItems(collection.hostKey, collection.dbKey, collection.key, json);
+    if ((collection.viewKey === 'list') && insertedIds) {
+      newItems = [];
     }
   }
 

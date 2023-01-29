@@ -35,7 +35,7 @@
       database: collection.dbKey,
       collection: collection.key,
       type: 'table',
-      columns: [ { key: '_id', showInTable: true, inputType: 'string' } ],
+      columns: [ { key: '_id', showInTable: true, inputType: 'objectid', mandatory: true } ],
     };
     activeViewKey = newViewKey;
   }

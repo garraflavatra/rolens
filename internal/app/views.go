@@ -11,15 +11,30 @@ import (
 )
 
 type ViewType string
+type InputType string
 
 const (
 	TableView ViewType = "table"
 	ListView  ViewType = "list"
+
+	NoInput       InputType = "none"
+	StringInput   InputType = "string"
+	ObjectIdInput InputType = "objectid"
+	IntegerInput  InputType = "int"
+	LongInput     InputType = "long"
+	Uint64Input   InputType = "uint64"
+	DoubleInput   InputType = "double"
+	DecimalInput  InputType = "decimal"
+	BoolInput     InputType = "bool"
+	DateInput     InputType = "date"
 )
 
 type ViewColumn struct {
-	Key   string `json:"key"`
-	Width int64  `json:"width"`
+	Key         string    `json:"key"`
+	Width       int64     `json:"width"`
+	ShowInTable bool      `json:"showInTable"`
+	Mandatory   bool      `json:"mandatory"`
+	InputType   InputType `json:"inputType"`
 }
 
 type View struct {
@@ -81,48 +96,6 @@ func (a *App) Views() (ViewStore, error) {
 	views["list"] = BuiltInListView
 	return views, nil
 }
-
-// func (a *App) AddView(jsonData string) error {
-// 	views, err := a.Views()
-// 	if err != nil {
-// 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-// 			Type:  runtime.InfoDialog,
-// 			Title: "Could not retrieve views",
-// 		})
-// 		return errors.New("could not retrieve existing view store")
-// 	}
-
-// 	var newView View
-// 	err = json.Unmarshal([]byte(jsonData), &newView)
-// 	if err != nil {
-// 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-// 			Type:  runtime.InfoDialog,
-// 			Title: "Malformed JSON",
-// 		})
-// 		return errors.New("invalid JSON")
-// 	}
-
-// 	id, err := uuid.NewRandom()
-// 	if err != nil {
-// 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-// 			Type:  runtime.InfoDialog,
-// 			Title: "Failed to generate a UUID",
-// 		})
-// 		return errors.New("could not generate a UUID")
-// 	}
-
-// 	views[id.String()] = newView
-// 	err = updateViewStore(views)
-// 	if err != nil {
-// 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-// 			Type:  runtime.InfoDialog,
-// 			Title: "Could not update view store",
-// 		})
-// 		return errors.New("could not update view store")
-// 	}
-
-// 	return nil
-// }
 
 func (a *App) UpdateViewStore(jsonData string) error {
 	var viewStore ViewStore

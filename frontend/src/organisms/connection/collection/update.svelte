@@ -124,14 +124,14 @@
 
   <label class="field">
     <span class="label">Filter</span>
-    <input type="text" class="code" bind:value={form.query} use:input={{ json: true, autofocus: true }} placeholder={'{}'} />
+    <input type="text" class="code" bind:value={form.query} use:input={{ type: 'json', autofocus: true }} placeholder={'{}'} />
   </label>
 
   <fieldset class="parameters">
     {#each form.parameters as param, index}
       <fieldset class="parameter">
         <label class="field">
-          <select bind:value={param.type}>
+          <select bind:value={param.type} class="type">
             {#each Object.entries(atomicUpdateOperators) as [groupName, options]}
               <optgroup label={groupName}>
                 {#each Object.entries(options) as [key, label]}
@@ -142,18 +142,17 @@
               </optgroup>
             {/each}
           </select>
+          <input type="text" class="code" bind:value={param.value} placeholder={'{}'} use:input={{ type: 'json' }} />
         </label>
 
         <label class="field">
-          <input type="text" class="code" bind:value={param.value} placeholder={'{}'} use:input={{ json: true }} />
+          <button class="btn" disabled={form.parameters.length >= allOperators.length} on:click={() => addParameter()} type="button">
+            <Icon name="+" />
+          </button>
+          <button class="btn" disabled={form.parameters.length < 2} on:click={() => removeParam(index)} type="button">
+            <Icon name="-" />
+          </button>
         </label>
-
-        <button class="btn" disabled={form.parameters.length >= allOperators.length} on:click={() => addParameter()} type="button">
-          <Icon name="+" />
-        </button>
-        <button class="btn" disabled={form.parameters.length < 2} on:click={() => removeParam(index)} type="button">
-          <Icon name="-" />
-        </button>
       </fieldset>
     {/each}
   </fieldset>
@@ -182,7 +181,11 @@
   }
   .parameter {
     display: grid;
-    grid-template: 1fr / auto 1fr auto auto;
+    grid-template: 1fr / 1fr auto;
     gap: 0.5rem;
+  }
+
+  select.type {
+    max-width: 150px;
   }
 </style>

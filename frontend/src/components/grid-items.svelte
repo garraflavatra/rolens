@@ -111,7 +111,7 @@
         {#if item.children?.length}
           <button
             class="toggle"
-            on:click={evt => toggleChildren(item[key], evt.shiftKey)}
+            on:click|stopPropagation={evt => toggleChildren(item[key], evt.shiftKey)}
             style:transform="translateX({level * 10}px)"
           >
             <Icon name={childrenOpen[item[key]] ? 'chev-d' : 'chev-r'} />

@@ -1,18 +1,18 @@
 <script>
-  import { FindItems, RemoveItemById } from '../../../../wailsjs/go/app/App';
-  import CodeExample from '../../../components/code-example.svelte';
-  import { input } from '../../../actions';
-  import ObjectGrid from '../../../components/objectgrid.svelte';
-  import Icon from '../../../components/icon.svelte';
-  import ObjectViewer from '../../../components/objectviewer.svelte';
-  import FindViewConfigModal from './find-viewconfig.svelte';
-  import { onMount } from 'svelte';
-  import Grid from '../../../components/grid.svelte';
-  import { applicationSettings, views } from '../../../stores';
   import { EJSON } from 'bson';
+  import { createEventDispatcher, onMount } from 'svelte';
+  import { FindItems, RemoveItemById } from '../../../../wailsjs/go/app/App';
+  import { input } from '../../../actions';
+  import CodeExample from '../../../components/code-example.svelte';
+  import Grid from '../../../components/grid.svelte';
+  import Icon from '../../../components/icon.svelte';
+  import ObjectGrid from '../../../components/objectgrid.svelte';
+  import ObjectViewer from '../../../components/objectviewer.svelte';
+  import { applicationSettings, views } from '../../../stores';
 
   export let collection;
 
+  const dispatch = createEventDispatcher();
   const defaults = {
     query: '{}',
     sort: $applicationSettings.defaultSort || '{ "_id": 1 }',
@@ -22,18 +22,15 @@
   };
 
   let form = { ...defaults };
-  let activeViewKey = 'list';
   let result = {};
   let submittedForm = {};
   let queryField;
   let activePath = [];
   let objectViewerData;
-  let viewConfigModalOpen = false;
+  $: viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
   $: lastPage = (submittedForm.limit && result?.results?.length) ? Math.max(0, Math.ceil((result.total - submittedForm.limit) / submittedForm.limit)) : 0;
   $: activePage = (submittedForm.limit && submittedForm.skip && result?.results?.length) ? submittedForm.skip / submittedForm.limit : 0;
-
-  $: collection && refresh();
 
   async function submitQuery() {
     activePath = [];
@@ -100,6 +97,7 @@
     submitQuery();
   }
 
+  $: collection && refresh();
   onMount(refresh);
 </script>
 
@@ -108,19 +106,19 @@
     <div class="form-row one">
       <label class="field">
         <span class="label">Query or id</span>
-        <input type="text" class="code" bind:this={queryField} bind:value={form.query} use:input={{ json: true, autofocus: true }} placeholder={defaults.query} />
+        <input type="text" class="code" bind:this={queryField} bind:value={form.query} use:input={{ type: 'json', autofocus: true }} placeholder={defaults.query} />
       </label>
 
       <label class="field">
         <span class="label">Sort</span>
-        <input type="text" class="code" bind:value={form.sort} use:input={{ json: true }} placeholder={defaults.sort} />
+        <input type="text" class="code" bind:value={form.sort} use:input={{ type: 'json' }} placeholder={defaults.sort} />
       </label>
     </div>
 
     <div class="form-row two">
       <label class="field">
         <span class="label">Fields</span>
-        <input type="text" class="code" bind:value={form.fields} use:input={{ json: true }} placeholder={defaults.fields} />
+        <input type="text" class="code" bind:value={form.fields} use:input={{ type: 'json' }} placeholder={defaults.fields} />
       </label>
 
       <label class="field">
@@ -142,19 +140,19 @@
   <div class="result">
     <div class="grid">
       {#key result}
-        {#if activeViewKey === 'table'}
-          <Grid
-            key="_id"
-            columns={$views[activeViewKey]?.columns?.map(c => ({ key: c.key, title: c.key })) || []}
-            showHeaders={true}
-            items={result.results || []}
+        {#if collection.viewKey === 'list'}
+          <ObjectGrid
+            data={result.results}
+            hideObjectIndicators={$views[collection.viewKey]?.hideObjectIndicators}
             bind:activePath
             on:trigger={e => openJson(e.detail?.itemKey)}
           />
-        {:else if activeViewKey === 'list'}
-          <ObjectGrid
-            data={result.results}
-            hideObjectIndicators={$views[activeViewKey]?.hideObjectIndicators}
+        {:else}
+          <Grid
+            key="_id"
+            columns={$views[collection.viewKey]?.columns?.map(c => ({ key: c.key, title: c.key })) || []}
+            showHeaders={true}
+            items={result.results ? result.results.map(r => EJSON.deserialize(r)) : []}
             bind:activePath
             on:trigger={e => openJson(e.detail?.itemKey)}
           />
@@ -169,9 +167,16 @@
         {/key}
       </div>
       <div>
-        <button class="btn" on:click={() => viewConfigModalOpen = true} title="Configure view">
-          <Icon name="cog" />
-        </button>
+        <label class="field inline">
+          <select bind:value={collection.viewKey}>
+            {#each Object.entries(viewsForCollection) as [key, view]}
+              <option value={key}>{view.name}</option>
+            {/each}
+          </select>
+          <button class="btn" on:click={() => dispatch('openViewConfig', { firstItem: result.results?.[0] })} title="Configure view">
+            <Icon name="cog" />
+          </button>
+        </label>
         <button class="btn danger" on:click={removeActive} disabled={!activePath?.length} title="Drop selected item">
           <Icon name="-" />
         </button>
@@ -193,12 +198,6 @@
 </div>
 
 <ObjectViewer bind:data={objectViewerData} />
-<FindViewConfigModal
-  bind:show={viewConfigModalOpen}
-  bind:activeViewKey
-  firstItem={result.results?.[0]}
-  {collection}
-/>
 
 <datalist id="limits">
   {#each [ 1, 5, 10, 25, 50, 100, 200 ] as value}

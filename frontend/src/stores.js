@@ -43,8 +43,14 @@ export const applicationSettings = (() => {
     return newSettings;
   };
 
+  let skipUpdate = true;
+
   reload();
   subscribe(newSettings => {
+    if (skipUpdate) {
+      skipUpdate = false;
+      return;
+    }
     UpdateSettings(JSON.stringify(newSettings || {}));
   });
 
@@ -56,7 +62,6 @@ export const environment = (() => {
   const reload = async() => {
     const newEnv = await Environment();
     set(newEnv);
-    console.log(newEnv);
     return newEnv;
   };
 
@@ -66,16 +71,38 @@ export const environment = (() => {
 
 export const views = (() => {
   const { set, subscribe } = writable({});
+
   const reload = async() => {
     const newViewStore = await Views();
     set(newViewStore);
     return newViewStore;
   };
 
+  const forCollection = (hostKey, dbKey, collKey) => {
+    let allViews;
+    subscribe(v => allViews = v)();
+
+    const entries = Object.entries(allViews).filter(v => (
+      v[0] === 'list' || (
+        v[1].host === hostKey &&
+        v[1].database === dbKey &&
+        v[1].collection === collKey
+      )
+    ));
+
+    return Object.fromEntries(entries);
+  };
+
+  let skipUpdate = true;
+
   reload();
   subscribe(newViewStore => {
+    if (skipUpdate) {
+      skipUpdate = false;
+      return;
+    }
     UpdateViewStore(JSON.stringify(newViewStore));
   });
 
-  return { reload, set, subscribe };
+  return { reload, set, subscribe, forCollection };
 })();

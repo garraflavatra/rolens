@@ -51,64 +51,6 @@ select:disabled {
   color: #444;
 }
 
-.field {
-  display: flex;
-  white-space: nowrap;
-  align-items: stretch;
-}
-.field > * {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-right: none;
-  display: inline-block;
-  margin: 0;
-  background-color: #fff;
-}
-.field .label {
-  background-color: #eee;
-  display: flex;
-  align-items: center;
-}
-.field > :first-child {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-}
-.field > :last-child {
-  border-right: 1px solid #ccc;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-.field > input,
-.field > textarea,
-.field > select {
-  flex: 1;
-}
-.field > input:focus,
-.field > textarea:focus,
-.field > select:focus {
-  outline: none;
-  border-color: #00008b;
-  box-shadow: 0 0 0 3px rgba(0, 0, 139, 0.2);
-}
-.field > input.invalid,
-.field > textarea.invalid,
-.field > select.invalid {
-  background-color: rgba(255, 80, 80, 0.3);
-  border-color: rgb(255, 80, 80);
-}
-.field > span.checkbox {
-  text-align: center;
-  min-width: 75px;
-}
-.field > select {
-  appearance: none;
-  padding: 0.5rem 2rem 0.5rem 0.5rem;
-  background: #fff;
-  background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.5rem center;
-}
-
 .btn {
   background-color: #00008b;
   border: 1px solid #00008b;
@@ -141,6 +83,78 @@ select:disabled {
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.field {
+  display: flex;
+  white-space: nowrap;
+  align-items: stretch;
+}
+.field > * {
+  display: inline-block;
+  margin: 0;
+  border-radius: 0;
+}
+.field .label,
+.field span.checkbox {
+  background-color: #eee;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  justify-content: center;
+}
+.field > input,
+.field > textarea,
+.field > select {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+.field > input:focus,
+.field > textarea:focus,
+.field > select:focus {
+  outline: none;
+  border-color: #00008b;
+  box-shadow: 0 0 0 3px rgba(0, 0, 139, 0.2);
+}
+.field > input.invalid,
+.field > textarea.invalid,
+.field > select.invalid {
+  background-color: rgba(255, 80, 80, 0.3);
+  border-color: rgb(255, 80, 80);
+}
+.field.inline {
+  display: inline-flex;
+}
+.field.inline > input,
+.field.inline > textarea,
+.field.inline > select {
+  max-width: 150px;
+}
+.field > span.checkbox {
+  min-width: 75px;
+  background-color: #fff;
+}
+.field > select {
+  appearance: none;
+  padding: 0.5rem 2rem 0.5rem 0.5rem;
+  background: #fff;
+  background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+}
+.field > :first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.field > *:not(:last-child) {
+  border-right: none;
+}
+.field > :last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 code,

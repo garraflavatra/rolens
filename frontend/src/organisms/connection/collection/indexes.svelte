@@ -3,7 +3,7 @@
   import ObjectGrid from '../../../components/objectgrid.svelte';
   import { DropIndex, GetIndexes } from '../../../../wailsjs/go/app/App';
   import Icon from '../../../components/icon.svelte';
-  import IndexDetail from './indexes-detail.svelte';
+  import IndexDetail from './components/indexdetail.svelte';
 
   export let collection;
 

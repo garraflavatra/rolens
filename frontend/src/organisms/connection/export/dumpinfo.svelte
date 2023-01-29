@@ -7,8 +7,6 @@
   export let info;
   export let hosts = {};
 
-  $: console.log(info);
-
   async function selectHost(hostKey) {
     info.hostKey = hostKey;
     info.dbKey = undefined;

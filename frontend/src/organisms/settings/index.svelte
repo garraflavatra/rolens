@@ -16,7 +16,7 @@
 
     <label for="defaultSort">Default sort query</label>
     <label class="field">
-      <input type="text" class="code" bind:value={$settings.defaultSort} id="defaultSort" use:input={{ json: true }} />
+      <input type="text" class="code" bind:value={$settings.defaultSort} id="defaultSort" use:input={{ type: 'json' }} />
     </label>
 
     <label for="autosubmitQuery">Autosubmit query</label>

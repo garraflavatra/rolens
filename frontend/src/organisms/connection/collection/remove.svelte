@@ -34,7 +34,7 @@
       placeholder={'{}'}
       class="code"
       bind:value={json}
-      use:input={{ json: true, autofocus: true }}
+      use:input={{ type: 'json', autofocus: true }}
     ></textarea>
   </label>
 

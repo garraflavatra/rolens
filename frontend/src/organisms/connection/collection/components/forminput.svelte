@@ -1,13 +1,11 @@
 <script>
   import { isDate } from '../../../../utils';
-  import { createEventDispatcher } from 'svelte';
   import { input } from '../../../../actions';
 
   export let column = {};
   export let value = undefined;
   export let valid = true;
 
-  const dispatch = createEventDispatcher();
   const onValid = () => valid = true;
   const onInvalid = () => valid = false;
   const numericTypes = [ 'int', 'long', 'uint64', 'double', 'decimal' ];
@@ -15,7 +13,6 @@
   let timeInput;
   $: type = column.inputType;
   $: mandatory = column.mandatory;
-  $: dispatch('input', value);
 
   $: if (value === undefined) {
     dateInput && (dateInput.value = undefined);

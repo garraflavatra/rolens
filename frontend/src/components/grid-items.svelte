@@ -26,7 +26,7 @@
   let _items = [];
 
   $: refresh(hideObjectIndicators, items);
-  $: inputsValid = Object.values(validity).every(v => !!v);
+  $: inputsValid = Object.values(validity).every(v => v !== false);
 
   function refresh(hideObjectIndicators, items) {
     _items = objectToArray(items).map(item => {

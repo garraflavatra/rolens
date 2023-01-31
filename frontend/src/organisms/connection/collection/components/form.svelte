@@ -23,16 +23,18 @@
   };
 
   const keypathProxy = new Proxy(item, {
-    get: (item, key) => resolveKeypath(item, key),
+    get: resolveKeypath,
     set: (item, key, value) => {
       setValue(item, key, value);
-      return true;
+      // eslint-disable-next-line no-self-assign
+      value = value;
+      return item;
     },
   });
 </script>
 
 {#if item && view}
-  {#each view?.columns?.filter(c => inputTypes.includes(c.inputType)) || [] as column}
+  {#each view?.columns?.filter(c => inputTypes.includes(c.inputType)) || [] as column, index}
     <!-- svelte-ignore a11y-label-has-associated-control because FormInput contains one -->
     <label class="column">
       <div class="label">
@@ -45,7 +47,7 @@
         </span>
       </div>
       <div class="input">
-        <FormInput {column} bind:value={keypathProxy[column.key]} bind:valid={validity[column.key]} />
+        <FormInput {column} bind:value={keypathProxy[column.key]} bind:valid={validity[column.key]} autofocus={index === 0} />
       </div>
     </label>
   {/each}

@@ -1,18 +1,21 @@
 <script>
-  import { numericInputTypes } from '../utils';
+  import { canBeObjectId, numericInputTypes } from '../utils';
   import { input } from '../actions';
   import Icon from './icon.svelte';
   import { ObjectId } from 'bson';
   import Datepicker from './datepicker.svelte';
+  import { onMount } from 'svelte';
 
   export let column = {};
   export let value = undefined;
   export let valid = true;
+  export let autofocus = false;
 
   const onValid = () => valid = true;
   const onInvalid = () => valid = false;
   let objectIdInput;
   let showDatepicker;
+  let selectInput;
   $: type = column.inputType;
   $: mandatory = column.mandatory;
 
@@ -28,7 +31,7 @@
   }
 
   function setObjectId(event) {
-    if (valid) {
+    if (canBeObjectId(valid)) {
       value = new ObjectId(event.currentTarget?.value);
     }
   }
@@ -56,23 +59,29 @@
       valid = true;
     }
   }
+
+  onMount(() => {
+    if (autofocus && selectInput) {
+      selectInput.focus();
+    }
+  });
 </script>
 
 <div class="forminput {type}">
   <div class="field">
     {#if type === 'string'}
-      <input type="text" bind:value use:input={{ type, onValid, onInvalid, mandatory }} />
+      <input type="text" bind:value use:input={{ type, onValid, onInvalid, mandatory, autofocus }} />
     {:else if type === 'objectid'}
       <input
         type="text"
         bind:this={objectIdInput}
         on:input={setObjectId}
-        use:input={{ type, onValid, onInvalid, mandatory }}
+        use:input={{ type, onValid, onInvalid, mandatory, autofocus }}
       />
     {:else if numericInputTypes.includes(type)}
-      <input type="number" bind:value use:input={{ type, onValid, onInvalid, mandatory }} />
+      <input type="number" bind:value use:input={{ type, onValid, onInvalid, mandatory, autofocus }} />
     {:else if type === 'bool'}
-      <select bind:value on:change={selectChange}>
+      <select bind:value on:change={selectChange} bind:this={selectInput}>
         <option value={undefined} disabled={mandatory}>Unset</option>
         <option value={true}>Yes / true</option>
         <option value={false}>No / false</option>
@@ -120,17 +129,13 @@
   }
 
   .actions {
-    display: none;
+    display: flex;
     position: absolute;
     right: 5px;
-    top: 6px;
+    top: 5px;
     background-color: #fff;
   }
   .actions button:last-child {
     border-radius: 2px 6px 6px 2px;
-  }
-
-  .forminput:hover .actions {
-    display: flex;
   }
 </style>

@@ -2,7 +2,7 @@ import { ObjectId } from 'bson';
 import { get } from 'svelte/store';
 import { environment } from './stores';
 
-// Calculate the min and max values of signed integers with n bits
+// Calculate the min and max values of (un)signed integers with n bits
 export const intMin = bits => Math.pow(2, bits - 1) * -1;
 export const intMax = bits => Math.pow(2, bits - 1) - 1;
 export const uintMax = bits => Math.pow(2, bits) - 1;
@@ -64,6 +64,7 @@ export function setValue(object, path, value) {
     }
     return part;
   });
+
   let result = object;
   while (parts.length) {
     const part = parts.shift();
@@ -78,6 +79,7 @@ export function setValue(object, path, value) {
     }
     result = result[part];
   }
+
   return object;
 }
 

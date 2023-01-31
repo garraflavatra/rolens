@@ -8,21 +8,33 @@
   import ObjectViewer from '../../../components/objectviewer.svelte';
   import Grid from '../../../components/grid.svelte';
   import { inputTypes, randomString } from '../../../utils';
+  import { EJSON } from 'bson';
+  import Details from '../../../components/details.svelte';
 
   export let collection;
 
   const dispatch = createEventDispatcher();
+  const formValidity = {};
   let json = '';
   let newItems = [];
   let insertedIds;
   let objectViewerData = '';
   let viewType = 'form';
-  let formValid = false;
+  let allValid = false;
   $: viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
   $: oppositeViewType = viewType === 'table' ? 'form' : 'table';
+  $: allValid = Object.values(formValidity).every(v => v !== false);
 
-  $: if (collection.viewKey !== 'list') {
-    json = JSON.stringify(newItems, undefined, 2);
+  $: {
+    if (collection.viewKey === 'list') {
+      try {
+        newItems = EJSON.parse(json, { relaxed: false });
+      }
+      catch { /* ok */ }
+    }
+    else {
+      json = EJSON.stringify(newItems, undefined, 2, { relaxed: false });
+    }
   }
 
   async function insert() {
@@ -56,47 +68,69 @@
   function addRow() {
     newItems = [ ...newItems, {} ];
   }
+
+  function deleteRow(index) {
+    newItems.splice(index, 1);
+    newItems = newItems;
+  }
 </script>
 
 <form on:submit|preventDefault={insert}>
-  {#if collection.viewKey === 'list'}
-    <label class="field">
-      <textarea
-        cols="30"
-        rows="10"
-        placeholder="[]"
-        class="code"
-        bind:value={json}
-        use:input={{ type: 'json', autofocus: true }}
-      ></textarea>
-    </label>
-  {:else if viewType === 'form'}
-    <div class="form">
-      <Form bind:item={newItems[0]} bind:valid={formValid} view={$views[collection.viewKey]} />
-    </div>
-  {:else if viewType === 'table'}
-    <div class="table">
-      <Grid
-        key="id"
-        items={newItems}
-        columns={
-          $views[collection.viewKey]?.columns
-            ?.filter(c => inputTypes.includes(c.inputType))
-            .map(c => ({ ...c, id: randomString(8), title: c.key })) || []
-        }
-        showHeaders={true}
-        canAddRows={true}
-        canSelect={false}
-        canRemoveItems={true}
-        hideChildrenToggles={true}
-        on:addRow={addRow}
-        bind:inputsValid={formValid}
-      />
-    </div>
-  {/if}
+  <div class="items">
+    {#if collection.viewKey === 'list'}
+      <label class="field">
+        <textarea
+          cols="30"
+          rows="10"
+          placeholder="[]"
+          class="code"
+          bind:value={json}
+          use:input={{ type: 'json', autofocus: true }}
+        ></textarea>
+      </label>
+    {:else if viewType === 'form'}
+      <div class="form">
+        {#each newItems as item, index}
+          <Details
+            title="Item #{index + 1} {(item._id !== undefined) ? `(${item._id})` : ''}"
+            initiallyOpen={index === 0}
+            deletable={true}
+            on:delete={() => deleteRow(index)}
+          >
+            <fieldset>
+              <Form bind:item={newItems[index]} bind:valid={formValidity[index]} view={$views[collection.viewKey]} />
+            </fieldset>
+          </Details>
+        {/each}
+      </div>
+    {:else if viewType === 'table'}
+      <div class="table">
+        <Grid
+          key="id"
+          items={newItems}
+          columns={
+            $views[collection.viewKey]?.columns
+              ?.filter(c => inputTypes.includes(c.inputType))
+              .map(c => ({ ...c, id: randomString(8), title: c.key })) || []
+          }
+          showHeaders={true}
+          canSelect={false}
+          canRemoveItems={true}
+          hideChildrenToggles={true}
+          on:addRow={addRow}
+          bind:inputsValid={allValid}
+        />
+      </div>
+    {/if}
+  </div>
 
   <div class="flex">
     <div>
+      {#if collection.viewKey !== 'list'}
+        <button class="btn" type="button" on:click={addRow}>
+          <Icon name="+" /> Add item
+        </button>
+      {/if}
       {#if insertedIds}
         <span class="flash-green">Success! {insertedIds.length} document{insertedIds.length > 1 ? 's' : ''} inserted</span>
       {/if}
@@ -123,7 +157,7 @@
           <Icon name="cog" />
         </button>
       </label>
-      <button type="submit" class="btn" disabled={$views[collection.viewKey]?.type === 'list' ? !json : !formValid}>
+      <button type="submit" class="btn" disabled={$views[collection.viewKey]?.type === 'list' ? !json : !allValid}>
         <Icon name="+" /> Insert
       </button>
     </div>
@@ -135,11 +169,14 @@
 <style>
   form {
     display: grid;
-    grid-template-rows: 1fr auto;
+    grid-template: 1fr auto / 1fr;
     gap: 0.5rem;
   }
 
-  .table {
+  .items {
+    overflow: auto;
+  }
+  .items .table {
     background-color: #fff;
     border: 1px solid #ccc;
   }

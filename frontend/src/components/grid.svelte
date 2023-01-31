@@ -1,7 +1,5 @@
 <script>
-  import { createEventDispatcher } from 'svelte';
   import GridItems from './grid-items.svelte';
-  import Icon from './icon.svelte';
 
   export let columns = [];
   export let items = [];
@@ -11,17 +9,10 @@
   export let showHeaders = false;
   export let hideObjectIndicators = false;
   export let hideChildrenToggles = false;
-  export let canAddRows = false;
   export let canSelect = true;
   export let canRemoveItems = false;
   export let inputsValid = false;
   // export let actions = [];
-
-  const dispatch = createEventDispatcher();
-
-  function addRow() {
-    dispatch('addRow');
-  }
 </script>
 
 <div class="grid">
@@ -73,14 +64,6 @@
         on:trigger
       />
     </tbody>
-
-    {#if canAddRows}
-      <tfoot>
-        <button class="btn-sm" type="button" on:click={addRow}>
-          <Icon name="+" />
-        </button>
-      </tfoot>
-    {/if}
   </table>
 </div>
 

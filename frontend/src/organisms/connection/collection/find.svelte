@@ -7,7 +7,7 @@
   import Grid from '../../../components/grid.svelte';
   import Icon from '../../../components/icon.svelte';
   import ObjectGrid from '../../../components/objectgrid.svelte';
-  import ObjectViewer from '../../../components/objectviewer.svelte';
+  // import ObjectViewer from '../../../components/objectviewer.svelte';
   import { applicationSettings, views } from '../../../stores';
 
   export let collection;
@@ -197,7 +197,7 @@
   </div>
 </div>
 
-<ObjectViewer bind:data={objectViewerData} />
+<!-- <ObjectViewer bind:data={objectViewerData} /> -->
 
 <datalist id="limits">
   {#each [ 1, 5, 10, 25, 50, 100, 200 ] as value}

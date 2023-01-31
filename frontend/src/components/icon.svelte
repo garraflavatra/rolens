@@ -73,5 +73,11 @@
     <path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>
   {:else if name === 'target'}
     <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+  {:else if name === 'trash'}
+    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/>
+  {:else if name === 'anchor'}
+    <circle cx="12" cy="5" r="3"/><path d="M12 22V8M5 12H2a10 10 0 0 0 20 0h-3"/>
+  {:else if name === 'o'}
+    <circle cx="12" cy="12" r="10"/>
   {/if}
 </svg>

@@ -1,3 +1,4 @@
+import { ObjectId } from 'bson';
 import { get } from 'svelte/store';
 import { environment } from './stores';
 
@@ -10,6 +11,18 @@ export const uintMax = bits => Math.pow(2, bits) - 1;
 export const int32 = [ intMin(32), intMax(32) ];
 export const int64 = [ intMin(64), intMax(64) ];
 export const uint64 = [ 0, uintMax(64) ];
+
+// Input types
+export const numericInputTypes = [ 'int', 'long', 'uint64', 'double', 'decimal' ];
+export const inputTypes = [ 'string', 'objectid', 'bool', 'date', ...numericInputTypes ];
+
+// Months
+export const months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
+export const monthsAbbr = months.map(m => m.slice(0, 3));
+
+// Days
+export const days = [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ];
+export const daysAbbr = days.map(d => d.slice(0, 3));
 
 // Get a value from an object with a JSON path, from Webdesq core
 export function resolveKeypath(object, path) {
@@ -112,6 +125,12 @@ export function isBsonBuiltin(value) {
   );
 }
 
-export function isDate(value) {
-  return (value instanceof Date) && !isNaN(value.getTime());
+export function canBeObjectId(value) {
+  try {
+    new ObjectId(value);
+    return true;
+  }
+  catch {
+    return false;
+  }
 }

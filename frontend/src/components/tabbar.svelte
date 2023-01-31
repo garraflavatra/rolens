@@ -20,7 +20,7 @@
       <li class:active={tab.key === selectedKey}>
         <button class="tab" on:click={() => select(tab.key)}>{tab.title}</button>
         {#if tab.closable}
-          <button class="close" on:click={() => dispatch('closeTab', tab.key)}>
+          <button class="btn-sm" on:click={() => dispatch('closeTab', tab.key)}>
             <Icon name="x" />
           </button>
         {/if}
@@ -86,17 +86,9 @@
     cursor: not-allowed;
   }
 
-  button.close {
+  .btn-sm {
     position: absolute;
     right: 7px;
     top: 7px;
-    padding: 3px;
-    border-radius: 2px;
-  }
-  button.close:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-  button.close:active {
-    background-color: rgba(0, 0, 0, 0.2);
   }
 </style>

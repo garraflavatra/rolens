@@ -47,6 +47,11 @@
   .objectviewer {
     position: relative;
   }
+
+  .objectviewer .code :global(span.root) {
+    display: block;
+  }
+
   .buttons {
     position: absolute;
     top: 0;

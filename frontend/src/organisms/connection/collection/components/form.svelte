@@ -1,7 +1,7 @@
 <script>
-  import { resolveKeypath, setValue } from '../../../../utils';
+  import { inputTypes, resolveKeypath, setValue } from '../../../../utils';
   import Icon from '../../../../components/icon.svelte';
-  import FormInput from './forminput.svelte';
+  import FormInput from '../../../../components/forminput.svelte';
 
   export let item = {};
   export let view = {};
@@ -12,6 +12,7 @@
 
   const iconMap = {
     string: 'text',
+    objectid: 'anchor',
     int: 'hash',
     long: 'hash',
     uint64: 'hash',
@@ -28,14 +29,10 @@
       return true;
     },
   });
-
-  function reset(columnKey) {
-    keypathProxy[columnKey] = undefined;
-  }
 </script>
 
 {#if item && view}
-  {#each view?.columns?.filter(c => c.inputType !== 'none') || [] as column}
+  {#each view?.columns?.filter(c => inputTypes.includes(c.inputType)) || [] as column}
     <!-- svelte-ignore a11y-label-has-associated-control because FormInput contains one -->
     <label class="column">
       <div class="label">
@@ -49,9 +46,6 @@
       </div>
       <div class="input">
         <FormInput {column} bind:value={keypathProxy[column.key]} bind:valid={validity[column.key]} />
-        <button type="button" class="btn" title="Reset value" on:click={() => reset(column.key)} disabled={keypathProxy[column.key] === undefined}>
-          <Icon name="reload" />
-        </button>
       </div>
     </label>
   {/each}
@@ -73,12 +67,6 @@
   .column .label :global(svg) {
     width: 13px;
     height: 13px;
-  }
-
-  .input {
-    display: grid;
-    grid-template: 1fr / 1fr auto;
-    gap: 0.5rem;
   }
 
   .tag {

@@ -1,16 +1,27 @@
 <script>
+  import { createEventDispatcher } from 'svelte';
   import GridItems from './grid-items.svelte';
-  // import Icon from './icon.svelte';
+  import Icon from './icon.svelte';
 
   export let columns = [];
   export let items = [];
-  // export let actions = [];
   export let key = 'id';
   export let activePath = [];
   export let striped = true;
   export let showHeaders = false;
   export let hideObjectIndicators = false;
   export let hideChildrenToggles = false;
+  export let canAddRows = false;
+  export let canSelect = true;
+  export let canRemoveItems = false;
+  export let inputsValid = false;
+  // export let actions = [];
+
+  const dispatch = createEventDispatcher();
+
+  function addRow() {
+    dispatch('addRow');
+  }
 </script>
 
 <div class="grid">
@@ -38,6 +49,10 @@
           {#each columns as column}
             <th scope="col">{column.title || ''}</th>
           {/each}
+
+          {#if canRemoveItems}
+            <th class="has-button"></th>
+          {/if}
         </tr>
       </thead>
     {/if}
@@ -48,13 +63,24 @@
         {columns}
         {key}
         {striped}
+        {canSelect}
+        {canRemoveItems}
         {hideObjectIndicators}
         {hideChildrenToggles}
         bind:activePath
+        bind:inputsValid
         on:select
         on:trigger
       />
     </tbody>
+
+    {#if canAddRows}
+      <tfoot>
+        <button class="btn-sm" type="button" on:click={addRow}>
+          <Icon name="+" />
+        </button>
+      </tfoot>
+    {/if}
   </table>
 </div>
 
@@ -86,8 +112,10 @@
   th {
     font-weight: 600;
     text-align: left;
-  }
-  th {
     padding: 2px;
   }
+
+  /* tfoot button {
+    margin-top: 0.5rem;
+  } */
 </style>

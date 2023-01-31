@@ -8,41 +8,42 @@
   export let kp = '';
 
   const collapsedSymbol = '...';
-  const getType = i => {
-    if (i === null) {
-      return 'null';
-    }
-    return typeof i;
-  };
-
   let displayOnly = true;
   let items;
   let isArray;
   let openBracket;
   let closeBracket;
-  $: {
-    items = getType(data) === 'object' ? Object.keys(data) : [];
-    isArray = Array.isArray(data);
-    openBracket = isArray ? '[' : '{';
-    closeBracket = isArray ? ']' : '}';
+  let collapsed;
+  let invalid = false;
+  let textarea;
+  $: items = getType(data) === 'object' ? Object.keys(data) : [];
+  $: isArray = Array.isArray(data);
+  $: openBracket = isArray ? '[' : '{';
+  $: closeBracket = isArray ? ']' : '}';
+  $: collapsed = depth < level;
+  $: textarea && resizeTextarea();
+
+  function getType(value) {
+    if (value === null) {
+      return 'null';
+    }
+    return typeof value;
   }
 
-  let collapsed;
-  $: collapsed = depth < level;
-
-  const format = i => {
-    switch (getType(i)) {
+  function format(value) {
+    switch (getType(value)) {
       case 'string':
-        return `${i}`;
+        return `${value}`;
       case 'function':
         return 'f () {...}';
       case 'symbol':
-        return i.toString();
+        return value.toString();
       default:
-        return i;
+        return value;
     }
-  };
-  const clicked = e => {
+  }
+
+  function onClick(e) {
     if (e.shiftKey) {
       if (depth == 0) {
         depth = 999;
@@ -52,26 +53,9 @@
       }
     }
     collapsed = !collapsed;
-  };
-
-  let invalid = false;
-  let dbg;
-
-  function json2data() {
-    try {
-      data = JSON.parse(dbg.value);
-      invalid = false;
-    }
-    catch {
-      invalid = true;
-      if (dbg.value.trim == '') {
-        data = {};
-      }
-    }
   }
 
-  function dragstart(e, keypath, value) {
-    console.log('kp:', keypath);
+  function onDragstart(e, keypath, value) {
     const item = {};
     item[keypath] = value;
     e.dataTransfer.setData('text/plain', JSON.stringify(item));
@@ -83,22 +67,41 @@
       event.stopPropagation();
     }
   }
+
+  function onInput() {
+    resizeTextarea();
+    try {
+      data = JSON.parse(textarea.value);
+      invalid = false;
+    }
+    catch {
+      invalid = true;
+      if (textarea.value.trim == '') {
+        data = {};
+      }
+    }
+  }
+
+  function resizeTextarea() {
+    textarea.style.overflowY = 'hidden';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
 </script>
 
 {#if displayOnly}
   {#if items.length}
     <span class:root={level == 0} class:hidden={collapsed}>
       {#if draggable && isArray}
-        <span on:dragstart={e => dragstart(e, kp, data)} draggable="true" class="bracket" on:click={clicked} tabindex="0">{openBracket}</span>
+        <span on:dragstart={e => onDragstart(e, kp, data)} draggable="true" class="bracket" on:click={onClick} tabindex="0">{openBracket}</span>
       {:else}
-        <span class="bracket" on:click={clicked} tabindex="0">{openBracket}</span>
+        <span class="bracket" on:click={onClick} tabindex="0">{openBracket}</span>
       {/if}
       <ul on:dblclick={() => (readonly ? displayOnly = true : displayOnly = false)} >
         {#each items as i, idx}
           <li>
             {#if !isArray}
               {#if draggable}
-                <span on:dragstart={e => dragstart(e, kp ? kp + '.' + i : i, data[i])} draggable="true" class="key">{i}:</span>
+                <span on:dragstart={e => onDragstart(e, kp ? kp + '.' + i : i, data[i])} draggable="true" class="key">{i}:</span>
               {:else}
                 <span class="key">{i}:</span>
               {/if}
@@ -107,7 +110,7 @@
               <svelte:self {readonly} {draggable} kp={kp ? kp + '.' + i : i} data={data[i]} {depth} level={level + 1} last={idx === items.length - 1} />
             {:else}
               {#if draggable}
-                <span on:dragstart={e => dragstart(e, kp ? kp + '.' + i : i, data[i])} draggable="true" class="val {getType(data[i])}">{format(data[i])}</span>{#if idx < items.length - 1}<span draggable class="comma">,</span>{/if}
+                <span on:dragstart={e => onDragstart(e, kp ? kp + '.' + i : i, data[i])} draggable="true" class="val {getType(data[i])}">{format(data[i])}</span>{#if idx < items.length - 1}<span draggable class="comma">,</span>{/if}
               {:else}
                 <span class="val {getType(data[i])}">{format(data[i])}</span>{#if idx < items.length - 1}<span class="comma">,</span>{/if}
               {/if}
@@ -115,16 +118,14 @@
           </li>
         {/each}
       </ul>
-      <span class="bracket" on:click={clicked} tabindex="0">{closeBracket}</span>{#if !last}<span
-          class="comma">,</span>
-    {/if}
+      <span class="bracket" on:click={onClick} tabindex="0">{closeBracket}</span>{#if !last}<span class="comma">,</span>{/if}
     </span>
-    <span style="padding: {level == 0 ? 10 : 0}px;" class="bracket" class:hidden={!collapsed} on:click={clicked} tabindex="0">{openBracket}{collapsedSymbol}{closeBracket}</span>{#if !last && collapsed}<span class="comma">,</span>{/if}
+    <span style="padding: {level == 0 ? 10 : 0}px;" class="bracket" class:hidden={!collapsed} on:click={onClick} tabindex="0">{openBracket}{collapsedSymbol}{closeBracket}</span>{#if !last && collapsed}<span class="comma">,</span>{/if}
   {:else}
     {@html isArray ? '[]' : '{}'}
   {/if}
 {:else}
-  <textarea on:keydown="{onKeydown}" class="debug" spellcheck="false" bind:this={dbg} class:invalid on:input={json2data}>{JSON.stringify(data, null, 2)}</textarea>
+  <textarea on:keydown={onKeydown} spellcheck="false" bind:this={textarea} class:invalid on:input={onInput}>{JSON.stringify(data, null, 2)}</textarea>
 {/if}
 
 <style>
@@ -187,7 +188,7 @@
     cursor: move;
   }
 
-  textarea.debug {
+  textarea {
     font-family: menlo, monospace;
     padding: 10px;
     flex: 1 0;
@@ -195,12 +196,12 @@
     font-size: 90%;
     border: none;
     margin: 0;
+    width: 100%;
     height: 100%;
     outline: none;
     line-height: 1.5;
     resize: none;
   }
-
   textarea.invalid {
     background: #ffe3e3;
     color: #b30202 !important;

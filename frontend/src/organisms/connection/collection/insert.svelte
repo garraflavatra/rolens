@@ -6,6 +6,8 @@
   import Icon from '../../../components/icon.svelte';
   import Form from './components/form.svelte';
   import ObjectViewer from '../../../components/objectviewer.svelte';
+  import Grid from '../../../components/grid.svelte';
+  import { inputTypes, randomString } from '../../../utils';
 
   export let collection;
 
@@ -50,6 +52,10 @@
       objectViewerData = [ ...newItems ];
     }
   }
+
+  function addRow() {
+    newItems = [ ...newItems, {} ];
+  }
 </script>
 
 <form on:submit|preventDefault={insert}>
@@ -64,9 +70,28 @@
         use:input={{ type: 'json', autofocus: true }}
       ></textarea>
     </label>
-  {:else}
+  {:else if viewType === 'form'}
     <div class="form">
       <Form bind:item={newItems[0]} bind:valid={formValid} view={$views[collection.viewKey]} />
+    </div>
+  {:else if viewType === 'table'}
+    <div class="table">
+      <Grid
+        key="id"
+        items={newItems}
+        columns={
+          $views[collection.viewKey]?.columns
+            ?.filter(c => inputTypes.includes(c.inputType))
+            .map(c => ({ ...c, id: randomString(8), title: c.key })) || []
+        }
+        showHeaders={true}
+        canAddRows={true}
+        canSelect={false}
+        canRemoveItems={true}
+        hideChildrenToggles={true}
+        on:addRow={addRow}
+        bind:inputsValid={formValid}
+      />
     </div>
   {/if}
 
@@ -112,6 +137,11 @@
     display: grid;
     grid-template-rows: 1fr auto;
     gap: 0.5rem;
+  }
+
+  .table {
+    background-color: #fff;
+    border: 1px solid #ccc;
   }
 
   .flex {

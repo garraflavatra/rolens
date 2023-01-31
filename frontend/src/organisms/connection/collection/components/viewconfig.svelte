@@ -151,7 +151,7 @@
                   <option value="none">Hidden in form</option>
                   <optgroup label="Strings">
                     <option value="string">String</option>
-                    <option value="objectid">ObjectID</option>
+                    <option value="objectid">ObjectId</option>
                   </optgroup>
                   <optgroup label="Integers">
                     <option value="int">Integer (32-bit, signed)</option>

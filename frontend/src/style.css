@@ -85,6 +85,22 @@ select:disabled {
   cursor: not-allowed;
 }
 
+.btn-sm {
+  padding: 3px;
+  border-radius: 2px;
+}
+.btn-sm:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.btn-sm:active {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.btn-sm svg {
+  width: 13px;
+  height: 13px;
+  vertical-align: bottom;
+}
+
 .field {
   display: flex;
   white-space: nowrap;

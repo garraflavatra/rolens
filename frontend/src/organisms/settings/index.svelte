@@ -22,7 +22,7 @@
     <label for="autosubmitQuery">Autosubmit query</label>
     <span>
       <input type="checkbox" id="autosubmitQuery" bind:checked={$settings.autosubmitQuery} />
-      <label for="autosubmitQuery">Query items automatically when you open a collection</label>
+      <label for="autosubmitQuery">Query items automatically after opening a collection</label>
     </span>
   </div>
 </Modal>

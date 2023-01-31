@@ -1,4 +1,4 @@
-import { int32, int64, isInt, uint64 } from './utils';
+import { canBeObjectId, int32, int64, isInt, uint64 } from './utils';
 
 export function input(node, { autofocus, type, onValid, onInvalid, mandatory } = {
   autofocus: false,
@@ -46,6 +46,9 @@ export function input(node, { autofocus, type, onValid, onInvalid, mandatory } =
           return 'This field cannot empty';
         }
         return false;
+
+      case 'objectid':
+        return !canBeObjectId(node.value) && 'Invalid string representation of an ObjectId';
 
       case 'double':
       case 'decimal':

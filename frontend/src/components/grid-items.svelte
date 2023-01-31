@@ -2,7 +2,8 @@
   import { contextMenu } from '../stores';
   import { createEventDispatcher } from 'svelte';
   import Icon from './icon.svelte';
-  import { resolveKeypath } from '../utils';
+  import { resolveKeypath, setValue } from '../utils';
+  import FormInput from './forminput.svelte';
 
   export let items = [];
   export let columns = [];
@@ -14,18 +15,34 @@
   export let striped = true;
   export let hideObjectIndicators = false;
   export let hideChildrenToggles = false;
+  export let canSelect = true;
+  export let canRemoveItems = false;
+  export let inputsValid = false;
 
   const dispatch = createEventDispatcher();
+  const keypathProxies = {};
+  const validity = {};
   let childrenOpen = {};
   let _items = [];
 
   $: refresh(hideObjectIndicators, items);
+  $: inputsValid = Object.values(validity).every(v => !!v);
 
   function refresh(hideObjectIndicators, items) {
     _items = objectToArray(items).map(item => {
       item.children = objectToArray(item.children);
       return item;
     });
+
+    for (let index = 0; index < _items.length; index++) {
+      keypathProxies[index] = new Proxy(_items, {
+        get: (_items, key) => resolveKeypath(_items[index], key),
+        set: (_items, key, value) => {
+          setValue(_items[index], key, value);
+          return true;
+        },
+      });
+    }
   }
 
   function objectToArray(obj) {
@@ -41,6 +58,10 @@
   }
 
   function select(itemKey) {
+    if (!canSelect) {
+      return false;
+    }
+
     if (activeKey !== itemKey) {
       activeKey = itemKey;
       if (level === 0) {
@@ -75,6 +96,11 @@
     contextMenu.show(evt, item.menu);
   }
 
+  function removeItem(index) {
+    items.splice(index, 1);
+    items = items;
+  }
+
   function formatValue(value) {
     if (Array.isArray(value)) {
       return hideObjectIndicators ? '' : '[...]';
@@ -98,12 +124,13 @@
   }
 </script>
 
-{#each _items as item}
+{#each _items as item, index}
   <tr
     on:click={() => select(item[key])}
     on:dblclick={() => doubleClick(item[key])}
     on:contextmenu|preventDefault={evt => showContextMenu(evt, item)}
-    class:selected={!activePath[level + 1] && activePath.every(k => path.includes(k) || k === item[key]) && (activePath[level] === item[key])}
+    class:selectable={canSelect}
+    class:selected={canSelect && !activePath[level + 1] && activePath.every(k => path.includes(k) || k === item[key]) && (activePath[level] === item[key])}
     class:striped
   >
     {#if !hideChildrenToggles}
@@ -127,21 +154,35 @@
     </td>
 
     {#each columns as column, columnIndex}
-      {@const value = column.key?.includes('.') ? resolveKeypath(item, column.key) : item[column.key]}
-      <td class:right={column.right} title={value}>
-        <div class="value" style:margin-left="{level * 10}px">
-          {formatValue(value)}
-        </div>
+      <td class:right={column.right} title={keypathProxies[index][column.key]}>
+        {#if column.inputType}
+          <FormInput {column} bind:value={keypathProxies[index][column.key]} bind:valid={validity[columnIndex]} />
+        {:else}
+          <div class="value" style:margin-left="{level * 10}px">
+            {formatValue(keypathProxies[index][column.key])}
+          </div>
+        {/if}
       </td>
     {/each}
+
+    {#if canRemoveItems}
+      <td class="has-button">
+        <button class="btn-sm" type="button" on:click={() => removeItem(index)}>
+          <Icon name="x" />
+        </button>
+      </td>
+    {/if}
   </tr>
 
   {#if item.children && childrenOpen[item[key]]}
     <svelte:self
       {columns}
-      {hideObjectIndicators}
       {key}
       {striped}
+      {hideObjectIndicators}
+      {hideChildrenToggles}
+      {canSelect}
+      {canRemoveItems}
       path={[ ...path, item[key] ]}
       items={item.children}
       level={level + 1}
@@ -157,7 +198,10 @@
   tr.striped:nth-of-type(even) td {
     background-color: #eee;
   }
-  tr.selected td {
+  tr.selectable {
+    cursor: pointer;
+  }
+  tr.selectable.selected td {
     background-color: #00008b !important;
     color: #fff;
   }
@@ -165,7 +209,6 @@
   td {
     padding: 2px;
     text-overflow: ellipsis;
-    cursor: pointer;
   }
   td.has-toggle {
     width: 20px;

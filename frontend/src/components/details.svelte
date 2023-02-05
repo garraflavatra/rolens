@@ -37,6 +37,7 @@
     border-radius: 4px;
     padding: 0.5em 0.5em 0;
     margin-bottom: 0.5rem;
+    background-color: #fff;
   }
   details[open] {
     padding: 0.5em;

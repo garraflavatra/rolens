@@ -49,10 +49,10 @@
     height: 250px;
   }
 
-  .title {
+  /* .title {
     font-weight: 600;
     font-size: 1.5rem;
-  }
+  } */
 
   .btn {
     margin-top: 2rem;

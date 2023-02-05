@@ -11,6 +11,7 @@
   import { EventsOn } from '../../../wailsjs/runtime/runtime';
   import ExportInfo from './export/exportinfo.svelte';
   import DumpInfo from './export/dumpinfo.svelte';
+  import Hint from '../../components/hint.svelte';
 
   export let hosts = {};
   export let activeHostKey = '';
@@ -44,11 +45,9 @@
     showHostDetail = true;
   }
 
-  async function createDatabase() {
-    busy.start();
+  function createDatabase() {
     $connections[activeHostKey].databases[newDb.name] = { collections: {} };
     newDb = undefined;
-    busy.end();
   }
 
   function openEditCollModal(collKey) {
@@ -68,11 +67,9 @@
     busy.end();
   }
 
-  async function createCollection() {
-    busy.start();
+  function createCollection() {
     $connections[activeHostKey].databases[activeDbKey].collections[newColl.name] = {};
     newColl = undefined;
-    busy.end();
   }
 
   function exportCollection(collKey) {
@@ -134,7 +131,9 @@
 {#if newDb}
   <Modal bind:show={newDb}>
     <p><strong>Create a database</strong></p>
-    <p>Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.</p>
+    <Hint>
+      Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.
+    </Hint>
     <form on:submit|preventDefault={createDatabase}>
       <label class="field">
         <input type="text" spellcheck="false" bind:value={newDb.name} use:input={{ autofocus: true }} placeholder="New collection name" />
@@ -150,7 +149,9 @@
 {#if newColl}
   <Modal bind:show={newColl}>
     <p><strong>Create a collection</strong></p>
-    <p>Note: collections in MongoDB do not exist until they have at least one item. Your new collection will not persist on the server; fill it to have it created.</p>
+    <Hint>
+      Note: collections in MongoDB do not exist until they have at least one item. Your new collection will not persist on the server; fill it to have it created.
+    </Hint>
     <form on:submit|preventDefault={createCollection}>
       <label class="field">
         <input type="text" spellcheck="false" bind:value={newColl.name} use:input={{ autofocus: true }} placeholder="New collection name" />
@@ -168,11 +169,11 @@
     <form class="rename" on:submit|preventDefault={renameCollection}>
       <div>Renaming collection <strong>{collToRename}</strong></div>
       <Icon name="arr-d" />
-      <div class="inputs">
+      <label class="field">
+        <input type="text" bind:value={newCollKey} use:input={{ autofocus: true }} spellcheck="false" />
+      </label>
+      <div class="cancelorsave">
         <button class="btn secondary" type="button" on:click={() => collToRename = ''}>Cancel</button>
-        <label class="field">
-          <input type="text" bind:value={newCollKey} use:input={{ autofocus: true }} spellcheck="false" />
-        </label>
         <button class="btn" type="submit">Save</button>
       </div>
     </form>
@@ -197,16 +198,20 @@
     gap: 0.5rem;
     align-items: center;
   }
+  .rename .field {
+    width: 100%;
+  }
   .rename input {
     text-align: center;
+    width: 100%;
   }
   .rename strong {
     font-weight: 700;
   }
-  .rename .inputs {
-    display: grid;
+  .rename .cancelorsave {
+    display: flex;
     gap: 0.5rem;
-    grid-template: 1fr / auto 1fr auto;
+    justify-content: space-between;
     width: 100%;
   }
 </style>

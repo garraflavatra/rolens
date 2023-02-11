@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	"math"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -14,14 +13,14 @@ import (
 func (a *App) GetIndexes(hostKey, dbKey, collKey string) []bson.M {
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		fmt.Println(err.Error())
 		return nil
 	}
 	defer close()
 
 	cur, err := client.Database(dbKey).Collection(collKey).Indexes().List(ctx)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Encountered an error while creating index cursor:")
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Encountered an error while creating index cursor",
@@ -33,7 +32,8 @@ func (a *App) GetIndexes(hostKey, dbKey, collKey string) []bson.M {
 	var results []bson.M
 	err = cur.All(ctx, &results)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Encountered an error while executing index cursor:")
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Encountered an error while executing index cursor",
@@ -48,7 +48,6 @@ func (a *App) GetIndexes(hostKey, dbKey, collKey string) []bson.M {
 func (a *App) CreateIndex(hostKey, dbKey, collKey, jsonData string) string {
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		fmt.Println(err.Error())
 		return ""
 	}
 	defer close()
@@ -69,7 +68,8 @@ func (a *App) CreateIndex(hostKey, dbKey, collKey, jsonData string) string {
 
 	err = json.Unmarshal([]byte(jsonData), &form)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogError(a.ctx, "Could not parse index JSON:")
+		runtime.LogError(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Couldn't parse JSON",
@@ -102,7 +102,8 @@ func (a *App) CreateIndex(hostKey, dbKey, collKey, jsonData string) string {
 
 	name, err := client.Database(dbKey).Collection(collKey).Indexes().CreateOne(ctx, indexModel)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Encountered an error while creating index:")
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Error while creating index",
@@ -117,14 +118,14 @@ func (a *App) CreateIndex(hostKey, dbKey, collKey, jsonData string) string {
 func (a *App) DropIndex(hostKey, dbKey, collKey, indexName string) bool {
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		fmt.Println(err.Error())
 		return false
 	}
 	defer close()
 
 	_, err = client.Database(dbKey).Collection(collKey).Indexes().DropOne(ctx, indexName, &options.DropIndexesOptions{})
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogError(a.ctx, "Encountered an error while creating index drop cursor:")
+		runtime.LogError(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Encountered an error while creating index cursor",

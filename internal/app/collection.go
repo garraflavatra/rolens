@@ -10,14 +10,14 @@ import (
 func (a *App) OpenCollection(hostKey, dbKey, collKey string) (result bson.M) {
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		fmt.Println(err.Error())
 		return nil
 	}
 
 	command := bson.M{"collStats": collKey}
 	err = client.Database(dbKey).RunCommand(ctx, command).Decode(&result)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Could not retrieve collection stats for "+collKey)
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Could not retrieve collection stats for " + collKey,
@@ -33,7 +33,6 @@ func (a *App) OpenCollection(hostKey, dbKey, collKey string) (result bson.M) {
 func (a *App) RenameCollection(hostKey, dbKey, collKey, newCollKey string) bool {
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		fmt.Println(err.Error())
 		return false
 	}
 
@@ -44,7 +43,8 @@ func (a *App) RenameCollection(hostKey, dbKey, collKey, newCollKey string) bool 
 	}
 	err = client.Database("admin").RunCommand(ctx, command).Decode(&result)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Could not rename collection "+collKey)
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Could not rename " + collKey,
@@ -71,13 +71,13 @@ func (a *App) TruncateCollection(hostKey, dbKey, collKey string) bool {
 
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		fmt.Println(err.Error())
 		return false
 	}
 
 	_, err = client.Database(dbKey).Collection(collKey).DeleteMany(ctx, bson.D{})
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Could not truncate collection "+collKey)
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Could not truncate " + collKey,
@@ -104,13 +104,13 @@ func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
 
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		fmt.Println(err.Error())
 		return false
 	}
 
 	err = client.Database(dbKey).Collection(collKey).Drop(ctx)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Could not drop collection "+collKey)
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Could not drop " + collKey,

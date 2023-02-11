@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -28,7 +27,8 @@ func (a *App) RemoveItems(hostKey, dbKey, collKey, jsonData string, many bool) i
 	} else {
 		err = bson.UnmarshalExtJSON([]byte(jsonData), true, &filter)
 		if err != nil {
-			fmt.Println(err.Error())
+			runtime.LogError(a.ctx, "Could not parse remove query:")
+			runtime.LogError(a.ctx, err.Error())
 			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 				Type:    runtime.ErrorDialog,
 				Title:   "Couldn't parse JSON",
@@ -40,7 +40,6 @@ func (a *App) RemoveItems(hostKey, dbKey, collKey, jsonData string, many bool) i
 
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		fmt.Println(err.Error())
 		return 0
 	}
 
@@ -55,7 +54,8 @@ func (a *App) RemoveItems(hostKey, dbKey, collKey, jsonData string, many bool) i
 	}
 
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Encountered an error while performing remove:")
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Encountered an error while removing items",
@@ -70,7 +70,6 @@ func (a *App) RemoveItems(hostKey, dbKey, collKey, jsonData string, many bool) i
 func (a *App) RemoveItemById(hostKey, dbKey, collKey, itemId string) bool {
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		fmt.Println(err.Error())
 		return false
 	}
 
@@ -80,7 +79,8 @@ func (a *App) RemoveItemById(hostKey, dbKey, collKey, itemId string) bool {
 	err = client.Database(dbKey).Collection(collKey).FindOneAndDelete(ctx, filter).Err()
 
 	if err != nil && err != mongo.ErrNoDocuments {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Encountered an error while performing remove by id:")
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Encountered an error while removing item" + itemId,

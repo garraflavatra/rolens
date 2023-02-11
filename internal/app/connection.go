@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -24,6 +23,7 @@ func (a *App) connectToHost(hostKey string) (*mongo.Client, context.Context, fun
 
 	h := hosts[hostKey]
 	if len(h.URI) == 0 {
+		runtime.LogInfo(a.ctx, "Invalid URI (len == 0) for host "+hostKey)
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.InfoDialog,
 			Title:   "Invalid uri",
@@ -35,7 +35,8 @@ func (a *App) connectToHost(hostKey string) (*mongo.Client, context.Context, fun
 	client, err := mongo.NewClient(mongoOptions.Client().ApplyURI(h.URI))
 
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Could not connect to host "+hostKey)
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Could not connect to " + h.Name,
@@ -55,12 +56,12 @@ func (a *App) connectToHost(hostKey string) (*mongo.Client, context.Context, fun
 func (a *App) OpenConnection(hostKey string) (databases []string) {
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		fmt.Println(err.Error())
 		return nil
 	}
 	databases, err = client.ListDatabaseNames(ctx, bson.M{})
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Could not retrieve database names for host "+hostKey)
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Could not retrieve database list",

@@ -2,9 +2,11 @@ package main
 
 import (
 	"embed"
+	"path"
 
 	"github.com/garraflavatra/rolens/internal/app"
 	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
@@ -20,16 +22,22 @@ var (
 
 func main() {
 	app := app.NewApp()
-
 	err := wails.Run(&options.App{
-		Title:            "Rolens",
-		Width:            1000,
-		Height:           600,
-		MinWidth:         1000,
-		MinHeight:        600,
+		Title: "Rolens",
+
+		Width:     1000,
+		Height:    600,
+		MinWidth:  1000,
+		MinHeight: 600,
+
 		BackgroundColour: &options.RGBA{R: 0, G: 0, B: 139, A: 1},
-		OnStartup:        app.Startup,
 		Menu:             app.Menu(),
+
+		OnStartup:          app.Startup,
+		OnShutdown:         app.Shutdown,
+		Logger:             logger.NewFileLogger(path.Join(app.Env.LogDirectory, "rolens.log")),
+		LogLevel:           logger.TRACE,
+		LogLevelProduction: logger.INFO,
 
 		AssetServer: &assetserver.Options{
 			Assets: assets,

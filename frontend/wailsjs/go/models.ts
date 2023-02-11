@@ -8,6 +8,7 @@ export namespace app {
 	    hasMongoDump: boolean;
 	    homeDirectory: string;
 	    dataDirectory: string;
+	    logDirectory: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new EnvironmentInfo(source);
@@ -22,6 +23,7 @@ export namespace app {
 	        this.hasMongoDump = source["hasMongoDump"];
 	        this.homeDirectory = source["homeDirectory"];
 	        this.dataDirectory = source["dataDirectory"];
+	        this.logDirectory = source["logDirectory"];
 	    }
 	}
 	export class Settings {

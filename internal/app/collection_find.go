@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
@@ -27,7 +26,8 @@ func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findRes
 
 	err := json.Unmarshal([]byte(formJson), &form)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogError(a.ctx, "Could not parse find form:")
+		runtime.LogError(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Couldn't parse form",
@@ -38,7 +38,6 @@ func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findRes
 
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		fmt.Println(err.Error())
 		return out
 	}
 
@@ -49,7 +48,8 @@ func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findRes
 
 	err = bson.UnmarshalExtJSON([]byte(form.Query), true, &query)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogInfo(a.ctx, "Invalid find query:")
+		runtime.LogInfo(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Invalid query",
@@ -60,7 +60,8 @@ func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findRes
 
 	err = json.Unmarshal([]byte(form.Fields), &projection)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogInfo(a.ctx, "Invalid find projection:")
+		runtime.LogInfo(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Invalid projection",
@@ -71,7 +72,8 @@ func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findRes
 
 	err = json.Unmarshal([]byte(form.Sort), &sort)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogInfo(a.ctx, "Invalid find sort:")
+		runtime.LogInfo(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Invalid sort",
@@ -89,7 +91,8 @@ func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findRes
 
 	total, err := client.Database(dbKey).Collection(collKey).CountDocuments(ctx, query, nil)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Encountered an error while counting documents:")
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Encountered an error while counting documents",
@@ -100,7 +103,8 @@ func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findRes
 
 	cur, err := client.Database(dbKey).Collection(collKey).Find(ctx, query, &opt)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Encountered an error while performing query:")
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Encountered an error while performing query",
@@ -114,7 +118,8 @@ func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findRes
 	err = cur.All(ctx, &results)
 
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Encountered an error while performing query:")
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Encountered an error while performing query",
@@ -128,7 +133,8 @@ func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findRes
 	for _, r := range results {
 		marshalled, err := bson.MarshalExtJSON(r, true, true)
 		if err != nil {
-			fmt.Println(err.Error())
+			runtime.LogError(a.ctx, "Failed to marshal find BSON:")
+			runtime.LogError(a.ctx, err.Error())
 			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 				Type:    runtime.ErrorDialog,
 				Title:   "Failed to marshal BSON",

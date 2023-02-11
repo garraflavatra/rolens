@@ -3,7 +3,6 @@ package app
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -34,7 +33,8 @@ func (a *App) Hosts() (map[string]Host, error) {
 	if err != nil {
 		// It's ok if the file cannot be opened, for example if it is not accessible.
 		// Therefore no error is returned.
-		fmt.Println(err.Error())
+		runtime.LogInfo(a.ctx, "Could not open hosts.json")
+		runtime.LogInfo(a.ctx, err.Error())
 		return make(map[string]Host, 0), nil
 	}
 
@@ -45,7 +45,8 @@ func (a *App) Hosts() (map[string]Host, error) {
 		err = json.Unmarshal(jsonData, &hosts)
 
 		if err != nil {
-			fmt.Println(err.Error())
+			runtime.LogInfo(a.ctx, "host.json file contains malformatted JSON data")
+			runtime.LogInfo(a.ctx, err.Error())
 			return nil, errors.New("host.json file contains malformatted JSON data")
 		}
 		return hosts, nil
@@ -65,6 +66,8 @@ func (a *App) AddHost(jsonData string) error {
 	var newHost Host
 	err = json.Unmarshal([]byte(jsonData), &newHost)
 	if err != nil {
+		runtime.LogError(a.ctx, "Add host: malformed form")
+		runtime.LogError(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:  runtime.InfoDialog,
 			Title: "Malformed JSON",
@@ -74,6 +77,8 @@ func (a *App) AddHost(jsonData string) error {
 
 	id, err := uuid.NewRandom()
 	if err != nil {
+		runtime.LogError(a.ctx, "Add host: failed to generate a UUID")
+		runtime.LogError(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:  runtime.InfoDialog,
 			Title: "Failed to generate a UUID",
@@ -107,6 +112,8 @@ func (a *App) UpdateHost(hostKey string, jsonData string) error {
 	var host Host
 	err = json.Unmarshal([]byte(jsonData), &host)
 	if err != nil {
+		runtime.LogError(a.ctx, "Could not parse update host JSON")
+		runtime.LogError(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:  runtime.InfoDialog,
 			Title: "Malformed JSON",

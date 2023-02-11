@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -18,7 +17,8 @@ func (a *App) InsertItems(hostKey, dbKey, collKey, jsonData string) interface{} 
 
 	err := bson.UnmarshalExtJSON([]byte(jsonData), true, &data)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogError(a.ctx, "Could not parse insert JSON:")
+		runtime.LogError(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Couldn't parse JSON",
@@ -29,14 +29,14 @@ func (a *App) InsertItems(hostKey, dbKey, collKey, jsonData string) interface{} 
 
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		fmt.Println(err.Error())
 		return nil
 	}
 
 	defer close()
 	res, err := client.Database(dbKey).Collection(collKey).InsertMany(ctx, data)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Encountered an error while performing insert:")
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Encountered an error while performing query",

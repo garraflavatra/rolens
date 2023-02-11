@@ -35,7 +35,8 @@ func (a *App) PerformExport(jsonData string) bool {
 	var info ExportInfo
 	err := json.Unmarshal([]byte(jsonData), &info)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogError(a.ctx, "Could not unmarshal export form")
+		runtime.LogError(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Could not unmarshal JSON",
@@ -46,7 +47,6 @@ func (a *App) PerformExport(jsonData string) bool {
 
 	hosts, err := a.Hosts()
 	if err != nil {
-		fmt.Println(err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Could not retrieve hosts",
@@ -85,6 +85,8 @@ func (a *App) PerformExport(jsonData string) bool {
 		cmd.Stdout = &stdout
 		cmd.Stderr = &stderr
 		err = cmd.Run()
+
+		runtime.LogInfo(a.ctx, "Performing export with args: "+strings.Join(args, " "))
 
 		fmt.Println(args)
 		fmt.Println(stdout.String())

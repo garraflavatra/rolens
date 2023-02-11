@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
@@ -24,7 +23,8 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 
 	err := json.Unmarshal([]byte(formJson), &form)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogError(a.ctx, "Could not parse update form:")
+		runtime.LogError(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Couldn't parse form",
@@ -35,7 +35,6 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		fmt.Println(err.Error())
 		return 0
 	}
 
@@ -45,7 +44,8 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 
 	err = bson.UnmarshalExtJSON([]byte(form.Query), true, &query)
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogError(a.ctx, "Invalid update query:")
+		runtime.LogError(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Invalid query",
@@ -60,7 +60,8 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 		if err == nil {
 			update[param.Type] = unmarshalled
 		} else {
-			fmt.Println(err.Error())
+			runtime.LogError(a.ctx, "Invalid update query:")
+			runtime.LogError(a.ctx, err.Error())
 			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 				Type:    runtime.ErrorDialog,
 				Title:   "Invalid query",
@@ -80,7 +81,8 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 	}
 
 	if err != nil {
-		fmt.Println(err.Error())
+		runtime.LogWarning(a.ctx, "Encountered an error while performing update:")
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
 			Title:   "Encountered an error while updating items",

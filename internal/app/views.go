@@ -3,7 +3,6 @@ package app
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -75,14 +74,16 @@ func (a *App) Views() (ViewStore, error) {
 	if err != nil {
 		// It's ok if the file cannot be opened, for example if it is not accessible.
 		// Therefore no error is returned.
-		fmt.Println(err.Error())
+		runtime.LogInfo(a.ctx, "views.json file cannot be opened")
+		runtime.LogInfo(a.ctx, err.Error())
 		return views, nil
 	}
 
 	if len(jsonData) > 0 {
 		err = json.Unmarshal(jsonData, &views)
 		if err != nil {
-			fmt.Println(err.Error())
+			runtime.LogInfo(a.ctx, "views.json file contains malformatted JSON data")
+			runtime.LogInfo(a.ctx, err.Error())
 			return nil, errors.New("views.json file contains malformatted JSON data")
 		}
 	}

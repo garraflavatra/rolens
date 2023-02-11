@@ -1,4 +1,5 @@
 <script>
+  import DirectoryChooser from '../../components/directorychooser.svelte';
   import { input } from '../../actions';
   import Modal from '../../components/modal.svelte';
   import { applicationSettings as settings } from '../../stores';
@@ -24,6 +25,12 @@
       <input type="checkbox" id="autosubmitQuery" bind:checked={$settings.autosubmitQuery} />
       <label for="autosubmitQuery">Query items automatically after opening a collection</label>
     </span>
+
+    <label for="defaultExportDirectory">Default export directory</label>
+    <!-- svelte-ignore a11y-label-has-associated-control - input is in DirectoryChooser -->
+    <label class="field">
+      <DirectoryChooser id="defaultExportDirectory" bind:value={$settings.defaultExportDirectory} />
+    </label>
   </div>
 </Modal>
 

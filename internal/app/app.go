@@ -2,6 +2,11 @@ package app
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
 	"runtime"
 
 	"github.com/wailsapp/wails/v2/pkg/menu"
@@ -9,8 +14,21 @@ import (
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
+type EnvironmentInfo struct {
+	Arch      string `json:"arch"`
+	BuildType string `json:"buildType"`
+	Platform  string `json:"platform"`
+
+	HasMongoExport bool `json:"hasMongoExport"`
+	HasMongoDump   bool `json:"hasMongoDump"`
+
+	HomeDirectory string `json:"homeDirectory"`
+	DataDirectory string `json:"dataDirectory"`
+}
+
 type App struct {
 	ctx context.Context
+	Env EnvironmentInfo
 }
 
 func NewApp() *App {
@@ -19,6 +37,39 @@ func NewApp() *App {
 
 func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
+	wailsEnv := wailsRuntime.Environment(a.ctx)
+
+	a.Env.Arch = wailsEnv.Arch
+	a.Env.BuildType = wailsEnv.BuildType
+	a.Env.Platform = wailsEnv.Platform
+
+	_, err := exec.LookPath("mongodump")
+	a.Env.HasMongoDump = err == nil
+
+	_, err = exec.LookPath("mongoexport")
+	a.Env.HasMongoExport = err == nil
+
+	a.Env.HomeDirectory, err = os.UserHomeDir()
+	if err != nil {
+		panic(errors.New("encountered an error while getting home directory"))
+	}
+
+	switch runtime.GOOS {
+	case "windows":
+		a.Env.DataDirectory = filepath.Join(a.Env.HomeDirectory, "/AppData/Local/Rolens")
+	case "darwin":
+		a.Env.DataDirectory = filepath.Join(a.Env.HomeDirectory, "/Library/Application Support/Rolens")
+	case "linux":
+		a.Env.DataDirectory = filepath.Join(a.Env.HomeDirectory, "/.config/Rolens")
+	default:
+		panic(errors.New("unsupported platform"))
+	}
+
+	_ = os.MkdirAll(a.Env.DataDirectory, os.ModePerm)
+}
+
+func (a *App) Environment() EnvironmentInfo {
+	return a.Env
 }
 
 func menuEventEmitter(a *App, eventName string, data ...interface{}) func(cd *menu.CallbackData) {
@@ -60,4 +111,27 @@ func (a *App) Menu() *menu.Menu {
 	helpMenu.AddText("User guide", nil, func(cd *menu.CallbackData) { wailsRuntime.BrowserOpenURL(a.ctx, "") })
 
 	return appMenu
+}
+
+func (a *App) OpenDirectory(id, title string) string {
+	if title == "" {
+		title = "Choose a directory"
+	}
+
+	dir, err := wailsRuntime.OpenDirectoryDialog(a.ctx, wailsRuntime.OpenDialogOptions{
+		Title:                      title,
+		CanCreateDirectories:       true,
+		TreatPackagesAsDirectories: false,
+	})
+
+	if err != nil {
+		fmt.Println(err.Error())
+		wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
+			Type:    wailsRuntime.ErrorDialog,
+			Title:   "Encountered an error while opening directory",
+			Message: err.Error(),
+		})
+	}
+
+	return dir
 }

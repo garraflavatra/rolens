@@ -1,11 +1,29 @@
 <script>
-  import { busy, connections } from '../../../stores';
+  import { applicationSettings, busy, connections } from '../../../stores';
   import Grid from '../../../components/grid.svelte';
   import Modal from '../../../components/modal.svelte';
-  import { OpenConnection, OpenDatabase } from '../../../../wailsjs/go/app/App';
+  import { OpenConnection, OpenDatabase, PerformExport } from '../../../../wailsjs/go/app/App';
+  import DirectoryChooser from '../../../components/directorychooser.svelte';
 
   export let info;
   export let hosts = {};
+
+  const actionLabel = {
+    export: 'Perform export',
+    dump: 'Perform dump',
+  };
+
+  $: if (info) {
+    info.outdir = info.outdir || $applicationSettings.defaultExportDirectory;
+    info.filename = info.filename || `Export ${new Date().getTime()}`;
+
+    if (info.filetype === 'bson') {
+      info.type = 'dump';
+    }
+    else {
+      info.type = 'export';
+    }
+  }
 
   async function selectHost(hostKey) {
     info.hostKey = hostKey;
@@ -43,17 +61,35 @@
     }
   }
 
+  async function performExport() {
+    await PerformExport(JSON.stringify(info));
+  }
+
   function selectCollection(collKey) {
     info.collKeys = [ collKey ];
   }
 </script>
 
-<Modal bind:show={info} title="Dump database data">
-  <div class="info">
+<Modal bind:show={info} title={actionLabel[info?.type]}>
+  <form on:submit|preventDefault={performExport}>
     <div class="meta">
+      <!-- svelte-ignore a11y-label-has-associated-control - input is in DirectoryChooser -->
       <label class="field">
-        <span class="label">Output filename</span>
-        <input type="text">
+        <span class="label">Output directory</span>
+        <DirectoryChooser bind:value={info.outdir} />
+      </label>
+      <label class="field">
+        <span class="label">Filename</span>
+        <input type="text" bind:value={info.filename} />
+        <select bind:value={info.filetype} class="filetype">
+          <optgroup label="Dump (mongodump)">
+            <option value="bson">.bson</option>
+          </optgroup>
+          <optgroup label="Export (mongoexport)">
+            <option value="csv">.csv</option>
+            <option value="json">.json</option>
+          </optgroup>
+        </select>
       </label>
     </div>
     <div class="location">
@@ -106,11 +142,15 @@
         />
       </div>
     </div>
-  </div>
+
+    <div>
+      <button type="submit" class="btn">{actionLabel[info.type]}</button>
+    </div>
+  </form>
 </Modal>
 
 <style>
-  .info {
+  form {
     display: grid;
     grid-template: auto / 1fr;
   }
@@ -123,5 +163,16 @@
     border: 1px solid #ccc;
     padding: 0.3rem;
     overflow-y: auto;
+  }
+
+  .meta {
+    display: grid;
+    grid-template: 1fr / 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  select.filetype {
+    flex: 0 1;
   }
 </style>

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 
 	"github.com/google/uuid"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -16,12 +17,8 @@ type Host struct {
 	URI  string `json:"uri"`
 }
 
-func updateHostsFile(newData map[string]Host) error {
-	filePath, err := appDataFilePath("hosts.json")
-	if err != nil {
-		return err
-	}
-
+func updateHostsFile(a *App, newData map[string]Host) error {
+	filePath := path.Join(a.Env.DataDirectory, "hosts.json")
 	jsonData, err := json.MarshalIndent(newData, "", "\t")
 	if err != nil {
 		return err
@@ -32,12 +29,7 @@ func updateHostsFile(newData map[string]Host) error {
 }
 
 func (a *App) Hosts() (map[string]Host, error) {
-	filePath, err := appDataFilePath("hosts.json")
-	if err != nil {
-		fmt.Println(err.Error())
-		return nil, err
-	}
-
+	filePath := path.Join(a.Env.DataDirectory, "hosts.json")
 	jsonData, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		// It's ok if the file cannot be opened, for example if it is not accessible.
@@ -90,7 +82,7 @@ func (a *App) AddHost(jsonData string) error {
 	}
 
 	hosts[id.String()] = newHost
-	err = updateHostsFile(hosts)
+	err = updateHostsFile(a, hosts)
 	if err != nil {
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:  runtime.InfoDialog,
@@ -123,7 +115,7 @@ func (a *App) UpdateHost(hostKey string, jsonData string) error {
 	}
 
 	hosts[hostKey] = host
-	err = updateHostsFile(hosts)
+	err = updateHostsFile(a, hosts)
 	if err != nil {
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:  runtime.InfoDialog,
@@ -157,7 +149,7 @@ func (a *App) RemoveHost(key string) error {
 	}
 
 	delete(hosts, key)
-	err = updateHostsFile(hosts)
+	err = updateHostsFile(a, hosts)
 
 	if err != nil {
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{

@@ -9,8 +9,7 @@
   import HostDetail from './hostdetail.svelte';
   import Icon from '../../components/icon.svelte';
   import { EventsOn } from '../../../wailsjs/runtime/runtime';
-  import ExportInfo from './export/exportinfo.svelte';
-  import DumpInfo from './export/dumpinfo.svelte';
+  import Export from './export/export.svelte';
   import Hint from '../../components/hint.svelte';
 
   export let hosts = {};
@@ -29,7 +28,6 @@
   let newCollKey = '';
 
   let exportInfo;
-  let dumpInfo;
 
   async function getHosts() {
     hosts = await Hosts();
@@ -74,6 +72,8 @@
 
   function exportCollection(collKey) {
     exportInfo = {
+      type: 'export',
+      filetype: 'json',
       hostKey: activeHostKey,
       dbKey: activeDbKey,
       collKeys: [ collKey ],
@@ -81,7 +81,9 @@
   }
 
   function dumpCollection(collKey) {
-    dumpInfo = {
+    exportInfo = {
+      type: 'dump',
+      filetype: 'bson',
       hostKey: activeHostKey,
       dbKey: activeDbKey,
       collKeys: [ collKey ],
@@ -125,8 +127,7 @@
   {hosts}
 />
 
-<ExportInfo bind:info={exportInfo} {hosts} />
-<DumpInfo bind:info={dumpInfo} {hosts} />
+<Export bind:info={exportInfo} {hosts} />
 
 {#if newDb}
   <Modal bind:show={newDb}>

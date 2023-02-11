@@ -6,6 +6,8 @@ export namespace app {
 	    platform: string;
 	    hasMongoExport: boolean;
 	    hasMongoDump: boolean;
+	    homeDirectory: string;
+	    dataDirectory: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new EnvironmentInfo(source);
@@ -18,12 +20,15 @@ export namespace app {
 	        this.platform = source["platform"];
 	        this.hasMongoExport = source["hasMongoExport"];
 	        this.hasMongoDump = source["hasMongoDump"];
+	        this.homeDirectory = source["homeDirectory"];
+	        this.dataDirectory = source["dataDirectory"];
 	    }
 	}
 	export class Settings {
 	    defaultLimit: number;
 	    defaultSort: string;
 	    autosubmitQuery: boolean;
+	    defaultExportDirectory: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Settings(source);
@@ -34,6 +39,7 @@ export namespace app {
 	        this.defaultLimit = source["defaultLimit"];
 	        this.defaultSort = source["defaultSort"];
 	        this.autosubmitQuery = source["autosubmitQuery"];
+	        this.defaultExportDirectory = source["defaultExportDirectory"];
 	    }
 	}
 	export class findResult {

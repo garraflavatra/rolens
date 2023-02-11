@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -54,11 +55,8 @@ var BuiltInListView = View{
 
 type ViewStore map[string]View
 
-func updateViewStore(newData ViewStore) error {
-	filePath, err := appDataFilePath("views.json")
-	if err != nil {
-		return err
-	}
+func updateViewStore(a *App, newData ViewStore) error {
+	filePath := path.Join(a.Env.DataDirectory, "settings.json")
 
 	jsonData, err := json.MarshalIndent(newData, "", "\t")
 	if err != nil {
@@ -71,11 +69,7 @@ func updateViewStore(newData ViewStore) error {
 
 func (a *App) Views() (ViewStore, error) {
 	views := make(ViewStore, 0)
-	filePath, err := appDataFilePath("views.json")
-	if err != nil {
-		fmt.Println(err.Error())
-		return views, err
-	}
+	filePath := path.Join(a.Env.DataDirectory, "views.json")
 
 	jsonData, err := ioutil.ReadFile(filePath)
 	if err != nil {
@@ -108,7 +102,7 @@ func (a *App) UpdateViewStore(jsonData string) error {
 		return errors.New("invalid JSON")
 	}
 
-	err = updateViewStore(viewStore)
+	err = updateViewStore(a, viewStore)
 	if err != nil {
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:  runtime.InfoDialog,
@@ -142,7 +136,7 @@ func (a *App) RemoveView(viewKey string) error {
 	}
 
 	delete(views, viewKey)
-	err = updateViewStore(views)
+	err = updateViewStore(a, views)
 
 	if err != nil {
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{

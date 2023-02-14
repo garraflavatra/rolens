@@ -2,9 +2,9 @@
   import TabBar from '../../../../components/tabbar.svelte';
   import Modal from '../../../../components/modal.svelte';
   import Icon from '../../../../components/icon.svelte';
-  import { views } from '../../../../stores';
-  import { randomString } from '../../../../utils';
-  import { input } from '../../../../actions';
+  import { randomString } from '../../../../lib/utils';
+  import { input } from '../../../../lib/actions';
+  import views from '../../../../lib/stores/views';
 
   export let collection;
   export let show = false;

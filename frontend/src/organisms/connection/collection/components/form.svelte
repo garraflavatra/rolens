@@ -1,5 +1,5 @@
 <script>
-  import { inputTypes, resolveKeypath, setValue } from '../../../../utils';
+  import { inputTypes, resolveKeypath, setValue } from '../../../../lib/utils';
   import Icon from '../../../../components/icon.svelte';
   import FormInput from '../../../../components/forminput.svelte';
 

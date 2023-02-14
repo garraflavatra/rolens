@@ -1,14 +1,15 @@
 <script>
   import { EJSON } from 'bson';
+  import applicationSettings from '../../../lib/stores/settings';
   import { createEventDispatcher, onMount } from 'svelte';
   import { FindItems, RemoveItemById } from '../../../../wailsjs/go/app/App';
-  import { input } from '../../../actions';
+  import { input } from '../../../lib/actions';
   import CodeExample from '../../../components/code-example.svelte';
   import Grid from '../../../components/grid.svelte';
   import Icon from '../../../components/icon.svelte';
   import ObjectGrid from '../../../components/objectgrid.svelte';
+  import views from '../../../lib/stores/views';
   // import ObjectViewer from '../../../components/objectviewer.svelte';
-  import { applicationSettings, views } from '../../../stores';
 
   export let collection;
 

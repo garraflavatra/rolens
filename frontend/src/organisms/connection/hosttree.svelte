@@ -1,9 +1,10 @@
 <script>
-  import { busy, connections } from '../../stores';
   import { createEventDispatcher } from 'svelte';
   import { DropCollection, DropDatabase, OpenCollection, OpenConnection, OpenDatabase, TruncateCollection } from '../../../wailsjs/go/app/App';
   import Grid from '../../components/grid.svelte';
   import { WindowSetTitle } from '../../../wailsjs/runtime/runtime';
+  import { connections } from '../../lib/stores/connections';
+  import busy from '../../lib/stores/busy';
 
   export let hosts = {};
   export let activeHostKey = '';

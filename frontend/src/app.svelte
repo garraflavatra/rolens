@@ -1,10 +1,13 @@
 <script>
   import { EventsOn } from '../wailsjs/runtime';
   import ContextMenu from './components/contextmenu.svelte';
+  import { connections } from './lib/stores/connections';
+  import contextMenu from './lib/stores/contextmenu';
+  import environment from './lib/stores/environment';
+  import applicationInited from './lib/stores/inited';
   import About from './organisms/about/index.svelte';
   import Connection from './organisms/connection/index.svelte';
   import Settings from './organisms/settings/index.svelte';
-  import { applicationInited, connections, contextMenu, environment } from './stores';
 
   const hosts = {};
   const activeHostKey = '';

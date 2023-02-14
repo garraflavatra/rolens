@@ -1,6 +1,6 @@
 <script>
   import Icon from '../../../components/icon.svelte';
-  import { input } from '../../../actions';
+  import { input } from '../../../lib/actions';
   import { UpdateItems } from '../../../../wailsjs/go/app/App';
   import CodeExample from '../../../components/code-example.svelte';
 

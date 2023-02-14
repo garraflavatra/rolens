@@ -1,6 +1,6 @@
 <script>
-  import { canBeObjectId, numericInputTypes } from '../utils';
-  import { input } from '../actions';
+  import { canBeObjectId, numericInputTypes } from '../lib/utils';
+  import { input } from '../lib/actions';
   import Icon from './icon.svelte';
   import { ObjectId } from 'bson';
   import Datepicker from './datepicker.svelte';

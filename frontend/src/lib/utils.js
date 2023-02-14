@@ -1,6 +1,6 @@
 import { ObjectId } from 'bson';
 import { get } from 'svelte/store';
-import { environment } from './stores';
+import environment from './stores/environment';
 
 // Calculate the min and max values of (un)signed integers with n bits
 export const intMin = bits => Math.pow(2, bits - 1) * -1;

@@ -1,5 +1,5 @@
 <script>
-  import { input } from '../../actions';
+  import { input } from '../../lib/actions';
   import { createEventDispatcher } from 'svelte';
   import { AddHost, UpdateHost } from '../../../wailsjs/go/app/App';
   import Modal from '../../components/modal.svelte';

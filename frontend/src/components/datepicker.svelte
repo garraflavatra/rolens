@@ -1,7 +1,7 @@
 <script>
   import { addDays, getWeek, isDate, isSameDay, startOfWeek } from 'date-fns';
   import { onMount } from 'svelte';
-  import { daysAbbr, months } from '../utils';
+  import { daysAbbr, months } from '../lib/utils';
   import Clock from './clock.svelte';
   import Icon from './icon.svelte';
   import Modal from './modal.svelte';

@@ -1,5 +1,5 @@
 <script>
-  import { input } from '../../../actions';
+  import { input } from '../../../lib/actions';
   import { RemoveItems } from '../../../../wailsjs/go/app/App';
   import CodeExample from '../../../components/code-example.svelte';
   import Icon from '../../../components/icon.svelte';

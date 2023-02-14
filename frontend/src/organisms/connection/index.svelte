@@ -1,16 +1,17 @@
 <script>
   import { onMount } from 'svelte';
   import { Hosts, RenameCollection } from '../../../wailsjs/go/app/App';
-  import { input } from '../../actions';
+  import { input } from '../../lib/actions';
   import Modal from '../../components/modal.svelte';
   import HostTree from './hosttree.svelte';
-  import { busy, connections } from '../../stores';
   import CollectionDetail from './collection/index.svelte';
   import HostDetail from './hostdetail.svelte';
   import Icon from '../../components/icon.svelte';
   import { EventsOn } from '../../../wailsjs/runtime/runtime';
   import Export from './export/export.svelte';
   import Hint from '../../components/hint.svelte';
+  import { connections } from '../../lib/stores/connections';
+  import busy from '../../lib/stores/busy';
 
   export let hosts = {};
   export let activeHostKey = '';

@@ -1,6 +1,6 @@
 <script>
   import { isDate } from 'date-fns';
-  import { isBsonBuiltin } from '../utils';
+  import { isBsonBuiltin } from '../lib/utils';
   import Grid from './grid.svelte';
 
   export let data = [];

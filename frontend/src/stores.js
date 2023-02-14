@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 import { Environment, Settings, UpdateSettings, UpdateViewStore, Views } from '../wailsjs/go/app/App';
 
 export const busy = (() => {
@@ -106,3 +106,12 @@ export const views = (() => {
 
   return { reload, set, subscribe, forCollection };
 })();
+
+export const applicationInited = derived([ environment, applicationSettings ], ([ env, settings ], set) => {
+  if (env && settings) {
+    set(true);
+
+    // Remove loading spinner.
+    // document.getElementById('app-loading')?.remove();
+  }
+}, false);

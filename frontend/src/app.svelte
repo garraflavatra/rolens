@@ -4,7 +4,7 @@
   import About from './organisms/about/index.svelte';
   import Connection from './organisms/connection/index.svelte';
   import Settings from './organisms/settings/index.svelte';
-  import { applicationSettings, connections, contextMenu, environment } from './stores';
+  import { applicationInited, connections, contextMenu, environment } from './stores';
 
   const hosts = {};
   const activeHostKey = '';
@@ -27,7 +27,7 @@
 <div id="root" class="platform-{$environment?.platform}">
   <div class="titlebar"></div>
 
-  {#if $environment && $applicationSettings}
+  {#if $applicationInited}
     <main class:empty={!host || !connection}>
       <Connection {hosts} bind:activeCollKey bind:activeDbKey {activeHostKey} />
     </main>

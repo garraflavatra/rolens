@@ -1,5 +1,6 @@
 import './reset.css';
 import './style.css';
+import './loading.css';
 import App from './app.svelte';
 import { LogError } from '../wailsjs/runtime/runtime';
 

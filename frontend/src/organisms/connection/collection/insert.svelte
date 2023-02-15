@@ -7,6 +7,7 @@
   import { randomString } from '$lib/math';
   import { inputTypes } from '$lib/mongo';
   import views from '$lib/stores/views';
+  import { capitalise } from '$lib/strings';
   import { InsertItems } from '$wails/go/app/App';
   import { EJSON } from 'bson';
   import { createEventDispatcher } from 'svelte';
@@ -16,12 +17,14 @@
 
   const dispatch = createEventDispatcher();
   const formValidity = {};
+
   let json = '';
   let newItems = [];
   let insertedIds;
   let objectViewerData = '';
   let viewType = 'form';
   let allValid = false;
+
   $: viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
   $: oppositeViewType = viewType === 'table' ? 'form' : 'table';
   $: allValid = Object.values(formValidity).every(v => v !== false);
@@ -36,6 +39,10 @@
     else {
       json = EJSON.stringify(newItems, undefined, 2, { relaxed: false });
     }
+  }
+
+  $: if ((viewType === 'form') && !newItems?.length)  {
+    newItems = [ {} ];
   }
 
   async function insert() {
@@ -66,8 +73,17 @@
     }
   }
 
-  function addRow() {
-    newItems = [ ...newItems, {} ];
+  function addRow(beforeIndex = -1) {
+    if ((beforeIndex === -1) || (typeof beforeIndex !== 'number')) {
+      newItems = [ ...newItems, {} ];
+    }
+    else {
+      newItems = [
+        ...newItems.slice(0, beforeIndex),
+        {},
+        ...newItems.slice(beforeIndex + 1),
+      ];
+    }
   }
 
   function deleteRow(index) {
@@ -99,7 +115,12 @@
             on:delete={() => deleteRow(index)}
           >
             <fieldset>
-              <Form bind:item={newItems[index]} bind:valid={formValidity[index]} view={$views[collection.viewKey]} />
+              <Form
+                bind:item={newItems[index]}
+                bind:valid={formValidity[index]}
+                view={$views[collection.viewKey]}
+                emptyHint="This form has no fields. Use the view configurator in the bottom right corner to add fields."
+              />
             </fieldset>
           </Details>
         {/each}
@@ -123,15 +144,16 @@
         />
       </div>
     {/if}
+
+    {#if collection.viewKey !== 'list'}
+      <button class="btn-sm" type="button" on:click={addRow}>
+        <Icon name="+" /> Add item
+      </button>
+    {/if}
   </div>
 
   <div class="flex">
     <div>
-      {#if collection.viewKey !== 'list'}
-        <button class="btn" type="button" on:click={addRow}>
-          <Icon name="+" /> Add item
-        </button>
-      {/if}
       {#if insertedIds}
         <span class="flash-green">Success! {insertedIds.length} document{insertedIds.length > 1 ? 's' : ''} inserted</span>
       {/if}
@@ -145,7 +167,7 @@
           <Icon name="code" />
         </button>
         <button class="btn" type="button" on:click={switchViewType} title="Edit as {oppositeViewType}">
-          <Icon name={oppositeViewType} />
+          <Icon name={oppositeViewType} /> {capitalise(oppositeViewType)}
         </button>
       {/if}
       <label class="field inline">

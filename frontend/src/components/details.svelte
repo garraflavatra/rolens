@@ -22,7 +22,7 @@
     {title}
 
     {#if deletable}
-      <button class="delete" on:click={() => dispatch('delete')}>
+      <button class="delete" on:click={() => dispatch('delete')} type="button">
         <Icon name="trash" />
       </button>
     {/if}

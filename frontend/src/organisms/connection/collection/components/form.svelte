@@ -3,10 +3,12 @@
   import Icon from '$components/icon.svelte';
   import { inputTypes } from '$lib/mongo';
   import { resolveKeypath, setValue } from '$lib/keypaths';
+  import Hint from '$components/hint.svelte';
 
   export let item = {};
   export let view = {};
   export let valid = false;
+  export let emptyHint = '';
 
   const validity = {};
   $: valid = Object.values(validity).every(v => v !== false);
@@ -51,6 +53,10 @@
         <FormInput {column} bind:value={keypathProxy[column.key]} bind:valid={validity[column.key]} autofocus={index === 0} />
       </div>
     </label>
+  {:else}
+    {#if emptyHint}
+      <Hint>{emptyHint}</Hint>
+    {/if}
   {/each}
 {/if}
 

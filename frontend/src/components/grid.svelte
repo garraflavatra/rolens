@@ -88,7 +88,6 @@
     border-collapse: collapse;
     width: 100%;
     background-color: #fff;
-    table-layout: fixed;
   }
 
   table thead {

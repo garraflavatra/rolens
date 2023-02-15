@@ -10,6 +10,7 @@
   export let queryToSave = undefined;
   export let collection = {};
   export let show = false;
+  export let hosts = {};
 
   const dispatch = createEventDispatcher();
   let gridSelectedPath = [];
@@ -84,8 +85,12 @@
 
     <div class="querylist">
       <Grid
-        columns={[ { key: 'name', title: 'Query name' } ]}
-        items={$queries}
+        columns={[ { key: 'n', title: 'Query name' }, { key: 'h', title: 'Host' }, { key: 'ns', title: 'Namespace' } ]}
+        key="n"
+        items={Object.entries($queries).reduce((object, [ name, query ]) => {
+          object[query.name] = { n: name, h: hosts[query.hostKey]?.name || '?', ns: `${query.dbKey}.${query.collKey}` };
+          return object;
+        }, {})}
         showHeaders={true}
         canRemoveItems={true}
         bind:activePath={gridSelectedPath}
@@ -102,8 +107,8 @@
 
       {#if Object.keys($queries).includes(queryToSave.name)}
         <Hint>
-          You are about to <strong>overwrite</strong> a saved query. Rename it
-          if you do not want to overwrite.
+          You are about to <strong>overwrite</strong> a saved query. Give it
+          another name if you do not want to overwrite.
         </Hint>
       {/if}
     {:else}
@@ -120,7 +125,7 @@
   }
 
   textarea {
-    min-height: 100px;
+    min-height: 75px;
   }
 
   .querylist {

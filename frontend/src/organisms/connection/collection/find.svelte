@@ -14,6 +14,7 @@
   // import ObjectViewer from '$components/objectviewer.svelte';
 
   export let collection;
+  export let hosts = {};
 
   const dispatch = createEventDispatcher();
   const defaults = {
@@ -233,6 +234,8 @@
   bind:queryToSave
   bind:show={showQueryChooser}
   on:select={queryChosen}
+  {hosts}
+  {collection}
 />
 
 <!-- <ObjectViewer bind:data={objectViewerData} /> -->

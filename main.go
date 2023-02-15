@@ -32,20 +32,15 @@ func main() {
 
 		BackgroundColour: &options.RGBA{R: 0, G: 0, B: 139, A: 1},
 		Menu:             app.Menu(),
+		Bind:             []interface{}{app},
+		AssetServer:      &assetserver.Options{Assets: assets},
 
-		OnStartup:          app.Startup,
-		OnShutdown:         app.Shutdown,
+		OnStartup:  app.Startup,
+		OnShutdown: app.Shutdown,
+
 		Logger:             logger.NewFileLogger(path.Join(app.Env.LogDirectory, "rolens.log")),
 		LogLevel:           logger.TRACE,
 		LogLevelProduction: logger.INFO,
-
-		AssetServer: &assetserver.Options{
-			Assets: assets,
-		},
-
-		Bind: []interface{}{
-			app,
-		},
 
 		Mac: &mac.Options{
 			TitleBar:             mac.TitleBarHiddenInset(),

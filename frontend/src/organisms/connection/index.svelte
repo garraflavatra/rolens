@@ -119,6 +119,7 @@
   hostKey={activeHostKey}
   dbKey={activeDbKey}
   collectionKey={activeCollKey}
+  {hosts}
 />
 
 <HostDetail

@@ -1,9 +1,9 @@
 <script>
-  import { resolveKeypath, setValue } from '$lib/keypaths';
-  import contextMenu from '$lib/stores/contextmenu';
   import { createEventDispatcher } from 'svelte';
-  import FormInput from './forminput.svelte';
   import Icon from './icon.svelte';
+  import FormInput from './forminput.svelte';
+  import contextMenu from '$lib/stores/contextmenu';
+  import { resolveKeypath, setValue } from '$lib/keypaths';
 
   export let items = [];
   export let columns = [];

@@ -1,15 +1,15 @@
 <script>
-  import BlankState from '../../../components/blankstate.svelte';
+  import BlankState from '$components/blankstate.svelte';
+  import TabBar from '$components/tabbar.svelte';
+  import { EventsOn } from '$wails/runtime/runtime';
   import { tick } from 'svelte';
-  import TabBar from '../../../components/tabbar.svelte';
+  import ViewConfig from './components/viewconfig.svelte';
   import Find from './find.svelte';
   import Indexes from './indexes.svelte';
   import Insert from './insert.svelte';
   import Remove from './remove.svelte';
   import Stats from './stats.svelte';
   import Update from './update.svelte';
-  import { EventsOn } from '../../../../wailsjs/runtime/runtime';
-  import ViewConfig from './components/viewconfig.svelte';
 
   export let collection;
   export let hostKey;

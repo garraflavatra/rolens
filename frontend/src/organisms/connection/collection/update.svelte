@@ -1,8 +1,8 @@
 <script>
-  import Icon from '../../../components/icon.svelte';
-  import { input } from '../../../lib/actions';
-  import { UpdateItems } from '../../../../wailsjs/go/app/App';
-  import CodeExample from '../../../components/code-example.svelte';
+  import CodeExample from '$components/code-example.svelte';
+  import Icon from '$components/icon.svelte';
+  import input from '$lib/actions/input';
+  import { UpdateItems } from '$wails/go/app/App';
 
   export let collection = {};
 

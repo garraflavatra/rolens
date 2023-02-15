@@ -1,5 +1,5 @@
+import { UpdateViewStore, Views } from '$wails/go/app/App';
 import { get, writable } from 'svelte/store';
-import { UpdateViewStore, Views } from '../../../wailsjs/go/app/App';
 
 const { set, subscribe } = writable({});
 let skipUpdate = true;

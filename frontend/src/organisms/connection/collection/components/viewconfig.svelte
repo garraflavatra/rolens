@@ -1,10 +1,10 @@
 <script>
-  import TabBar from '../../../../components/tabbar.svelte';
-  import Modal from '../../../../components/modal.svelte';
-  import Icon from '../../../../components/icon.svelte';
-  import { randomString } from '../../../../lib/utils';
-  import { input } from '../../../../lib/actions';
-  import views from '../../../../lib/stores/views';
+  import Icon from '$components/icon.svelte';
+  import Modal from '$components/modal.svelte';
+  import TabBar from '$components/tabbar.svelte';
+  import input from '$lib/actions/input';
+  import { randomString } from '$lib/math';
+  import views from '$lib/stores/views';
 
   export let collection;
   export let show = false;

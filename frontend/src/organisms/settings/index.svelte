@@ -1,8 +1,8 @@
 <script>
-  import DirectoryChooser from '../../components/directorychooser.svelte';
-  import { input } from '../../lib/actions';
-  import Modal from '../../components/modal.svelte';
-  import settings from '../../lib/stores/settings';
+  import DirectoryChooser from '$components/directorychooser.svelte';
+  import Modal from '$components/modal.svelte';
+  import input from '$lib/actions/input';
+  import settings from '$lib/stores/settings';
 
   export let show = false;
 </script>

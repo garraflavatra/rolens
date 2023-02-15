@@ -1,11 +1,11 @@
 <script>
-  import Icon from '../../../../components/icon.svelte';
+  import Grid from '$components/grid.svelte';
+  import Hint from '$components/hint.svelte';
+  import Icon from '$components/icon.svelte';
+  import Modal from '$components/modal.svelte';
+  import input from '$lib/actions/input';
+  import queries from '$lib/stores/queries';
   import { createEventDispatcher } from 'svelte';
-  import Modal from '../../../../components/modal.svelte';
-  import { input } from '../../../../lib/actions';
-  import queries from '../../../../lib/stores/queries';
-  import Grid from '../../../../components/grid.svelte';
-  import Hint from '../../../../components/hint.svelte';
 
   export let queryToSave = undefined;
   export let collection = {};

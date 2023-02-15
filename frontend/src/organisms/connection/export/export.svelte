@@ -1,11 +1,11 @@
 <script>
-  import Grid from '../../../components/grid.svelte';
-  import Modal from '../../../components/modal.svelte';
-  import { OpenConnection, OpenDatabase, PerformExport } from '../../../../wailsjs/go/app/App';
-  import DirectoryChooser from '../../../components/directorychooser.svelte';
-  import applicationSettings from '../../../lib/stores/settings';
-  import { connections } from '../../../lib/stores/connections';
-  import busy from '../../../lib/stores/busy';
+  import DirectoryChooser from '$components/directorychooser.svelte';
+  import Grid from '$components/grid.svelte';
+  import Modal from '$components/modal.svelte';
+  import busy from '$lib/stores/busy';
+  import { connections } from '$lib/stores/connections';
+  import applicationSettings from '$lib/stores/settings';
+  import { OpenConnection, OpenDatabase, PerformExport } from '$wails/go/app/App';
 
   export let info;
   export let hosts = {};

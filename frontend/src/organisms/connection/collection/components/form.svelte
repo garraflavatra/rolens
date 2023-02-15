@@ -1,7 +1,8 @@
 <script>
-  import { inputTypes, resolveKeypath, setValue } from '../../../../lib/utils';
-  import Icon from '../../../../components/icon.svelte';
-  import FormInput from '../../../../components/forminput.svelte';
+  import FormInput from '$components/forminput.svelte';
+  import Icon from '$components/icon.svelte';
+  import { inputTypes } from '$lib/mongo';
+  import { resolveKeypath, setValue } from '$lib/keypaths';
 
   export let item = {};
   export let view = {};

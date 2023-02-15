@@ -1,5 +1,5 @@
+import { Environment } from '$wails/go/app/App';
 import { writable } from 'svelte/store';
-import { Environment } from '../../../wailsjs/go/app/App';
 
 const { set, subscribe } = writable({});
 

@@ -1,6 +1,6 @@
 <script>
+  import { isBsonBuiltin } from '$lib/mongo';
   import { isDate } from 'date-fns';
-  import { isBsonBuiltin } from '../lib/utils';
   import Grid from './grid.svelte';
 
   export let data = [];

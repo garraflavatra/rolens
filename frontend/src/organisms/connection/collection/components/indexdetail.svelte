@@ -1,8 +1,8 @@
 <script>
-  import Icon from '../../../../components/icon.svelte';
-  import { input } from '../../../../lib/actions';
-  import Modal from '../../../../components/modal.svelte';
-  import { CreateIndex } from '../../../../../wailsjs/go/app/App';
+  import Icon from '$components/icon.svelte';
+  import Modal from '$components/modal.svelte';
+  import input from '$lib/actions/input';
+  import { CreateIndex } from '$wails/go/app/App';
   import { createEventDispatcher } from 'svelte';
 
   export let collection = {};

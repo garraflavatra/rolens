@@ -1,5 +1,5 @@
+import { Settings, UpdateSettings } from '$wails/go/app/App';
 import { writable } from 'svelte/store';
-import { Settings, UpdateSettings } from '../../../wailsjs/go/app/App';
 
 const { set, subscribe } = writable({});
 let skipUpdate = true;

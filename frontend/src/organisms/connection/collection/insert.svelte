@@ -1,15 +1,16 @@
 <script>
-  import { createEventDispatcher } from 'svelte';
-  import { InsertItems } from '../../../../wailsjs/go/app/App';
-  import { input } from '../../../lib/actions';
-  import Icon from '../../../components/icon.svelte';
-  import Form from './components/form.svelte';
-  import ObjectViewer from '../../../components/objectviewer.svelte';
-  import Grid from '../../../components/grid.svelte';
-  import { inputTypes, randomString } from '../../../lib/utils';
+  import Details from '$components/details.svelte';
+  import Grid from '$components/grid.svelte';
+  import Icon from '$components/icon.svelte';
+  import ObjectViewer from '$components/objectviewer.svelte';
+  import input from '$lib/actions/input';
+  import { randomString } from '$lib/math';
+  import { inputTypes } from '$lib/mongo';
+  import views from '$lib/stores/views';
+  import { InsertItems } from '$wails/go/app/App';
   import { EJSON } from 'bson';
-  import Details from '../../../components/details.svelte';
-  import views from '../../../lib/stores/views';
+  import { createEventDispatcher } from 'svelte';
+  import Form from './components/form.svelte';
 
   export let collection;
 

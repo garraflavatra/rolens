@@ -1,6 +1,7 @@
-import { canBeObjectId, int32, int64, isInt, uint64 } from './utils';
+import { isInt } from '$lib/math';
+import { canBeObjectId, int32, int64, uint64 } from '$lib/mongo';
 
-export function input(node, { autofocus, type, onValid, onInvalid, mandatory } = {
+export default function input(node, { autofocus, type, onValid, onInvalid, mandatory } = {
   autofocus: false,
   type: '',
   onValid: () => 0,

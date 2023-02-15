@@ -1,8 +1,8 @@
 <script>
-  import { input } from '../../lib/actions';
+  import Modal from '$components/modal.svelte';
+  import input from '$lib/actions/input';
+  import { AddHost, UpdateHost } from '$wails/go/app/App';
   import { createEventDispatcher } from 'svelte';
-  import { AddHost, UpdateHost } from '../../../wailsjs/go/app/App';
-  import Modal from '../../components/modal.svelte';
 
   export let show = false;
   export let hostKey = '';

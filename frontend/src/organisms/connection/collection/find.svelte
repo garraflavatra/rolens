@@ -1,17 +1,17 @@
 <script>
+  import CodeExample from '$components/code-example.svelte';
+  import Grid from '$components/grid.svelte';
+  import Icon from '$components/icon.svelte';
+  import ObjectGrid from '$components/objectgrid.svelte';
+  import input from '$lib/actions/input';
+  import queries from '$lib/stores/queries';
+  import applicationSettings from '$lib/stores/settings';
+  import views from '$lib/stores/views';
+  import { FindItems, RemoveItemById } from '$wails/go/app/App';
   import { EJSON } from 'bson';
-  import applicationSettings from '../../../lib/stores/settings';
   import { createEventDispatcher, onMount } from 'svelte';
-  import { FindItems, RemoveItemById } from '../../../../wailsjs/go/app/App';
-  import { input } from '../../../lib/actions';
-  import CodeExample from '../../../components/code-example.svelte';
-  import Grid from '../../../components/grid.svelte';
-  import Icon from '../../../components/icon.svelte';
-  import ObjectGrid from '../../../components/objectgrid.svelte';
-  import views from '../../../lib/stores/views';
   import QueryChooser from './components/querychooser.svelte';
-  import queries from '../../../lib/stores/queries';
-  // import ObjectViewer from '../../../components/objectviewer.svelte';
+  // import ObjectViewer from '$components/objectviewer.svelte';
 
   export let collection;
 

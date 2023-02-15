@@ -26,6 +26,20 @@ export namespace app {
 	        this.logDirectory = source["logDirectory"];
 	    }
 	}
+	export class QueryResult {
+	    total: number;
+	    results: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new QueryResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.total = source["total"];
+	        this.results = source["results"];
+	    }
+	}
 	export class Settings {
 	    defaultLimit: number;
 	    defaultSort: string;
@@ -42,20 +56,6 @@ export namespace app {
 	        this.defaultSort = source["defaultSort"];
 	        this.autosubmitQuery = source["autosubmitQuery"];
 	        this.defaultExportDirectory = source["defaultExportDirectory"];
-	    }
-	}
-	export class findResult {
-	    total: number;
-	    results: string[];
-	
-	    static createFrom(source: any = {}) {
-	        return new findResult(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.total = source["total"];
-	        this.results = source["results"];
 	    }
 	}
 

@@ -81,5 +81,11 @@
     <circle cx="12" cy="12" r="10"/>
   {:else if name === 'info'}
     <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+  {:else if name === 'play'}
+    <path d="m5 3 14 9-14 9V3z"/>
+  {:else if name === 'upload'}
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+  {:else if name === 'save'}
+    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>
   {/if}
 </svg>

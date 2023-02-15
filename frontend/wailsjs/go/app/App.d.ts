@@ -17,7 +17,7 @@ export function DropIndex(arg1:string,arg2:string,arg3:string,arg4:string):Promi
 
 export function Environment():Promise<app.EnvironmentInfo>;
 
-export function FindItems(arg1:string,arg2:string,arg3:string,arg4:string):Promise<app.findResult>;
+export function FindItems(arg1:string,arg2:string,arg3:string,arg4:string):Promise<app.QueryResult>;
 
 export function GetIndexes(arg1:string,arg2:string,arg3:string):Promise<Array<primitive.M>>;
 
@@ -43,9 +43,15 @@ export function RemoveItemById(arg1:string,arg2:string,arg3:string,arg4:string):
 
 export function RemoveItems(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<number>;
 
+export function RemoveQuery(arg1:string):Promise<void>;
+
 export function RemoveView(arg1:string):Promise<void>;
 
 export function RenameCollection(arg1:string,arg2:string,arg3:string,arg4:string):Promise<boolean>;
+
+export function SaveQuery(arg1:string):Promise<string>;
+
+export function SavedQueries():Promise<map[string]app.SavedQuery>;
 
 export function Settings():Promise<app.Settings>;
 
@@ -54,6 +60,8 @@ export function TruncateCollection(arg1:string,arg2:string,arg3:string):Promise<
 export function UpdateHost(arg1:string,arg2:string):Promise<void>;
 
 export function UpdateItems(arg1:string,arg2:string,arg3:string,arg4:string):Promise<number>;
+
+export function UpdateQueries(arg1:string):Promise<boolean>;
 
 export function UpdateSettings(arg1:string):Promise<app.Settings>;
 

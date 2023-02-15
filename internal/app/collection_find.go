@@ -4,25 +4,26 @@ import (
 	"encoding/json"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
-
 	"go.mongodb.org/mongo-driver/bson"
 	mongoOptions "go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type findResult struct {
+type Query struct {
+	Fields string `json:"fields"`
+	Limit  int64  `json:"limit"`
+	Query  string `json:"query"`
+	Skip   int64  `json:"skip"`
+	Sort   string `json:"sort"`
+}
+
+type QueryResult struct {
 	Total   int64    `json:"total"`
 	Results []string `json:"results"`
 }
 
-func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) findResult {
-	var out findResult
-	var form struct {
-		Fields string `json:"fields"`
-		Limit  int64  `json:"limit"`
-		Query  string `json:"query"`
-		Skip   int64  `json:"skip"`
-		Sort   string `json:"sort"`
-	}
+func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) QueryResult {
+	var out QueryResult
+	var form Query
 
 	err := json.Unmarshal([]byte(formJson), &form)
 	if err != nil {

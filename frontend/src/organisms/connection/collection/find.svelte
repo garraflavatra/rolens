@@ -9,6 +9,8 @@
   import Icon from '../../../components/icon.svelte';
   import ObjectGrid from '../../../components/objectgrid.svelte';
   import views from '../../../lib/stores/views';
+  import QueryChooser from './components/querychooser.svelte';
+  import queries from '../../../lib/stores/queries';
   // import ObjectViewer from '../../../components/objectviewer.svelte';
 
   export let collection;
@@ -28,6 +30,9 @@
   let queryField;
   let activePath = [];
   let objectViewerData;
+  let queryToSave;
+  let showQueryChooser = false;
+
   $: viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
   $: lastPage = (submittedForm.limit && result?.results?.length) ? Math.max(0, Math.ceil((result.total - submittedForm.limit) / submittedForm.limit)) : 0;
@@ -47,6 +52,23 @@
   async function refresh() {
     if ($applicationSettings.autosubmitQuery) {
       await submitQuery();
+    }
+  }
+
+  function loadQuery() {
+    queryToSave = undefined;
+    showQueryChooser = true;
+  }
+
+  function saveQuery() {
+    queryToSave = form;
+    showQueryChooser = true;
+  }
+
+  function queryChosen(event) {
+    if ($queries[event?.detail]) {
+      form =   { ...$queries[event?.detail] };
+      submitQuery();
     }
   }
 
@@ -131,12 +153,21 @@
         <span class="label">Limit</span>
         <input type="number" min="0" bind:value={form.limit} use:input placeholder={defaults.limit} list="limits" />
       </label>
+    </div>
 
-      <button type="submit" class="btn">Run</button>
+    <div class="form-row three">
+      <CodeExample {code} />
+      <button class="btn" type="button" on:click={loadQuery} title="Load query…">
+        <Icon name="upload" />
+      </button>
+      <button class="btn" type="button" on:click={saveQuery} title="Save query as…">
+        <Icon name="save" />
+      </button>
+      <button type="submit" class="btn" title="Run query">
+        <Icon name="play" /> Run
+      </button>
     </div>
   </form>
-
-  <CodeExample {code} />
 
   <div class="result">
     <div class="grid">
@@ -198,6 +229,12 @@
   </div>
 </div>
 
+<QueryChooser
+  bind:queryToSave
+  bind:show={showQueryChooser}
+  on:select={queryChosen}
+/>
+
 <!-- <ObjectViewer bind:data={objectViewerData} /> -->
 
 <datalist id="limits">
@@ -218,19 +255,23 @@
   .find {
     display: grid;
     gap: 0.5rem;
-    grid-template: auto auto 1fr / 1fr;
+    grid-template: auto 1fr / 1fr;
   }
 
   .form-row {
     display: grid;
     gap: 0.5rem;
+    margin-bottom: 0.5rem;
   }
   .form-row.one {
     grid-template: 1fr / 3fr 2fr;
-    margin-bottom: 0.5rem;
   }
   .form-row.two {
-    grid-template: 1fr / 5fr 1fr 1fr 1fr;
+    grid-template: 1fr / 5fr 1fr 1fr;
+  }
+  .form-row.three {
+    margin-bottom: 0rem;
+    grid-template: 1fr / 1fr repeat(3, auto);
   }
 
   .result {

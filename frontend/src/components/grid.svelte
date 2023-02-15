@@ -62,6 +62,7 @@
         bind:inputsValid
         on:select
         on:trigger
+        on:removeItem
       />
     </tbody>
   </table>
@@ -87,6 +88,7 @@
     border-collapse: collapse;
     width: 100%;
     background-color: #fff;
+    table-layout: fixed;
   }
 
   table thead {

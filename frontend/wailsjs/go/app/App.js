@@ -78,12 +78,24 @@ export function RemoveItems(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['app']['App']['RemoveItems'](arg1, arg2, arg3, arg4, arg5);
 }
 
+export function RemoveQuery(arg1) {
+  return window['go']['app']['App']['RemoveQuery'](arg1);
+}
+
 export function RemoveView(arg1) {
   return window['go']['app']['App']['RemoveView'](arg1);
 }
 
 export function RenameCollection(arg1, arg2, arg3, arg4) {
   return window['go']['app']['App']['RenameCollection'](arg1, arg2, arg3, arg4);
+}
+
+export function SaveQuery(arg1) {
+  return window['go']['app']['App']['SaveQuery'](arg1);
+}
+
+export function SavedQueries() {
+  return window['go']['app']['App']['SavedQueries']();
 }
 
 export function Settings() {
@@ -100,6 +112,10 @@ export function UpdateHost(arg1, arg2) {
 
 export function UpdateItems(arg1, arg2, arg3, arg4) {
   return window['go']['app']['App']['UpdateItems'](arg1, arg2, arg3, arg4);
+}
+
+export function UpdateQueries(arg1) {
+  return window['go']['app']['App']['UpdateQueries'](arg1);
 }
 
 export function UpdateSettings(arg1) {

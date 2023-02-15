@@ -96,9 +96,12 @@
     contextMenu.show(evt, item.menu);
   }
 
-  function removeItem(index) {
-    items.splice(index, 1);
-    items = items;
+  function removeItem(index, itemKey) {
+    if (Array.isArray(items)) {
+      items.splice(index, 1);
+      items = items;
+    }
+    dispatch('removeItem', itemKey);
   }
 
   function formatValue(value) {
@@ -167,7 +170,7 @@
 
     {#if canRemoveItems}
       <td class="has-button">
-        <button class="btn-sm" type="button" on:click={() => removeItem(index)}>
+        <button class="btn-sm" type="button" on:click|stopPropagation={() => removeItem(index, item[key])} on:dblclick|stopPropagation>
           <Icon name="x" />
         </button>
       </td>

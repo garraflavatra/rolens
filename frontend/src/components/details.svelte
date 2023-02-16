@@ -52,6 +52,9 @@
     align-items: center;
     cursor: pointer;
   }
+  summary::before {
+    content: '';
+  }
   summary :global(svg) {
     width: 14px;
     height: 14px;

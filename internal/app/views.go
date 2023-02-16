@@ -55,7 +55,8 @@ var BuiltInListView = View{
 type ViewStore map[string]View
 
 func updateViewStore(a *App, newData ViewStore) error {
-	filePath := path.Join(a.Env.DataDirectory, "settings.json")
+	newData["list"] = BuiltInListView
+	filePath := path.Join(a.Env.DataDirectory, "views.json")
 
 	jsonData, err := json.MarshalIndent(newData, "", "\t")
 	if err != nil {
@@ -71,6 +72,7 @@ func (a *App) Views() (ViewStore, error) {
 	filePath := path.Join(a.Env.DataDirectory, "views.json")
 
 	jsonData, err := ioutil.ReadFile(filePath)
+	views["list"] = BuiltInListView
 	if err != nil {
 		// It's ok if the file cannot be opened, for example if it is not accessible.
 		// Therefore no error is returned.
@@ -84,15 +86,17 @@ func (a *App) Views() (ViewStore, error) {
 		if err != nil {
 			runtime.LogInfo(a.ctx, "views.json file contains malformatted JSON data")
 			runtime.LogInfo(a.ctx, err.Error())
-			return nil, errors.New("views.json file contains malformatted JSON data")
+			return views, errors.New("views.json file contains malformatted JSON data")
 		}
 	}
 
-	views["list"] = BuiltInListView
 	return views, nil
 }
 
 func (a *App) UpdateViewStore(jsonData string) error {
+	runtime.LogDebug(a.ctx, "Updating view store. New data:")
+	runtime.LogDebug(a.ctx, jsonData)
+
 	var viewStore ViewStore
 	err := json.Unmarshal([]byte(jsonData), &viewStore)
 	if err != nil {

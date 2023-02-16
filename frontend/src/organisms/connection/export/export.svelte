@@ -74,26 +74,36 @@
 
 <Modal bind:show={info} title={actionLabel[info?.type]}>
   <form on:submit|preventDefault={performExport}>
-    <div class="meta">
-      <!-- svelte-ignore a11y-label-has-associated-control - input is in DirectoryChooser -->
-      <label class="field">
-        <span class="label">Output directory</span>
-        <DirectoryChooser bind:value={info.outdir} />
-      </label>
-      <label class="field">
-        <span class="label">Filename</span>
-        <input type="text" bind:value={info.filename} />
-        <select bind:value={info.filetype} class="filetype">
-          <optgroup label="Dump (mongodump)">
-            <option value="bson">.bson</option>
-          </optgroup>
-          <optgroup label="Export (mongoexport)">
-            <option value="csv">.csv</option>
-            <option value="json">.json</option>
-          </optgroup>
-        </select>
-      </label>
+    <!-- svelte-ignore a11y-label-has-associated-control - input is in DirectoryChooser -->
+    <label class="field">
+      <span class="label">Output destination:</span>
+      <DirectoryChooser bind:value={info.outdir} />
+      <span class="label">/</span>
+      <input type="text" bind:value={info.filename} />
+      <span class="label">.</span>
+      <select bind:value={info.filetype} class="filetype">
+        <optgroup label="Dump (via mongodump)">
+          <option value="bson">bson</option>
+        </optgroup>
+        <optgroup label="Export">
+          <option value="csv">csv</option>
+          <option value="json">json</option>
+        </optgroup>
+      </select>
+    </label>
+
+    <div class="options">
+      {#if info.filetype === 'json'}
+        <label class="field">
+          <span class="label">Separate items using:</span>
+          <select bind:value={info.jsonType}>
+            <option value="newline">Newline</option>
+            <option value="array">JSON array</option>
+          </select>
+        </label>
+      {/if}
     </div>
+
     <div class="location">
       <div class="grid">
         <Grid
@@ -154,7 +164,8 @@
 <style>
   form {
     display: grid;
-    grid-template: auto / 1fr;
+    grid-template: auto auto 1fr auto / 1fr;
+    gap: 0.5rem;
   }
   .location {
     display: grid;
@@ -163,15 +174,7 @@
   }
   .location .grid {
     border: 1px solid #ccc;
-    padding: 0.3rem;
     overflow-y: auto;
-  }
-
-  .meta {
-    display: grid;
-    grid-template: 1fr / 1fr 1fr;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
   }
 
   select.filetype {

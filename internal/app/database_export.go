@@ -10,24 +10,19 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-type ExportType string
 type FileType string
 type ExportInfo struct {
-	Type     ExportType `json:"type"`
-	FileType FileType   `json:"fileType"`
-	OutDir   string     `json:"outdir"`
-	Filename string     `json:"filename"`
-	HostKey  string     `json:"hostKey"`
-	DbKey    string     `json:"dbKey"`
-	CollKeys []string   `json:"collKeys"`
+	FileType FileType `json:"fileType"`
+	OutDir   string   `json:"outdir"`
+	Filename string   `json:"filename"`
+	HostKey  string   `json:"hostKey"`
+	DbKey    string   `json:"dbKey"`
+	CollKeys []string `json:"collKeys"`
 }
 
 const (
-	ExportTypeExport ExportType = "export"
-	ExportTypeDump   ExportType = "dump"
-
 	FileTypeJson FileType = "json"
-	FileTypeBson FileType = "bson"
+	FileTypeDump FileType = "dump"
 	FileTypeCsv  FileType = "csv"
 )
 
@@ -56,19 +51,22 @@ func (a *App) PerformExport(jsonData string) bool {
 	}
 	host := hosts[info.HostKey]
 
-	switch info.Type {
-	case ExportTypeExport:
-		if !a.Env.HasMongoExport {
+	switch info.FileType {
+	case FileTypeCsv:
+
+	case FileTypeJson:
+
+	case FileTypeDump:
+		if !a.Env.HasMongoDump {
 			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 				Type:  runtime.ErrorDialog,
-				Title: "You need to install mongoexport to perform an export.",
+				Title: "You need to install mongodump to perform a dump.",
 			})
 			return false
 		}
 
 		args := make([]string, 0)
 		args = append(args, fmt.Sprintf(`--uri="%v"`, host.URI))
-		args = append(args, fmt.Sprintf(`--type="%v"`, info.FileType))
 
 		if info.DbKey != "" {
 			args = append(args, fmt.Sprintf(`--db="%v"`, info.DbKey))
@@ -79,34 +77,25 @@ func (a *App) PerformExport(jsonData string) bool {
 		}
 
 		args = append(args, fmt.Sprintf(`--out="%v.%v"`, path.Join(info.OutDir, info.Filename), info.FileType))
-		cmd := exec.Command("mongoexport", args...)
+		cmd := exec.Command("mongodump", args...)
 		var stdout strings.Builder
 		var stderr strings.Builder
 		cmd.Stdout = &stdout
 		cmd.Stderr = &stderr
 		err = cmd.Run()
 
-		runtime.LogInfo(a.ctx, "Performing export with args: "+strings.Join(args, " "))
-
-		fmt.Println(args)
-		fmt.Println(stdout.String())
-		fmt.Println(stderr.String())
-		fmt.Println(err)
-
-	case ExportTypeDump:
-		if !a.Env.HasMongoDump {
-			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-				Type:  runtime.ErrorDialog,
-				Title: "You need to install mongodump to perform a dump.",
-			})
-			return false
+		runtime.LogInfo(a.ctx, "Performing dump, executing command: mongodump "+strings.Join(args, " "))
+		runtime.LogInfo(a.ctx, "mongodump stdout: "+stdout.String())
+		runtime.LogInfo(a.ctx, "mongodump sterr: "+stderr.String())
+		if err != nil {
+			runtime.LogWarning(a.ctx, "Error while executing mongodump: "+err.Error())
 		}
 
 	default:
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
-			Title:   "Unrecognised export type",
-			Message: string(info.Type),
+			Title:   "Unrecognised export file type",
+			Message: string(info.FileType),
 		})
 		return false
 	}

@@ -36,8 +36,8 @@
 <svelte:window on:keydown={keydown} />
 
 {#if show}
-  <div class="modal outer" on:mousedown|self={() => show = false} transition:fade>
-    <div class="inner" style:max-width={width || '80vw'} transition:fly={{ y: 100 }}>
+  <div class="modal outer" transition:fade>
+    <div class="inner" style:max-width={width || '80vw'} transition:fly={{ y: -100 }}>
       {#if title}
         <header>
           <div class="title">{title}</div>
@@ -68,7 +68,6 @@
     background-color: rgba(0, 0, 0, 0.5);
     margin: 0;
     padding-top: 50px;
-    cursor: pointer;
   }
   :global(#root.platform-darwin) .outer {
     margin-top: var(--darwin-titlebar-height);

@@ -18,7 +18,10 @@
   <ul>
     {#each tabs as tab (tab.key)}
       <li class:active={tab.key === selectedKey}>
-        <button class="tab" on:click={() => select(tab.key)}>{tab.title}</button>
+        <button class="tab" on:click={() => select(tab.key)}>
+          {#if tab.icon} <Icon name={tab.icon} /> {/if}
+          {tab.title}
+        </button>
         {#if tab.closable}
           <button class="btn-sm" on:click={() => dispatch('closeTab', tab.key)}>
             <Icon name="x" />

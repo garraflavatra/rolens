@@ -3,6 +3,7 @@
   import TabBar from '$components/tabbar.svelte';
   import { EventsOn } from '$wails/runtime/runtime';
   import { tick } from 'svelte';
+  import Aggregate from './aggregate.svelte';
   import ViewConfig from './components/viewconfig.svelte';
   import Find from './find.svelte';
   import Indexes from './indexes.svelte';
@@ -46,12 +47,13 @@
   {#if collection}
     {#key collection}
       <TabBar tabs={[
-        { key: 'stats', title: 'Stats' },
-        { key: 'find', title: 'Find' },
-        { key: 'insert', title: 'Insert' },
-        { key: 'update', title: 'Update' },
-        { key: 'remove', title: 'Remove' },
-        { key: 'indexes', title: 'Indexes' },
+        { key: 'stats', icon: 'chart', title: 'Stats' },
+        { key: 'find', icon: 'db', title: 'Find' },
+        { key: 'insert', icon: '+', title: 'Insert' },
+        { key: 'update', icon: 'edit', title: 'Update' },
+        { key: 'remove', icon: 'trash', title: 'Remove' },
+        { key: 'indexes', icon: 'list', title: 'Indexes' },
+        { key: 'aggregate', icon: 're', title: 'Aggregate' },
       ]} bind:selectedKey={tab} />
 
       <div class="container">
@@ -61,6 +63,7 @@
         {:else if tab === 'update'} <Update {collection} on:performFind={catchQuery} />
         {:else if tab === 'remove'} <Remove {collection} />
         {:else if tab === 'indexes'} <Indexes {collection} />
+        {:else if tab === 'aggregate'} <Aggregate {collection} />
         {/if}
       </div>
     {/key}

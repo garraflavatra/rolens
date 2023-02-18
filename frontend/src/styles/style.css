@@ -179,6 +179,13 @@ code,
   font-family: Menlo, monospace;
 }
 
+.settinggrid {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 @keyframes flashGreen {
   0% {
     color: #0d0;

@@ -21,7 +21,7 @@ type QueryResult struct {
 	Results []string `json:"results"`
 }
 
-func (a *App) FindItems(hostKey, dbKey, collKey string, formJson string) QueryResult {
+func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 	var out QueryResult
 	var form Query
 

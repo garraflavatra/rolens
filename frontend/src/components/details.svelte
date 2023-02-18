@@ -54,6 +54,10 @@
   }
   summary::before {
     content: '';
+    display: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
   }
   summary :global(svg) {
     width: 14px;

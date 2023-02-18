@@ -1,4 +1,8 @@
 import { ObjectId } from 'bson';
+import aggregationStages from './mongo-aggregation-stages.json';
+import locales from './mongo-locales.json';
+
+export { aggregationStages, locales };
 
 // Calculate the min and max values of (un)signed integers with n bits
 export const intMin = bits => Math.pow(2, bits - 1) * -1;
@@ -31,4 +35,9 @@ export function canBeObjectId(value) {
   catch {
     return false;
   }
+}
+
+export function aggregationStageDocumentationURL(stageName) {
+  const url = `https://www.mongodb.com/docs/manual/reference/operator/aggregation/${stageName.replace('$', '')}/`;
+  return url;
 }

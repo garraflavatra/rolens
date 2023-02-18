@@ -10,6 +10,7 @@ import (
 	"runtime"
 
 	"github.com/garraflavatra/rolens/internal/open_file"
+	"github.com/gen2brain/beeep"
 	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
@@ -153,4 +154,8 @@ func (a *App) OpenDirectory(id, title string) string {
 
 	wailsRuntime.LogInfo(a.ctx, "Chosen directory: "+dir)
 	return dir
+}
+
+func (a *App) Beep() {
+	beeep.Beep(beeep.DefaultFreq, beeep.DefaultDuration)
 }

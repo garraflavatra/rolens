@@ -9,6 +9,8 @@ export function AddHost(arg1:string):Promise<void>;
 
 export function Aggregate(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string):Promise<void>;
 
+export function Beep():Promise<void>;
+
 export function CreateIndex(arg1:string,arg2:string,arg3:string,arg4:string):Promise<string>;
 
 export function DropCollection(arg1:string,arg2:string,arg3:string):Promise<boolean>;

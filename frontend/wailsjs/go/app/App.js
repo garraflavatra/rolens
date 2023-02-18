@@ -10,6 +10,10 @@ export function Aggregate(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['app']['App']['Aggregate'](arg1, arg2, arg3, arg4, arg5);
 }
 
+export function Beep() {
+  return window['go']['app']['App']['Beep']();
+}
+
 export function CreateIndex(arg1, arg2, arg3, arg4) {
   return window['go']['app']['App']['CreateIndex'](arg1, arg2, arg3, arg4);
 }

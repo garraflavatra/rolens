@@ -1,6 +1,6 @@
 import { ObjectId } from 'bson';
-import aggregationStages from './mongo-aggregation-stages.json';
-import locales from './mongo-locales.json';
+import aggregationStages from './aggregation-stages.json';
+import locales from './locales.json';
 
 export { aggregationStages, locales };
 

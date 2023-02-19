@@ -1,9 +1,10 @@
 <script>
-  import CodeExample from '$components/code-example.svelte';
+  // import CodeExample from '$components/code-example.svelte';
   import Grid from '$components/grid.svelte';
   import Icon from '$components/icon.svelte';
   import ObjectGrid from '$components/objectgrid.svelte';
   import input from '$lib/actions/input';
+  import { deepClone } from '$lib/objects';
   import queries from '$lib/stores/queries';
   import applicationSettings from '$lib/stores/settings';
   import views from '$lib/stores/views';
@@ -45,7 +46,7 @@
     if (newResult) {
       newResult.results = newResult.results?.map(s => EJSON.parse(s, { relaxed: false }));
       result = newResult;
-      submittedForm = JSON.parse(JSON.stringify(form));
+      submittedForm = deepClone(form);
     }
     resetFocus();
   }
@@ -157,12 +158,12 @@
     </div>
 
     <div class="form-row three">
-      <CodeExample {code} />
-      <button class="btn" type="button" on:click={loadQuery} title="Load query…">
-        <Icon name="upload" />
+      <!-- <CodeExample {code} /> -->
+      <button class="btn" type="button" on:click={loadQuery}>
+        <Icon name="upload" /> Load query…
       </button>
-      <button class="btn" type="button" on:click={saveQuery} title="Save query as…">
-        <Icon name="save" />
+      <button class="btn" type="button" on:click={saveQuery}>
+        <Icon name="save" /> Save as…
       </button>
       <button type="submit" class="btn" title="Run query">
         <Icon name="play" /> Run
@@ -274,7 +275,8 @@
   }
   .form-row.three {
     margin-bottom: 0rem;
-    grid-template: 1fr / 1fr repeat(3, auto);
+    grid-template: 1fr / repeat(3, auto);
+    justify-content: end;
   }
 
   .result {

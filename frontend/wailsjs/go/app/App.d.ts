@@ -41,6 +41,8 @@ export function OpenDirectory(arg1:string,arg2:string):Promise<string>;
 
 export function PerformExport(arg1:string):Promise<boolean>;
 
+export function PurgeLogDirectory():Promise<void>;
+
 export function RemoveHost(arg1:string):Promise<void>;
 
 export function RemoveItemById(arg1:string,arg2:string,arg3:string,arg4:string):Promise<boolean>;

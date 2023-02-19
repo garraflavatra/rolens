@@ -1,12 +1,12 @@
 <script>
-  import CodeExample from '$components/code-example.svelte';
+  // import CodeExample from '$components/code-example.svelte';
   import ObjectGrid from '$components/objectgrid.svelte';
 
   export let collection;
 </script>
 
 <div class="stats">
-  <CodeExample code="db.stats()" />
+  <!-- <CodeExample code="db.stats()" /> -->
 
   <div class="grid">
     <ObjectGrid data={collection.stats} />
@@ -17,7 +17,7 @@
   .stats {
     display: grid;
     gap: 0.5rem;
-    grid-template: auto 1fr / 1fr;
+    grid-template: auto / 1fr;
   }
 
   .stats .grid {

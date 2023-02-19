@@ -7,7 +7,7 @@
   import { randomString } from '$lib/math';
   import { inputTypes } from '$lib/mongo';
   import views from '$lib/stores/views';
-  import { capitalise } from '$lib/strings';
+  import { capitalise, convertLooseJson, jsonLooseParse } from '$lib/strings';
   import { InsertItems } from '$wails/go/app/App';
   import { EJSON } from 'bson';
   import { createEventDispatcher } from 'svelte';
@@ -32,7 +32,7 @@
   $: {
     if (collection.viewKey === 'list') {
       try {
-        newItems = EJSON.parse(json, { relaxed: false });
+        newItems = EJSON.deserialize(jsonLooseParse(json), { relaxed: false });
       }
       catch { /* ok */ }
     }
@@ -46,7 +46,7 @@
   }
 
   async function insert() {
-    insertedIds = await InsertItems(collection.hostKey, collection.dbKey, collection.key, json);
+    insertedIds = await InsertItems(collection.hostKey, collection.dbKey, collection.key, convertLooseJson(json));
     if ((collection.viewKey === 'list') && insertedIds) {
       newItems = [];
     }
@@ -95,15 +95,8 @@
 <form on:submit|preventDefault={insert}>
   <div class="items">
     {#if collection.viewKey === 'list'}
-      <label class="field">
-        <textarea
-          cols="30"
-          rows="10"
-          placeholder="[]"
-          class="code"
-          bind:value={json}
-          use:input={{ type: 'json', autofocus: true }}
-        ></textarea>
+      <label class="field json">
+        <textarea placeholder="[]" class="code" bind:value={json} use:input={{ type: 'json', autofocus: true }}></textarea>
       </label>
     {:else if viewType === 'form'}
       <div class="form">
@@ -207,5 +200,12 @@
   .flex {
     display: flex;
     justify-content: space-between;
+  }
+
+  .field.json {
+    height: 100%;
+  }
+  .field.json textarea {
+    resize: none;
   }
 </style>

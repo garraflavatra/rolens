@@ -3,6 +3,7 @@
   import Modal from './modal.svelte';
   import ObjectTree from './objecttree.svelte';
   import { onDestroy } from 'svelte';
+  import { deepClone } from '$lib/objects';
 
   export let data;
 
@@ -11,7 +12,7 @@
   let _data;
 
   $: if (data) {
-    _data = JSON.parse(JSON.stringify(data));
+    _data = deepClone(data);
     for (const key of Object.keys(_data)) {
       if (typeof _data[key] === 'undefined') {
         delete _data[key];

@@ -20,6 +20,7 @@ func (a *App) RemoveItems(hostKey, dbKey, collKey, jsonData string, many bool) i
 			Buttons:       []string{"Yes", "No"},
 			DefaultButton: "Yes",
 			CancelButton:  "No",
+			Type:          runtime.WarningDialog,
 		})
 		if sure != "Yes" {
 			return 0

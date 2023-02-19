@@ -34,6 +34,7 @@ func (a *App) DropDatabase(hostKey, dbKey string) bool {
 		Buttons:       []string{"Yes", "No"},
 		DefaultButton: "Yes",
 		CancelButton:  "No",
+		Type:          runtime.WarningDialog,
 	})
 	if sure != "Yes" {
 		return false

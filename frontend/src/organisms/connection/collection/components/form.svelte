@@ -2,7 +2,7 @@
   import FormInput from '$components/forminput.svelte';
   import Icon from '$components/icon.svelte';
   import { inputTypes } from '$lib/mongo';
-  import { resolveKeypath, setValue } from '$lib/keypaths';
+  import { resolveKeypath, setValue } from '$lib/objects';
   import Hint from '$components/hint.svelte';
 
   export let item = {};

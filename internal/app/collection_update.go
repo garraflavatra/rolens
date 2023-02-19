@@ -44,11 +44,12 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 
 	err = bson.UnmarshalExtJSON([]byte(form.Query), true, &query)
 	if err != nil {
-		runtime.LogError(a.ctx, "Invalid update query:")
-		runtime.LogError(a.ctx, err.Error())
+		runtime.LogWarning(a.ctx, "Invalid update query:")
+		runtime.LogWarning(a.ctx, form.Query)
+		runtime.LogWarning(a.ctx, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Type:    runtime.ErrorDialog,
-			Title:   "Invalid query",
+			Title:   "Invalid update query",
 			Message: err.Error(),
 		})
 		return 0
@@ -60,11 +61,12 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 		if err == nil {
 			update[param.Type] = unmarshalled
 		} else {
-			runtime.LogError(a.ctx, "Invalid update query:")
-			runtime.LogError(a.ctx, err.Error())
+			runtime.LogWarning(a.ctx, "Invalid update parameter value:")
+			runtime.LogWarning(a.ctx, param.Value)
+			runtime.LogWarning(a.ctx, err.Error())
 			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 				Type:    runtime.ErrorDialog,
-				Title:   "Invalid query",
+				Title:   "Invalid update query",
 				Message: err.Error(),
 			})
 			return 0

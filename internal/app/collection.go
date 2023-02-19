@@ -64,6 +64,7 @@ func (a *App) TruncateCollection(hostKey, dbKey, collKey string) bool {
 		Buttons:       []string{"Yes", "No"},
 		DefaultButton: "Yes",
 		CancelButton:  "No",
+		Type:          runtime.WarningDialog,
 	})
 	if sure != "Yes" {
 		return false
@@ -97,6 +98,7 @@ func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
 		Buttons:       []string{"Yes", "No"},
 		DefaultButton: "Yes",
 		CancelButton:  "No",
+		Type:          runtime.WarningDialog,
 	})
 	if sure != "Yes" {
 		return false

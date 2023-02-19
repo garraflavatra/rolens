@@ -29,6 +29,10 @@
     collection.key = collectionKey;
   }
 
+  $: if (hostKey || dbKey || collectionKey) {
+    tab = 'find';
+  }
+
   EventsOn('OpenCollectionTab', name => (tab = name || tab));
 
   async function catchQuery(event) {

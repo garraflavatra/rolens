@@ -1,0 +1,29 @@
+{
+  "Fields": {
+    "$currentDate": "Current Date",
+    "$inc": "Increment",
+    "$min": "Min",
+    "$max": "Max",
+    "$mul": "Multiply",
+    "$rename": "Rename",
+    "$set": "Set",
+    "$setOnInsert": "Set on Insert",
+    "$unset": "Unset"
+  },
+  "Array": {
+    "$addToSet": "Add to Set",
+    "$pop": "Pop",
+    "$pull": "Pull",
+    "$push": "Push",
+    "$pullAll": "Push All"
+  },
+  "Modifiers": {
+    "$each": "Each",
+    "$position": "Position",
+    "$slice": "Slice",
+    "$sort": "Sort"
+  },
+  "Bitwise": {
+    "$bit": "Bit"
+  }
+}

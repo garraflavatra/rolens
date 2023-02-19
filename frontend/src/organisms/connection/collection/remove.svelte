@@ -1,5 +1,5 @@
 <script>
-  import CodeExample from '$components/code-example.svelte';
+  // import CodeExample from '$components/code-example.svelte';
   import Icon from '$components/icon.svelte';
   import input from '$lib/actions/input';
   import { RemoveItems } from '$wails/go/app/App';
@@ -17,15 +17,7 @@
 </script>
 
 <form on:submit|preventDefault={removeItems}>
-  <div class="options">
-    <CodeExample {code} />
-    <label class="field">
-      <span class="label">Many</span>
-      <span class="checkbox">
-        <input type="checkbox" bind:checked={many} />
-      </span>
-    </label>
-  </div>
+  <!-- <CodeExample {code} /> -->
 
   <label class="field">
     <textarea
@@ -38,35 +30,38 @@
     ></textarea>
   </label>
 
-  <div class="flex">
-    <div>
-      {#key result}
-        {#if typeof result === 'number'}
-          <span class="flash-green">Removed {result} item{result === 1 ? '' : 's'}</span>
-        {/if}
-      {/key}
-    </div>
+  <div class="actions">
     <button type="submit" class="btn danger">
       <Icon name="-" /> Remove
     </button>
+
+    <label class="field many">
+      <span class="label">Many</span>
+      <span class="checkbox">
+        <input type="checkbox" bind:checked={many} />
+      </span>
+    </label>
+
+    {#key result}
+      {#if typeof result === 'number'}
+        <span class="flash-green">Removed {result} item{result === 1 ? '' : 's'}</span>
+      {/if}
+    {/key}
   </div>
 </form>
 
 <style>
   form {
     display: grid;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: 1fr auto;
     gap: 0.5rem;
   }
 
-  .options {
-    display: grid;
-    gap: 0.5rem;
-    grid-template: 1fr / 1fr auto;
+  .many {
+    display: inline-flex;
   }
 
-  .flex {
-    display: flex;
-    justify-content: space-between;
+  textarea {
+    resize: none;
   }
 </style>

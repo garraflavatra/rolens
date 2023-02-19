@@ -3,7 +3,7 @@
   import Icon from './icon.svelte';
   import FormInput from './forminput.svelte';
   import contextMenu from '$lib/stores/contextmenu';
-  import { resolveKeypath, setValue } from '$lib/keypaths';
+  import { resolveKeypath, setValue } from '$lib/objects';
 
   export let items = [];
   export let columns = [];

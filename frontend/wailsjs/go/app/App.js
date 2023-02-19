@@ -74,6 +74,10 @@ export function PerformExport(arg1) {
   return window['go']['app']['App']['PerformExport'](arg1);
 }
 
+export function PurgeLogDirectory() {
+  return window['go']['app']['App']['PurgeLogDirectory']();
+}
+
 export function RemoveHost(arg1) {
   return window['go']['app']['App']['RemoveHost'](arg1);
 }

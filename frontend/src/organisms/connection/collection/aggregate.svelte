@@ -5,6 +5,7 @@
   import MongoCollation from '$components/mongo-collation.svelte';
   import input from '$lib/actions/input';
   import { aggregationStageDocumentationURL, aggregationStages } from '$lib/mongo';
+  import { jsonLooseParse, looseJsonIsValid } from '$lib/strings';
   import { Aggregate } from '$wails/go/app/App';
   import { BrowserOpenURL } from '$wails/runtime/runtime';
   import { onMount } from 'svelte';
@@ -14,15 +15,7 @@
   const options = {};
   let stages = [];
   let settingsModalOpen = false;
-  $: invalid = !stages.length || stages.some(stage => {
-    try {
-      JSON.parse(stage.data);
-      return false;
-    }
-    catch {
-      return true;
-    }
-  });
+  $: invalid = !stages.length || stages.some(stage => !stage.data || !looseJsonIsValid(stage.data));
 
   function addStage() {
     stages = [ ...stages, { type: '$match' } ];
@@ -38,7 +31,7 @@
   }
 
   async function run() {
-    const pipeline = stages.map(stage => ({ [stage.type]: JSON.parse(stage.data) }));
+    const pipeline = stages.map(stage => ({ [stage.type]: jsonLooseParse(stage.data) }));
     await Aggregate(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(pipeline), JSON.stringify(options));
   }
 
@@ -84,11 +77,10 @@
         <Icon name="cog" /> Settings
       </button>
     </div>
-
   </div>
 </form>
 
-<Modal title="Advanced settings" bind:show={settingsModalOpen}>
+<Modal title="Advanced aggregation settings" bind:show={settingsModalOpen}>
   <div class="settinggrid">
     <label for="allowDiskUse">Allow disk use</label>
     <div class="field">

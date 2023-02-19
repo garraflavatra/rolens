@@ -43,6 +43,16 @@
 </script>
 
 <div class="indexes">
+  <div class="grid">
+    <ObjectGrid
+      key="name"
+      data={indexes}
+      getRootMenu={(_, idx) => [ { label: 'Drop this index', fn: () => drop(idx.name) } ]}
+      bind:activePath
+      on:trigger={e => openJson(e.detail.itemKey)}
+    />
+  </div>
+
   <div class="actions">
     <button class="btn" on:click={getIndexes}>
       <Icon name="reload" /> Reload
@@ -54,16 +64,6 @@
       <Icon name="x" /> Drop selected
     </button>
   </div>
-
-  <div class="grid">
-    <ObjectGrid
-      key="name"
-      data={indexes}
-      getRootMenu={(_, idx) => [ { label: 'Drop this index', fn: () => drop(idx.name) } ]}
-      bind:activePath
-      on:trigger={e => openJson(e.detail.itemKey)}
-    />
-  </div>
 </div>
 
 <ObjectViewer bind:data={objectViewerData} />
@@ -73,7 +73,7 @@
   .indexes {
     display: grid;
     gap: 0.5rem;
-    grid-template: auto 1fr / 1fr;
+    grid-template: 1fr auto / 1fr;
   }
 
   .indexes .grid {

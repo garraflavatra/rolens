@@ -1,5 +1,6 @@
 import { isInt } from '$lib/math';
 import { canBeObjectId, int32, int64, uint64 } from '$lib/mongo';
+import { jsonLooseParse } from '$lib/strings';
 
 export default function input(node, { autofocus, type, onValid, onInvalid, mandatory } = {
   autofocus: false,
@@ -26,7 +27,7 @@ export default function input(node, { autofocus, type, onValid, onInvalid, manda
     switch (type) {
       case 'json':
         try {
-          JSON.parse(node.value);
+          jsonLooseParse(node.value);
           return false;
         }
         catch {

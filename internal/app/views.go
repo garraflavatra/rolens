@@ -135,6 +135,7 @@ func (a *App) RemoveView(viewKey string) error {
 		Buttons:       []string{"Yes", "No"},
 		DefaultButton: "Yes",
 		CancelButton:  "No",
+		Type:          runtime.WarningDialog,
 	})
 	if sure != "Yes" {
 		return errors.New("operation aborted")

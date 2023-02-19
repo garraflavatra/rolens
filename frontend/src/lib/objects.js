@@ -56,3 +56,8 @@ export function setValue(object, path, value) {
 
   return object;
 }
+
+export function deepClone(obj) {
+  // Room for improvement below
+  return JSON.parse(JSON.stringify(obj));
+}

@@ -86,6 +86,34 @@ func (a *App) Environment() EnvironmentInfo {
 	return a.Env
 }
 
+func (a *App) PurgeLogDirectory() {
+	sure, _ := wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
+		Title:         "Are you sure you want to remove all logfiles?",
+		Buttons:       []string{"Yes", "No"},
+		DefaultButton: "Yes",
+		CancelButton:  "No",
+		Type:          wailsRuntime.QuestionDialog,
+	})
+
+	if sure != "Yes" {
+		return
+	}
+
+	err := os.RemoveAll(a.Env.LogDirectory)
+	if err == nil {
+		wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
+			Title: "Successfully purged log directory.",
+			Type:  wailsRuntime.InfoDialog,
+		})
+	} else {
+		wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
+			Title:   "Encountered an error while purging log directory.",
+			Message: err.Error(),
+			Type:    wailsRuntime.WarningDialog,
+		})
+	}
+}
+
 func menuEventEmitter(a *App, eventName string, data ...interface{}) func(cd *menu.CallbackData) {
 	return func(cd *menu.CallbackData) {
 		wailsRuntime.EventsEmit(a.ctx, eventName, data...)
@@ -98,6 +126,9 @@ func (a *App) Menu() *menu.Menu {
 	aboutMenu := appMenu.AddSubmenu("About")
 	aboutMenu.AddText("About…", nil, menuEventEmitter(a, "OpenAboutModal"))
 	aboutMenu.AddText("Prefrences…", keys.CmdOrCtrl(","), menuEventEmitter(a, "OpenPrefrences"))
+	aboutMenu.AddSeparator()
+	aboutMenu.AddText("Open log directory…", nil, func(cd *menu.CallbackData) { open_file.Reveal(a.Env.LogDirectory) })
+	aboutMenu.AddText("Purge logs", nil, func(cd *menu.CallbackData) { a.PurgeLogDirectory() })
 	aboutMenu.AddSeparator()
 	aboutMenu.AddText("Quit", keys.CmdOrCtrl("q"), func(cd *menu.CallbackData) { wailsRuntime.Quit(a.ctx) })
 
@@ -123,8 +154,6 @@ func (a *App) Menu() *menu.Menu {
 
 	helpMenu := appMenu.AddSubmenu("Help")
 	helpMenu.AddText("User guide", nil, func(cd *menu.CallbackData) { wailsRuntime.BrowserOpenURL(a.ctx, "") })
-	helpMenu.AddSeparator()
-	helpMenu.AddText("Open log directory", nil, func(cd *menu.CallbackData) { open_file.Reveal(a.Env.LogDirectory) })
 
 	return appMenu
 }

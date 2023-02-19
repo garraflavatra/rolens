@@ -1,45 +1,31 @@
 <script>
-  import CodeExample from '$components/code-example.svelte';
+  // import CodeExample from '$components/code-example.svelte';
   import Icon from '$components/icon.svelte';
   import input from '$lib/actions/input';
+  import { atomicUpdateOperators } from '$lib/mongo';
+  import { deepClone } from '$lib/objects';
+  import { convertLooseJson, jsonLooseParse } from '$lib/strings';
   import { UpdateItems } from '$wails/go/app/App';
 
   export let collection = {};
 
-  const atomicUpdateOperators = {
-    'Fields': {
-      $currentDate: 'Current Date',
-      $inc: 'Increment',
-      $min: 'Min',
-      $max: 'Max',
-      $mul: 'Multiply',
-      $rename: 'Rename',
-      $set: 'Set',
-      $setOnInsert: 'Set on Insert',
-      $unset: 'Unset',
-    },
-    'Array': {
-      $addToSet: 'Add to Set',
-      $pop: 'Pop',
-      $pull: 'Pull',
-      $push: 'Push',
-      $pullAll: 'Push All',
-    },
-    'Modifiers': {
-      $each: 'Each',
-      $position: 'Position',
-      $slice: 'Slice',
-      $sort: 'Sort',
-    },
-    'Bitwise': {
-      $bit: 'Bit',
-    },
-  };
   const allOperators = Object.values(atomicUpdateOperators).map(Object.keys).flat();
-
   const form = { query: '{}', parameters: [ { type: '$set' } ] };
   let updatedCount;
   $: code = buildCode(form);
+  $: invalid = !form.query || form.parameters?.some(param => {
+    if (!param.value) {
+      return true;
+    }
+
+    try {
+      jsonLooseParse(param.value);
+      return false;
+    }
+    catch {
+      return true;
+    }
+  });
 
   function buildCode(form) {
     let operation = '{ ' + form.parameters.filter(p => p.type).map(p => `${p.type}: ${p.value || '{}'}`).join(', ') + ' }';
@@ -58,7 +44,10 @@
   }
 
   async function submitQuery() {
-    updatedCount = await UpdateItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
+    const f = deepClone(form);
+    f.query = convertLooseJson(f.query);
+    f.parameters = f.parameters.map(param => ({ ...param, value: convertLooseJson(param.value) }));
+    updatedCount = await UpdateItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(f));
   }
 
   function removeParam(index) {
@@ -92,7 +81,7 @@
 </script>
 
 <form class="update" on:submit|preventDefault={submitQuery}>
-  <CodeExample language="json" {code} />
+  <!-- <CodeExample language="json" {code} /> -->
 
   <div class="options">
     <label class="field">
@@ -117,7 +106,7 @@
       {/if}
     {/key}
 
-    <button class="btn" type="submit">
+    <button class="btn" type="submit" disabled={invalid}>
       <Icon name="check" /> Update
     </button>
   </div>
@@ -135,7 +124,7 @@
             {#each Object.entries(atomicUpdateOperators) as [groupName, options]}
               <optgroup label={groupName}>
                 {#each Object.entries(options) as [key, label]}
-                  <option value={key} disabled={form.parameters.some(p => p.type === key)}>
+                  <option value={key} disabled={form.parameters.some(p => p.type === key) && (key !== param.type)}>
                     {label}
                   </option>
                 {/each}
@@ -145,14 +134,13 @@
           <input type="text" class="code" bind:value={param.value} placeholder={'{}'} use:input={{ type: 'json' }} />
         </label>
 
-        <label class="field">
-          <button class="btn" disabled={form.parameters.length >= allOperators.length} on:click={() => addParameter()} type="button">
-            <Icon name="+" />
-          </button>
-          <button class="btn" disabled={form.parameters.length < 2} on:click={() => removeParam(index)} type="button">
-            <Icon name="-" />
-          </button>
-        </label>
+        <button class="btn" disabled={form.parameters.length >= allOperators.length} on:click={() => addParameter()} type="button">
+          <Icon name="+" />
+        </button>
+
+        <button class="btn" disabled={form.parameters.length < 2} on:click={() => removeParam(index)} type="button">
+          <Icon name="-" />
+        </button>
       </fieldset>
     {/each}
   </fieldset>
@@ -162,7 +150,7 @@
   .update {
     display: grid;
     gap: 0.5rem;
-    grid-template: auto auto auto 1fr / 1fr;
+    grid-template: auto auto 1fr / 1fr;
   }
 
   .options {
@@ -181,7 +169,7 @@
   }
   .parameter {
     display: grid;
-    grid-template: 1fr / 1fr auto;
+    grid-template: 1fr / 1fr auto auto;
     gap: 0.5rem;
   }
 

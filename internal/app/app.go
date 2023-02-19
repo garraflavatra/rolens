@@ -88,11 +88,12 @@ func (a *App) Environment() EnvironmentInfo {
 
 func (a *App) PurgeLogDirectory() {
 	sure, _ := wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
-		Title:         "Are you sure you want to remove all logfiles?",
+		Title:         "Confirm",
+		Message:       "Are you sure you want to remove all logfiles?",
 		Buttons:       []string{"Yes", "No"},
 		DefaultButton: "Yes",
 		CancelButton:  "No",
-		Type:          wailsRuntime.QuestionDialog,
+		Type:          wailsRuntime.WarningDialog,
 	})
 
 	if sure != "Yes" {

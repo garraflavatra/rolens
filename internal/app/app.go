@@ -187,5 +187,8 @@ func (a *App) OpenDirectory(id, title string) string {
 }
 
 func (a *App) Beep() {
+	if runtime.GOOS == "windows" {
+		return
+	}
 	beeep.Beep(beeep.DefaultFreq, beeep.DefaultDuration)
 }

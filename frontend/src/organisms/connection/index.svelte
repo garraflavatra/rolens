@@ -1,5 +1,4 @@
 <script>
-  import Hint from '$components/hint.svelte';
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
   import input from '$lib/actions/input';

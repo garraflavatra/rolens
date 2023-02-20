@@ -1,3 +1,4 @@
-build/bin
-node_modules
-frontend/dist
+/build/bin/
+/frontend/node_modules/
+/frontend/dist/
+/build/windows/installer/tmp/

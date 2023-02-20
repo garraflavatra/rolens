@@ -5,7 +5,7 @@
   import input from '$lib/actions/input';
   import busy from '$lib/stores/busy';
   import { connections } from '$lib/stores/connections';
-  import { Hosts, RenameCollection } from '$wails/go/app/App';
+  import { EnterText, Hosts, RenameCollection } from '$wails/go/app/App';
   import { EventsOn } from '$wails/runtime/runtime';
   import { onMount } from 'svelte';
   import CollectionDetail from './collection/index.svelte';
@@ -19,8 +19,6 @@
   export let activeCollKey = '';
 
   let hostTree;
-  let newDb;
-  let newColl;
 
   let showHostDetail = false;
   let hostDetailKey = '';
@@ -44,9 +42,11 @@
     showHostDetail = true;
   }
 
-  function createDatabase() {
-    $connections[activeHostKey].databases[newDb.name] = { collections: {} };
-    newDb = undefined;
+  async function createDatabase() {
+    const name = await EnterText('Create a database', 'Enter the database name. Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.');
+    if (name) {
+      $connections[activeHostKey].databases[name] = { collections: {} };
+    }
   }
 
   function openEditCollModal(collKey) {
@@ -66,9 +66,11 @@
     busy.end();
   }
 
-  function createCollection() {
-    $connections[activeHostKey].databases[activeDbKey].collections[newColl.name] = {};
-    newColl = undefined;
+  async function createCollection() {
+    const name = await EnterText('Create a collection', 'Note: collections in MongoDB do not exist until they have at least one item. Your new collection will not persist on the server; fill it to have it created.');
+    if (name) {
+      $connections[activeHostKey].databases[activeDbKey].collections[name] = {};
+    }
   }
 
   function exportCollection(collKey) {
@@ -92,8 +94,8 @@
   }
 
   EventsOn('CreateHost', createHost);
-  EventsOn('CreateDatabase', () => newDb = {});
-  EventsOn('CreateCollection', () => newColl = {});
+  EventsOn('CreateDatabase', createDatabase);
+  EventsOn('CreateCollection', createCollection);
   onMount(getHosts);
 </script>
 
@@ -105,8 +107,8 @@
     bind:activeDbKey
     bind:this={hostTree}
     on:newHost={createHost}
-    on:newDatabase={() => newDb = {}}
-    on:newCollection={() => newColl = {}}
+    on:newDatabase={createDatabase}
+    on:newCollection={createCollection}
     on:editHost={e => editHost(e.detail)}
     on:renameCollection={e => openEditCollModal(e.detail)}
     on:exportCollection={e => exportCollection(e.detail)}
@@ -131,42 +133,6 @@
 
 <Export bind:info={exportInfo} {hosts} />
 
-{#if newDb}
-  <Modal bind:show={newDb}>
-    <p><strong>Create a database</strong></p>
-    <Hint>
-      Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.
-    </Hint>
-    <form on:submit|preventDefault={createDatabase}>
-      <label class="field">
-        <input type="text" spellcheck="false" bind:value={newDb.name} use:input={{ autofocus: true }} placeholder="New collection name" />
-      </label>
-      <p class="modal-actions">
-        <button class="btn create" type="submit" disabled={!newDb.name?.trim()}>Create database</button>
-        <button class="btn secondary" type="button" on:click={() => newDb = undefined}>Cancel</button>
-      </p>
-    </form>
-  </Modal>
-{/if}
-
-{#if newColl}
-  <Modal bind:show={newColl}>
-    <p><strong>Create a collection</strong></p>
-    <Hint>
-      Note: collections in MongoDB do not exist until they have at least one item. Your new collection will not persist on the server; fill it to have it created.
-    </Hint>
-    <form on:submit|preventDefault={createCollection}>
-      <label class="field">
-        <input type="text" spellcheck="false" bind:value={newColl.name} use:input={{ autofocus: true }} placeholder="New collection name" />
-      </label>
-      <p class="modal-actions">
-        <button class="btn create" type="submit" disabled={!newColl.name?.trim()}>Create collection</button>
-        <button class="btn secondary" type="button" on:click={() => newColl = undefined}>Cancel</button>
-      </p>
-    </form>
-  </Modal>
-{/if}
-
 {#if collToRename}
   <Modal bind:show={collToRename} width="400px">
     <form class="rename" on:submit|preventDefault={renameCollection}>
@@ -184,11 +150,6 @@
 {/if}
 
 <style>
-  .modal-actions {
-    display: flex;
-    justify-content: space-between;
-  }
-
   .tree {
     padding: 0.5rem;
     background-color: #fff;

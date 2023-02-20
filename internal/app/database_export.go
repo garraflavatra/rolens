@@ -7,6 +7,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -32,21 +33,13 @@ func (a *App) PerformExport(jsonData string) bool {
 	if err != nil {
 		runtime.LogError(a.ctx, "Could not unmarshal export form")
 		runtime.LogError(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Could not unmarshal JSON",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
 		return false
 	}
 
 	hosts, err := a.Hosts()
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Could not retrieve hosts",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while getting hosts"), zenity.ErrorIcon)
 		return false
 	}
 	host := hosts[info.HostKey]
@@ -58,10 +51,7 @@ func (a *App) PerformExport(jsonData string) bool {
 
 	case FileTypeDump:
 		if !a.Env.HasMongoDump {
-			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-				Type:  runtime.ErrorDialog,
-				Title: "You need to install mongodump to perform a dump.",
-			})
+			zenity.Info("You need to install mongodump to perform a dump.", zenity.Title("Additional software required"), zenity.ErrorIcon)
 			return false
 		}
 
@@ -92,11 +82,7 @@ func (a *App) PerformExport(jsonData string) bool {
 		}
 
 	default:
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Unrecognised export file type",
-			Message: string(info.FileType),
-		})
+		zenity.Info(fmt.Sprintf("File type '%v' is not known.", info.FileType), zenity.Title("Unrecognised file type"), zenity.ErrorIcon)
 		return false
 	}
 

@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -15,11 +16,7 @@ func (a *App) OpenDatabase(hostKey, dbKey string) (collections []string) {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not retrieve collection list for db "+dbKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Could not retrieve collection list for " + dbKey,
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while getting collections"), zenity.ErrorIcon)
 		return nil
 	}
 
@@ -28,15 +25,8 @@ func (a *App) OpenDatabase(hostKey, dbKey string) (collections []string) {
 }
 
 func (a *App) DropDatabase(hostKey, dbKey string) bool {
-	sure, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Title:         "Confirm",
-		Message:       "Are you sure you want to drop " + dbKey + "?",
-		Buttons:       []string{"Yes", "No"},
-		DefaultButton: "Yes",
-		CancelButton:  "No",
-		Type:          runtime.WarningDialog,
-	})
-	if sure != "Yes" {
+	err := zenity.Question("Are you sure you want to drop "+dbKey+"?", zenity.Title("Confirm"), zenity.WarningIcon)
+	if err == zenity.ErrCanceled {
 		return false
 	}
 
@@ -49,11 +39,7 @@ func (a *App) DropDatabase(hostKey, dbKey string) bool {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not drop db "+dbKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Could not drop " + dbKey,
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while dropping database"), zenity.ErrorIcon)
 		return false
 	}
 

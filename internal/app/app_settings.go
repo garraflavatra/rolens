@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -46,11 +47,7 @@ func (a *App) Settings() Settings {
 		if err != nil {
 			runtime.LogWarning(a.ctx, "Cannot unmarshal settings.json:")
 			runtime.LogWarning(a.ctx, err.Error())
-			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-				Type:    runtime.ErrorDialog,
-				Title:   "Could not retrieve application settings, using defaults!",
-				Message: err.Error(),
-			})
+			zenity.Info("Could not retrieve application settings, using defaults!", zenity.Title("Information"), zenity.WarningIcon)
 		}
 		return s
 	}
@@ -62,11 +59,7 @@ func (a *App) UpdateSettings(jsonData string) Settings {
 	if err != nil {
 		runtime.LogError(a.ctx, "Malformed JSON for settings file:")
 		runtime.LogError(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.InfoDialog,
-			Title:   "Malformed JSON",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Malformed JSON"), zenity.ErrorIcon)
 		return s
 	}
 
@@ -74,11 +67,7 @@ func (a *App) UpdateSettings(jsonData string) Settings {
 	if err != nil {
 		runtime.LogError(a.ctx, "Could not marshal settings into JSON:")
 		runtime.LogError(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.InfoDialog,
-			Title:   "Could not marshal settings into JSON",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Malformed JSON"), zenity.ErrorIcon)
 		return s
 	}
 
@@ -87,11 +76,7 @@ func (a *App) UpdateSettings(jsonData string) Settings {
 	if err != nil {
 		runtime.LogError(a.ctx, "Could not update host list:")
 		runtime.LogError(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.InfoDialog,
-			Title:   "Could not update host list",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Could not update host list"), zenity.ErrorIcon)
 	}
 
 	return s

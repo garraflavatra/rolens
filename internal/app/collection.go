@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 
+	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -18,11 +19,7 @@ func (a *App) OpenCollection(hostKey, dbKey, collKey string) (result bson.M) {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not retrieve collection stats for "+collKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Could not retrieve collection stats for " + collKey,
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Could not get stats"), zenity.ErrorIcon)
 		return nil
 	}
 
@@ -45,11 +42,7 @@ func (a *App) RenameCollection(hostKey, dbKey, collKey, newCollKey string) bool 
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not rename collection "+collKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Could not rename " + collKey,
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while renaming collection"), zenity.ErrorIcon)
 		return false
 	}
 
@@ -58,15 +51,8 @@ func (a *App) RenameCollection(hostKey, dbKey, collKey, newCollKey string) bool 
 }
 
 func (a *App) TruncateCollection(hostKey, dbKey, collKey string) bool {
-	sure, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Title:         "Confirm",
-		Message:       "Are you sure you want to remove all items from " + collKey + "?",
-		Buttons:       []string{"Yes", "No"},
-		DefaultButton: "Yes",
-		CancelButton:  "No",
-		Type:          runtime.WarningDialog,
-	})
-	if sure != "Yes" {
+	err := zenity.Question("Are you sure you want to remove all items from "+collKey+"?", zenity.Title("Confirm"), zenity.WarningIcon)
+	if err == zenity.ErrCanceled {
 		return false
 	}
 
@@ -79,11 +65,7 @@ func (a *App) TruncateCollection(hostKey, dbKey, collKey string) bool {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not truncate collection "+collKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Could not truncate " + collKey,
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while truncating collection"), zenity.ErrorIcon)
 		return false
 	}
 
@@ -92,15 +74,8 @@ func (a *App) TruncateCollection(hostKey, dbKey, collKey string) bool {
 }
 
 func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
-	sure, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Title:         "Confirm",
-		Message:       "Are you sure you want to drop " + collKey + "?",
-		Buttons:       []string{"Yes", "No"},
-		DefaultButton: "Yes",
-		CancelButton:  "No",
-		Type:          runtime.WarningDialog,
-	})
-	if sure != "Yes" {
+	err := zenity.Question("Are you sure you want to drop "+collKey+"?", zenity.Title("Confirm"), zenity.WarningIcon)
+	if err == zenity.ErrCanceled {
 		return false
 	}
 
@@ -113,11 +88,7 @@ func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not drop collection "+collKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Could not drop " + collKey,
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while dropping collection"), zenity.ErrorIcon)
 		return false
 	}
 

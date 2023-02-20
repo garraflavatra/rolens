@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,21 +15,14 @@ import (
 func (a *App) connectToHost(hostKey string) (*mongo.Client, context.Context, func(), error) {
 	hosts, err := a.Hosts()
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Could not retrieve hosts",
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while getting hosts"), zenity.ErrorIcon)
 		return nil, nil, nil, errors.New("could not retrieve hosts")
 	}
 
 	h := hosts[hostKey]
 	if len(h.URI) == 0 {
 		runtime.LogInfo(a.ctx, "Invalid URI (len == 0) for host "+hostKey)
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.InfoDialog,
-			Title:   "Invalid uri",
-			Message: "You haven't specified a valid uri for the selected host.",
-		})
+		zenity.Info("You haven't specified a valid uri for the selected host.", zenity.Title("Invalid query"), zenity.ErrorIcon)
 		return nil, nil, nil, errors.New("invalid uri")
 	}
 
@@ -37,11 +31,7 @@ func (a *App) connectToHost(hostKey string) (*mongo.Client, context.Context, fun
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not connect to host "+hostKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Could not connect to " + h.Name,
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while connecting to "+h.Name), zenity.ErrorIcon)
 		return nil, nil, nil, errors.New("could not establish a connection with " + h.Name)
 	}
 
@@ -62,11 +52,7 @@ func (a *App) OpenConnection(hostKey string) (databases []string) {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not retrieve database names for host "+hostKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Could not retrieve database list",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while getting databases"), zenity.ErrorIcon)
 		return nil
 	}
 	defer close()

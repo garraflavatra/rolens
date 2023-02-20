@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,11 +16,7 @@ func (a *App) Aggregate(hostKey, dbKey, collKey, pipelineJson, settingsJson stri
 	if err := json.Unmarshal([]byte(settingsJson), &settings); err != nil {
 		runtime.LogError(a.ctx, "Could not parse aggregation settings:")
 		runtime.LogError(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Couldn't parse aggregation settings",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Couldn't parse aggregation settings"), zenity.ErrorIcon)
 		return
 	}
 
@@ -27,11 +24,7 @@ func (a *App) Aggregate(hostKey, dbKey, collKey, pipelineJson, settingsJson stri
 	if err := bson.UnmarshalExtJSON([]byte(pipelineJson), true, &pipeline); err != nil {
 		runtime.LogWarning(a.ctx, "Could not parse aggregation pipeline:")
 		runtime.LogWarning(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Couldn't parse aggregation pipeline",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Couldn't parse aggregation pipeline"), zenity.ErrorIcon)
 		return
 	}
 
@@ -46,11 +39,7 @@ func (a *App) Aggregate(hostKey, dbKey, collKey, pipelineJson, settingsJson stri
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not get aggregation cursor:")
 		runtime.LogWarning(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Couldn't get aggregation cursor",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Couldn't get aggregation cursor"), zenity.ErrorIcon)
 		return
 	}
 
@@ -58,11 +47,7 @@ func (a *App) Aggregate(hostKey, dbKey, collKey, pipelineJson, settingsJson stri
 	if err := cursor.All(ctx, &results); err != nil {
 		runtime.LogInfo(a.ctx, "Error while running aggregation pipeline:")
 		runtime.LogInfo(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Error while running aggregation pipeline",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while running aggregation pipeline"), zenity.ErrorIcon)
 		return
 	}
 

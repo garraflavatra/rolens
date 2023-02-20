@@ -8,6 +8,7 @@ import (
 	"path"
 
 	"github.com/google/uuid"
+	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -56,10 +57,7 @@ func (a *App) Hosts() (map[string]Host, error) {
 func (a *App) AddHost(jsonData string) error {
 	hosts, err := a.Hosts()
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Could not retrieve hosts",
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while retrieving hosts"), zenity.ErrorIcon)
 		return errors.New("could not retrieve existing host list")
 	}
 
@@ -68,10 +66,7 @@ func (a *App) AddHost(jsonData string) error {
 	if err != nil {
 		runtime.LogError(a.ctx, "Add host: malformed form")
 		runtime.LogError(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Malformed JSON",
-		})
+		zenity.Info(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
 		return errors.New("invalid JSON")
 	}
 
@@ -79,20 +74,14 @@ func (a *App) AddHost(jsonData string) error {
 	if err != nil {
 		runtime.LogError(a.ctx, "Add host: failed to generate a UUID")
 		runtime.LogError(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Failed to generate a UUID",
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while generating UUID"), zenity.ErrorIcon)
 		return errors.New("could not generate a UUID")
 	}
 
 	hosts[id.String()] = newHost
 	err = updateHostsFile(a, hosts)
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Could not update host list",
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while updating host list"), zenity.ErrorIcon)
 		return errors.New("could not update host list")
 	}
 
@@ -102,10 +91,7 @@ func (a *App) AddHost(jsonData string) error {
 func (a *App) UpdateHost(hostKey string, jsonData string) error {
 	hosts, err := a.Hosts()
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Could not retrieve hosts",
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while getting hosts"), zenity.ErrorIcon)
 		return errors.New("could not retrieve existing host list")
 	}
 
@@ -114,20 +100,14 @@ func (a *App) UpdateHost(hostKey string, jsonData string) error {
 	if err != nil {
 		runtime.LogError(a.ctx, "Could not parse update host JSON")
 		runtime.LogError(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Malformed JSON",
-		})
+		zenity.Info(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
 		return errors.New("invalid JSON")
 	}
 
 	hosts[hostKey] = host
 	err = updateHostsFile(a, hosts)
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Could not update host list",
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while updating hosts"), zenity.ErrorIcon)
 		return errors.New("could not update host list")
 	}
 
@@ -137,22 +117,12 @@ func (a *App) UpdateHost(hostKey string, jsonData string) error {
 func (a *App) RemoveHost(key string) error {
 	hosts, err := a.Hosts()
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Could not retrieve hosts",
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while retrieving hosts"), zenity.ErrorIcon)
 		return errors.New("could not retrieve existing host list")
 	}
 
-	sure, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Title:         "Confirm",
-		Message:       "Are you sure you want to remove " + hosts[key].Name + "?",
-		Buttons:       []string{"Yes", "No"},
-		DefaultButton: "Yes",
-		CancelButton:  "No",
-		Type:          runtime.WarningDialog,
-	})
-	if sure != "Yes" {
+	err = zenity.Question("Are you sure you want to remove "+hosts[key].Name+"?", zenity.Title("Confirm"), zenity.WarningIcon)
+	if err == zenity.ErrCanceled {
 		return errors.New("operation aborted")
 	}
 
@@ -160,10 +130,7 @@ func (a *App) RemoveHost(key string) error {
 	err = updateHostsFile(a, hosts)
 
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Could not update host list",
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while updating hosts"), zenity.ErrorIcon)
 		return errors.New("could not update host list")
 	}
 	return nil

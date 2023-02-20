@@ -11,6 +11,7 @@ import (
 
 	"github.com/garraflavatra/rolens/internal/open_file"
 	"github.com/gen2brain/beeep"
+	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
@@ -87,31 +88,16 @@ func (a *App) Environment() EnvironmentInfo {
 }
 
 func (a *App) PurgeLogDirectory() {
-	sure, _ := wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
-		Title:         "Confirm",
-		Message:       "Are you sure you want to remove all logfiles?",
-		Buttons:       []string{"Yes", "No"},
-		DefaultButton: "Yes",
-		CancelButton:  "No",
-		Type:          wailsRuntime.WarningDialog,
-	})
-
-	if sure != "Yes" {
+	err := zenity.Question("Are you sure you want to remove all logfiles?", zenity.Title("Confirm"), zenity.WarningIcon)
+	if err == zenity.ErrCanceled {
 		return
 	}
 
-	err := os.RemoveAll(a.Env.LogDirectory)
+	err = os.RemoveAll(a.Env.LogDirectory)
 	if err == nil {
-		wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
-			Title: "Successfully purged log directory.",
-			Type:  wailsRuntime.InfoDialog,
-		})
+		zenity.Info("Successfully purged log directory.", zenity.InfoIcon)
 	} else {
-		wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
-			Title:   "Encountered an error while purging log directory.",
-			Message: err.Error(),
-			Type:    wailsRuntime.WarningDialog,
-		})
+		zenity.Info(err.Error(), zenity.Title("Encountered an error while purging log directory."), zenity.WarningIcon)
 	}
 }
 
@@ -165,14 +151,9 @@ func (a *App) OpenDirectory(id, title string) string {
 	}
 
 	wailsRuntime.LogInfo(a.ctx, fmt.Sprintf("Opening directory ('%v')", title))
+	dir, err := zenity.SelectFile(zenity.Title(title), zenity.Directory())
 
-	dir, err := wailsRuntime.OpenDirectoryDialog(a.ctx, wailsRuntime.OpenDialogOptions{
-		Title:                      title,
-		CanCreateDirectories:       true,
-		TreatPackagesAsDirectories: false,
-	})
-
-	if err != nil {
+	if err != nil && err != zenity.ErrCanceled {
 		wailsRuntime.LogWarning(a.ctx, "Encountered an error while opening directory:")
 		wailsRuntime.LogWarning(a.ctx, err.Error())
 		wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
@@ -184,6 +165,20 @@ func (a *App) OpenDirectory(id, title string) string {
 
 	wailsRuntime.LogInfo(a.ctx, "Chosen directory: "+dir)
 	return dir
+}
+
+func (a *App) EnterText(title, info string) string {
+	println("wertyuijhgfd")
+	input, err := zenity.Entry(info, zenity.Title(title))
+
+	if err == zenity.ErrCanceled {
+		return ""
+	} else if err != nil {
+		zenity.Info(err.Error(), zenity.Title("Encountered an error!"), zenity.ErrorIcon)
+		return ""
+	} else {
+		return input
+	}
 }
 
 func (a *App) Beep() {

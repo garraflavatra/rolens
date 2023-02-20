@@ -3,6 +3,7 @@ package app
 import (
 	"encoding/json"
 
+	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
 	mongoOptions "go.mongodb.org/mongo-driver/mongo/options"
@@ -29,11 +30,7 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 	if err != nil {
 		runtime.LogError(a.ctx, "Could not parse find form:")
 		runtime.LogError(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Couldn't parse form",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Could not parse form"), zenity.ErrorIcon)
 		return out
 	}
 
@@ -51,11 +48,7 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 	if err != nil {
 		runtime.LogInfo(a.ctx, "Invalid find query:")
 		runtime.LogInfo(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Invalid query",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Invalid query"), zenity.ErrorIcon)
 		return out
 	}
 
@@ -63,11 +56,7 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 	if err != nil {
 		runtime.LogInfo(a.ctx, "Invalid find projection:")
 		runtime.LogInfo(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Invalid projection",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Invalid projection"), zenity.ErrorIcon)
 		return out
 	}
 
@@ -75,11 +64,7 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 	if err != nil {
 		runtime.LogInfo(a.ctx, "Invalid find sort:")
 		runtime.LogInfo(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Invalid sort",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Invalid sort"), zenity.ErrorIcon)
 		return out
 	}
 
@@ -94,11 +79,7 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Encountered an error while counting documents:")
 		runtime.LogWarning(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Encountered an error while counting documents",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while counting docs"), zenity.ErrorIcon)
 		return out
 	}
 
@@ -106,11 +87,7 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Encountered an error while performing query:")
 		runtime.LogWarning(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Encountered an error while performing query",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while querying"), zenity.ErrorIcon)
 		return out
 	}
 
@@ -121,11 +98,7 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Encountered an error while performing query:")
 		runtime.LogWarning(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:    runtime.ErrorDialog,
-			Title:   "Encountered an error while performing query",
-			Message: err.Error(),
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while querying"), zenity.ErrorIcon)
 		return out
 	}
 
@@ -136,11 +109,7 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 		if err != nil {
 			runtime.LogError(a.ctx, "Failed to marshal find BSON:")
 			runtime.LogError(a.ctx, err.Error())
-			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-				Type:    runtime.ErrorDialog,
-				Title:   "Failed to marshal BSON",
-				Message: err.Error(),
-			})
+			zenity.Info(err.Error(), zenity.Title("Failed to marshal JSON"), zenity.ErrorIcon)
 			return out
 		}
 		out.Results = append(out.Results, string(marshalled))

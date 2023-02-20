@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -100,19 +101,13 @@ func (a *App) UpdateViewStore(jsonData string) error {
 	var viewStore ViewStore
 	err := json.Unmarshal([]byte(jsonData), &viewStore)
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Malformed JSON",
-		})
+		zenity.Info(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
 		return errors.New("invalid JSON")
 	}
 
 	err = updateViewStore(a, viewStore)
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Could not update view store",
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while updating view store"), zenity.ErrorIcon)
 		return errors.New("could not update view store")
 	}
 
@@ -122,22 +117,12 @@ func (a *App) UpdateViewStore(jsonData string) error {
 func (a *App) RemoveView(viewKey string) error {
 	views, err := a.Views()
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Could not retrieve views",
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while getting views"), zenity.ErrorIcon)
 		return errors.New("could not retrieve existing view store")
 	}
 
-	sure, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Title:         "Confirm",
-		Message:       "Are you sure you want to remove " + views[viewKey].Name + "?",
-		Buttons:       []string{"Yes", "No"},
-		DefaultButton: "Yes",
-		CancelButton:  "No",
-		Type:          runtime.WarningDialog,
-	})
-	if sure != "Yes" {
+	err = zenity.Question("Are you sure you want to remove "+views[viewKey].Name+"?", zenity.Title("Confirm"), zenity.WarningIcon)
+	if err == zenity.ErrCanceled {
 		return errors.New("operation aborted")
 	}
 
@@ -145,10 +130,7 @@ func (a *App) RemoveView(viewKey string) error {
 	err = updateViewStore(a, views)
 
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Could not update view store",
-		})
+		zenity.Info(err.Error(), zenity.Title("Error while updating view store"), zenity.ErrorIcon)
 		return errors.New("could not update view store")
 	}
 	return nil

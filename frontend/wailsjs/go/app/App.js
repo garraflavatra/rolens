@@ -30,6 +30,10 @@ export function DropIndex(arg1, arg2, arg3, arg4) {
   return window['go']['app']['App']['DropIndex'](arg1, arg2, arg3, arg4);
 }
 
+export function EnterText(arg1, arg2) {
+  return window['go']['app']['App']['EnterText'](arg1, arg2);
+}
+
 export function Environment() {
   return window['go']['app']['App']['Environment']();
 }

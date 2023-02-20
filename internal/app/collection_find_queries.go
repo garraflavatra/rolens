@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -63,10 +64,7 @@ func (a *App) SaveQuery(jsonData string) string {
 	if err != nil {
 		runtime.LogError(a.ctx, "Add query: malformed form")
 		runtime.LogError(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Malformed JSON",
-		})
+		zenity.Info(err.Error(), zenity.Title("Malformed JSON"), zenity.ErrorIcon)
 		return ""
 	}
 
@@ -74,10 +72,7 @@ func (a *App) SaveQuery(jsonData string) string {
 	queries[query.Name] = query
 	err = updateQueryFile(a, queries)
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Could not update query list",
-		})
+		zenity.Info(err.Error(), zenity.Title("Could not update query list"), zenity.ErrorIcon)
 		return ""
 	}
 
@@ -88,10 +83,7 @@ func (a *App) RemoveQuery(queryName string) {
 	queries := a.SavedQueries()
 	delete(queries, queryName)
 	if err := updateQueryFile(a, queries); err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Could not update query list",
-		})
+		zenity.Info(err.Error(), zenity.Title("Could not update query list"), zenity.ErrorIcon)
 	}
 }
 
@@ -101,19 +93,13 @@ func (a *App) UpdateQueries(jsonData string) bool {
 	if err != nil {
 		runtime.LogError(a.ctx, "Update queries: malformed form")
 		runtime.LogError(a.ctx, err.Error())
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Malformed JSON",
-		})
+		zenity.Info(err.Error(), zenity.Title("Malformed JSON"), zenity.ErrorIcon)
 		return false
 	}
 
 	err = updateQueryFile(a, queries)
 	if err != nil {
-		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-			Type:  runtime.InfoDialog,
-			Title: "Could not save queries",
-		})
+		zenity.Info(err.Error(), zenity.Title("Could not save queries"), zenity.ErrorIcon)
 		return false
 	}
 

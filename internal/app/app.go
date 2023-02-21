@@ -97,7 +97,7 @@ func (a *App) PurgeLogDirectory() {
 	if err == nil {
 		zenity.Info("Successfully purged log directory.", zenity.InfoIcon)
 	} else {
-		zenity.Info(err.Error(), zenity.Title("Encountered an error while purging log directory."), zenity.WarningIcon)
+		zenity.Error(err.Error(), zenity.Title("Encountered an error while purging log directory."), zenity.WarningIcon)
 	}
 }
 
@@ -173,7 +173,7 @@ func (a *App) EnterText(title, info, defaultEntry string) string {
 	if err == zenity.ErrCanceled {
 		return ""
 	} else if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Encountered an error!"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Encountered an error!"), zenity.ErrorIcon)
 		return ""
 	} else {
 		return input

@@ -16,7 +16,7 @@ func (a *App) OpenDatabase(hostKey, dbKey string) (collections []string) {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not retrieve collection list for db "+dbKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Error while getting collections"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while getting collections"), zenity.ErrorIcon)
 		return nil
 	}
 
@@ -39,7 +39,7 @@ func (a *App) DropDatabase(hostKey, dbKey string) bool {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not drop db "+dbKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Error while dropping database"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while dropping database"), zenity.ErrorIcon)
 		return false
 	}
 

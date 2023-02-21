@@ -15,14 +15,14 @@ import (
 func (a *App) connectToHost(hostKey string) (*mongo.Client, context.Context, func(), error) {
 	hosts, err := a.Hosts()
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Error while getting hosts"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while getting hosts"), zenity.ErrorIcon)
 		return nil, nil, nil, errors.New("could not retrieve hosts")
 	}
 
 	h := hosts[hostKey]
 	if len(h.URI) == 0 {
 		runtime.LogInfo(a.ctx, "Invalid URI (len == 0) for host "+hostKey)
-		zenity.Info("You haven't specified a valid uri for the selected host.", zenity.Title("Invalid query"), zenity.ErrorIcon)
+		zenity.Warning("You haven't specified a valid uri for the selected host.", zenity.Title("Invalid query"), zenity.WarningIcon)
 		return nil, nil, nil, errors.New("invalid uri")
 	}
 
@@ -31,7 +31,7 @@ func (a *App) connectToHost(hostKey string) (*mongo.Client, context.Context, fun
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not connect to host "+hostKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Error while connecting to "+h.Name), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while connecting to "+h.Name), zenity.ErrorIcon)
 		return nil, nil, nil, errors.New("could not establish a connection with " + h.Name)
 	}
 
@@ -52,7 +52,7 @@ func (a *App) OpenConnection(hostKey string) (databases []string) {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not retrieve database names for host "+hostKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Error while getting databases"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while getting databases"), zenity.ErrorIcon)
 		return nil
 	}
 	defer close()

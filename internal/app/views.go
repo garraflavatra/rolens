@@ -101,13 +101,13 @@ func (a *App) UpdateViewStore(jsonData string) error {
 	var viewStore ViewStore
 	err := json.Unmarshal([]byte(jsonData), &viewStore)
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
 		return errors.New("invalid JSON")
 	}
 
 	err = updateViewStore(a, viewStore)
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Error while updating view store"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while updating view store"), zenity.ErrorIcon)
 		return errors.New("could not update view store")
 	}
 
@@ -117,7 +117,7 @@ func (a *App) UpdateViewStore(jsonData string) error {
 func (a *App) RemoveView(viewKey string) error {
 	views, err := a.Views()
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Error while getting views"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while getting views"), zenity.ErrorIcon)
 		return errors.New("could not retrieve existing view store")
 	}
 
@@ -130,7 +130,7 @@ func (a *App) RemoveView(viewKey string) error {
 	err = updateViewStore(a, views)
 
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Error while updating view store"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while updating view store"), zenity.ErrorIcon)
 		return errors.New("could not update view store")
 	}
 	return nil

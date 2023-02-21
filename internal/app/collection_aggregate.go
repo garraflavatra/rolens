@@ -16,7 +16,7 @@ func (a *App) Aggregate(hostKey, dbKey, collKey, pipelineJson, settingsJson stri
 	if err := json.Unmarshal([]byte(settingsJson), &settings); err != nil {
 		runtime.LogError(a.ctx, "Could not parse aggregation settings:")
 		runtime.LogError(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Couldn't parse aggregation settings"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Couldn't parse aggregation settings"), zenity.ErrorIcon)
 		return
 	}
 
@@ -24,7 +24,7 @@ func (a *App) Aggregate(hostKey, dbKey, collKey, pipelineJson, settingsJson stri
 	if err := bson.UnmarshalExtJSON([]byte(pipelineJson), true, &pipeline); err != nil {
 		runtime.LogWarning(a.ctx, "Could not parse aggregation pipeline:")
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Couldn't parse aggregation pipeline"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Couldn't parse aggregation pipeline"), zenity.ErrorIcon)
 		return
 	}
 
@@ -39,7 +39,7 @@ func (a *App) Aggregate(hostKey, dbKey, collKey, pipelineJson, settingsJson stri
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not get aggregation cursor:")
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Couldn't get aggregation cursor"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Couldn't get aggregation cursor"), zenity.ErrorIcon)
 		return
 	}
 
@@ -47,7 +47,7 @@ func (a *App) Aggregate(hostKey, dbKey, collKey, pipelineJson, settingsJson stri
 	if err := cursor.All(ctx, &results); err != nil {
 		runtime.LogInfo(a.ctx, "Error while running aggregation pipeline:")
 		runtime.LogInfo(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Error while running aggregation pipeline"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while running aggregation pipeline"), zenity.ErrorIcon)
 		return
 	}
 

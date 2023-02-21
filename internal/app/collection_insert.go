@@ -20,7 +20,7 @@ func (a *App) InsertItems(hostKey, dbKey, collKey, jsonData string) interface{} 
 	if err != nil {
 		runtime.LogError(a.ctx, "Could not parse insert JSON:")
 		runtime.LogError(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
 		return nil
 	}
 
@@ -34,7 +34,7 @@ func (a *App) InsertItems(hostKey, dbKey, collKey, jsonData string) interface{} 
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Encountered an error while performing insert:")
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Error while performing insert"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while performing insert"), zenity.ErrorIcon)
 		return nil
 	}
 

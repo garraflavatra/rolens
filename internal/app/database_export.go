@@ -33,13 +33,13 @@ func (a *App) PerformExport(jsonData string) bool {
 	if err != nil {
 		runtime.LogError(a.ctx, "Could not unmarshal export form")
 		runtime.LogError(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
 		return false
 	}
 
 	hosts, err := a.Hosts()
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Error while getting hosts"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while getting hosts"), zenity.ErrorIcon)
 		return false
 	}
 	host := hosts[info.HostKey]
@@ -51,7 +51,7 @@ func (a *App) PerformExport(jsonData string) bool {
 
 	case FileTypeDump:
 		if !a.Env.HasMongoDump {
-			zenity.Info("You need to install mongodump to perform a dump.", zenity.Title("Additional software required"), zenity.ErrorIcon)
+			zenity.Error("You need to install mongodump to perform a dump.", zenity.Title("Additional tooling required"), zenity.ErrorIcon)
 			return false
 		}
 
@@ -82,7 +82,7 @@ func (a *App) PerformExport(jsonData string) bool {
 		}
 
 	default:
-		zenity.Info(fmt.Sprintf("File type '%v' is not known.", info.FileType), zenity.Title("Unrecognised file type"), zenity.ErrorIcon)
+		zenity.Error(fmt.Sprintf("File type '%v' is not known.", info.FileType), zenity.Title("Unrecognised file type"), zenity.ErrorIcon)
 		return false
 	}
 

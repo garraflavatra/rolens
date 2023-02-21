@@ -57,7 +57,7 @@ func (a *App) Hosts() (map[string]Host, error) {
 func (a *App) AddHost(jsonData string) error {
 	hosts, err := a.Hosts()
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Error while retrieving hosts"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while retrieving hosts"), zenity.ErrorIcon)
 		return errors.New("could not retrieve existing host list")
 	}
 
@@ -66,7 +66,7 @@ func (a *App) AddHost(jsonData string) error {
 	if err != nil {
 		runtime.LogError(a.ctx, "Add host: malformed form")
 		runtime.LogError(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
 		return errors.New("invalid JSON")
 	}
 
@@ -74,14 +74,14 @@ func (a *App) AddHost(jsonData string) error {
 	if err != nil {
 		runtime.LogError(a.ctx, "Add host: failed to generate a UUID")
 		runtime.LogError(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Error while generating UUID"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while generating UUID"), zenity.ErrorIcon)
 		return errors.New("could not generate a UUID")
 	}
 
 	hosts[id.String()] = newHost
 	err = updateHostsFile(a, hosts)
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Error while updating host list"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while updating host list"), zenity.ErrorIcon)
 		return errors.New("could not update host list")
 	}
 
@@ -91,7 +91,7 @@ func (a *App) AddHost(jsonData string) error {
 func (a *App) UpdateHost(hostKey string, jsonData string) error {
 	hosts, err := a.Hosts()
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Error while getting hosts"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while getting hosts"), zenity.ErrorIcon)
 		return errors.New("could not retrieve existing host list")
 	}
 
@@ -100,14 +100,14 @@ func (a *App) UpdateHost(hostKey string, jsonData string) error {
 	if err != nil {
 		runtime.LogError(a.ctx, "Could not parse update host JSON")
 		runtime.LogError(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
 		return errors.New("invalid JSON")
 	}
 
 	hosts[hostKey] = host
 	err = updateHostsFile(a, hosts)
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Error while updating hosts"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while updating hosts"), zenity.ErrorIcon)
 		return errors.New("could not update host list")
 	}
 
@@ -117,7 +117,7 @@ func (a *App) UpdateHost(hostKey string, jsonData string) error {
 func (a *App) RemoveHost(key string) error {
 	hosts, err := a.Hosts()
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Error while retrieving hosts"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while retrieving hosts"), zenity.ErrorIcon)
 		return errors.New("could not retrieve existing host list")
 	}
 
@@ -130,7 +130,7 @@ func (a *App) RemoveHost(key string) error {
 	err = updateHostsFile(a, hosts)
 
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Error while updating hosts"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while updating hosts"), zenity.ErrorIcon)
 		return errors.New("could not update host list")
 	}
 	return nil

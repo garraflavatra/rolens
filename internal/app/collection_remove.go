@@ -24,7 +24,7 @@ func (a *App) RemoveItems(hostKey, dbKey, collKey, jsonData string, many bool) i
 		if err != nil {
 			runtime.LogError(a.ctx, "Could not parse remove query:")
 			runtime.LogError(a.ctx, err.Error())
-			zenity.Info(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
+			zenity.Error(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
 			return 0
 		}
 	}
@@ -47,7 +47,7 @@ func (a *App) RemoveItems(hostKey, dbKey, collKey, jsonData string, many bool) i
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Encountered an error while performing remove:")
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Error while performing remove"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while performing remove"), zenity.ErrorIcon)
 		return 0
 	}
 
@@ -68,7 +68,7 @@ func (a *App) RemoveItemById(hostKey, dbKey, collKey, itemId string) bool {
 	if err != nil && err != mongo.ErrNoDocuments {
 		runtime.LogWarning(a.ctx, "Encountered an error while performing remove by id:")
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Error while performing remove"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while performing remove"), zenity.ErrorIcon)
 
 		return false
 	}

@@ -26,7 +26,7 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 	if err != nil {
 		runtime.LogError(a.ctx, "Could not parse update form:")
 		runtime.LogError(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Could not parse form"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Could not parse form"), zenity.ErrorIcon)
 		return 0
 	}
 
@@ -44,7 +44,7 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 		runtime.LogWarning(a.ctx, "Invalid update query:")
 		runtime.LogWarning(a.ctx, form.Query)
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Invalid update query"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Invalid update query"), zenity.ErrorIcon)
 		return 0
 	}
 
@@ -57,7 +57,7 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 			runtime.LogWarning(a.ctx, "Invalid update parameter value:")
 			runtime.LogWarning(a.ctx, param.Value)
 			runtime.LogWarning(a.ctx, err.Error())
-			zenity.Info(err.Error(), zenity.Title("Invalid update query"), zenity.ErrorIcon)
+			zenity.Error(err.Error(), zenity.Title("Invalid update query"), zenity.ErrorIcon)
 			return 0
 		}
 	}
@@ -74,7 +74,7 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Encountered an error while performing update:")
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Error while performing update"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while performing update"), zenity.ErrorIcon)
 		return 0
 	}
 

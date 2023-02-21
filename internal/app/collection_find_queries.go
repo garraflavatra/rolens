@@ -64,7 +64,7 @@ func (a *App) SaveQuery(jsonData string) string {
 	if err != nil {
 		runtime.LogError(a.ctx, "Add query: malformed form")
 		runtime.LogError(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Malformed JSON"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Malformed JSON"), zenity.ErrorIcon)
 		return ""
 	}
 
@@ -72,7 +72,7 @@ func (a *App) SaveQuery(jsonData string) string {
 	queries[query.Name] = query
 	err = updateQueryFile(a, queries)
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Could not update query list"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Could not update query list"), zenity.ErrorIcon)
 		return ""
 	}
 
@@ -83,7 +83,7 @@ func (a *App) RemoveQuery(queryName string) {
 	queries := a.SavedQueries()
 	delete(queries, queryName)
 	if err := updateQueryFile(a, queries); err != nil {
-		zenity.Info(err.Error(), zenity.Title("Could not update query list"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Could not update query list"), zenity.ErrorIcon)
 	}
 }
 
@@ -93,13 +93,13 @@ func (a *App) UpdateQueries(jsonData string) bool {
 	if err != nil {
 		runtime.LogError(a.ctx, "Update queries: malformed form")
 		runtime.LogError(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Malformed JSON"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Malformed JSON"), zenity.ErrorIcon)
 		return false
 	}
 
 	err = updateQueryFile(a, queries)
 	if err != nil {
-		zenity.Info(err.Error(), zenity.Title("Could not save queries"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Could not save queries"), zenity.ErrorIcon)
 		return false
 	}
 

@@ -19,7 +19,7 @@ func (a *App) OpenCollection(hostKey, dbKey, collKey string) (result bson.M) {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not retrieve collection stats for "+collKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Could not get stats"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Could not get stats"), zenity.ErrorIcon)
 		return nil
 	}
 
@@ -42,7 +42,7 @@ func (a *App) RenameCollection(hostKey, dbKey, collKey, newCollKey string) bool 
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not rename collection "+collKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Error while renaming collection"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while renaming collection"), zenity.ErrorIcon)
 		return false
 	}
 
@@ -65,7 +65,7 @@ func (a *App) TruncateCollection(hostKey, dbKey, collKey string) bool {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not truncate collection "+collKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Error while truncating collection"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while truncating collection"), zenity.ErrorIcon)
 		return false
 	}
 
@@ -88,7 +88,7 @@ func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not drop collection "+collKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Info(err.Error(), zenity.Title("Error while dropping collection"), zenity.ErrorIcon)
+		zenity.Error(err.Error(), zenity.Title("Error while dropping collection"), zenity.ErrorIcon)
 		return false
 	}
 

@@ -1,7 +1,4 @@
 <script>
-  import Icon from '$components/icon.svelte';
-  import Modal from '$components/modal.svelte';
-  import input from '$lib/actions/input';
   import busy from '$lib/stores/busy';
   import { connections } from '$lib/stores/connections';
   import { EnterText, Hosts, RenameCollection } from '$wails/go/app/App';
@@ -18,13 +15,8 @@
   export let activeCollKey = '';
 
   let hostTree;
-
   let showHostDetail = false;
   let hostDetailKey = '';
-
-  let collToRename = '';
-  let newCollKey = '';
-
   let exportInfo;
 
   async function getHosts() {
@@ -48,21 +40,17 @@
     }
   }
 
-  function openEditCollModal(collKey) {
-    newCollKey = collKey;
-    collToRename = collKey;
-  }
-
-  async function renameCollection() {
-    busy.start();
-    const ok = await RenameCollection(activeHostKey, activeDbKey, collToRename, newCollKey);
-    if (ok) {
-      activeCollKey = newCollKey;
-      collToRename = '';
-      newCollKey = '';
-      await hostTree.reload();
+  async function renameCollection(oldCollKey) {
+    const newCollKey = await EnterText('Rename collection', `Enter a new name for collection ${oldCollKey}.`, oldCollKey);
+    if (newCollKey && (newCollKey !== oldCollKey)) {
+      busy.start();
+      const ok = await RenameCollection(activeHostKey, activeDbKey, oldCollKey, newCollKey);
+      if (ok) {
+        activeCollKey = newCollKey;
+        await hostTree.reload();
+      }
+      busy.end();
     }
-    busy.end();
   }
 
   async function createCollection() {
@@ -109,7 +97,7 @@
     on:newDatabase={createDatabase}
     on:newCollection={createCollection}
     on:editHost={e => editHost(e.detail)}
-    on:renameCollection={e => openEditCollModal(e.detail)}
+    on:renameCollection={e => renameCollection(e.detail)}
     on:exportCollection={e => exportCollection(e.detail)}
     on:dumpCollection={e => dumpCollection(e.detail)}
   />
@@ -132,49 +120,9 @@
 
 <Export bind:info={exportInfo} {hosts} />
 
-{#if collToRename}
-  <Modal bind:show={collToRename} width="400px">
-    <form class="rename" on:submit|preventDefault={renameCollection}>
-      <div>Renaming collection <strong>{collToRename}</strong></div>
-      <Icon name="arr-d" />
-      <label class="field">
-        <input type="text" bind:value={newCollKey} use:input={{ autofocus: true }} spellcheck="false" />
-      </label>
-      <div class="cancelorsave">
-        <button class="btn secondary" type="button" on:click={() => collToRename = ''}>Cancel</button>
-        <button class="btn" type="submit">Save</button>
-      </div>
-    </form>
-  </Modal>
-{/if}
-
 <style>
   .tree {
     padding: 0.5rem;
     background-color: #fff;
-  }
-
-  .rename {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: center;
-  }
-  .rename .field {
-    width: 100%;
-  }
-  .rename input {
-    text-align: center;
-    width: 100%;
-  }
-  .rename strong {
-    font-weight: 700;
-  }
-  .rename .cancelorsave {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: space-between;
-    width: 100%;
   }
 </style>

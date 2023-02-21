@@ -167,9 +167,8 @@ func (a *App) OpenDirectory(id, title string) string {
 	return dir
 }
 
-func (a *App) EnterText(title, info string) string {
-	println("wertyuijhgfd")
-	input, err := zenity.Entry(info, zenity.Title(title))
+func (a *App) EnterText(title, info, defaultEntry string) string {
+	input, err := zenity.Entry(info, zenity.Title(title), zenity.EntryText(defaultEntry))
 
 	if err == zenity.ErrCanceled {
 		return ""

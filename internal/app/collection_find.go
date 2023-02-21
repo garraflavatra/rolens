@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -23,6 +24,7 @@ type QueryResult struct {
 }
 
 func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
+	time.Sleep(2 * time.Second)
 	var out QueryResult
 	var form Query
 

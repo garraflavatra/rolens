@@ -5,10 +5,12 @@ import (
 	"runtime"
 
 	"github.com/gen2brain/beeep"
+	"github.com/ncruces/zenity"
 )
 
 type UI struct {
-	ctx context.Context
+	ctx      context.Context
+	progress zenity.ProgressDialog
 }
 
 func New() *UI {

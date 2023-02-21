@@ -5,6 +5,7 @@
   import ObjectGrid from '$components/objectgrid.svelte';
   import input from '$lib/actions/input';
   import { deepClone } from '$lib/objects';
+  import busy from '$lib/stores/busy';
   import queries from '$lib/stores/queries';
   import applicationSettings from '$lib/stores/settings';
   import views from '$lib/stores/views';
@@ -41,6 +42,7 @@
   $: activePage = (submittedForm.limit && submittedForm.skip && result?.results?.length) ? submittedForm.skip / submittedForm.limit : 0;
 
   async function submitQuery() {
+    busy.start();
     activePath = [];
     const newResult = await FindItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
     if (newResult) {
@@ -48,6 +50,7 @@
       result = newResult;
       submittedForm = deepClone(form);
     }
+    busy.end();
     resetFocus();
   }
 

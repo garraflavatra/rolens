@@ -7,7 +7,7 @@ func (u *UI) OpenDirectory(id, title string) string {
 		title = "Choose a directory"
 	}
 
-	dir, err := zenity.SelectFile(zenity.Title(title), zenity.Directory())
+	dir, err := zenity.SelectFile(zenity.Title(title), zenity.Directory(), zenity.Modal())
 
 	if err != nil && err != zenity.ErrCanceled {
 		zenity.Error("Error while opening directory", zenity.ErrorIcon)
@@ -17,7 +17,7 @@ func (u *UI) OpenDirectory(id, title string) string {
 }
 
 func (u *UI) EnterText(title, info, defaultEntry string) string {
-	input, err := zenity.Entry(info, zenity.Title(title), zenity.EntryText(defaultEntry))
+	input, err := zenity.Entry(info, zenity.Title(title), zenity.EntryText(defaultEntry), zenity.Modal())
 
 	if err == zenity.ErrCanceled {
 		return ""

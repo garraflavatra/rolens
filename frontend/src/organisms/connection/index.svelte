@@ -6,7 +6,7 @@
   import { EventsOn } from '$wails/runtime/runtime';
   import { onMount } from 'svelte';
   import CollectionDetail from './collection/index.svelte';
-  import Export from './export/export.svelte';
+  import DumpInfo from './dump.svelte';
   import HostDetail from './hostdetail.svelte';
   import HostTree from './hosttree.svelte';
 
@@ -119,7 +119,7 @@
   {hosts}
 />
 
-<Export bind:info={exportInfo} {hosts} />
+<DumpInfo bind:info={exportInfo} {hosts} />
 
 <style>
   .tree {

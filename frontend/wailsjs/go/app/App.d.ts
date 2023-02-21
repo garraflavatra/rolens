@@ -37,7 +37,7 @@ export function OpenConnection(arg1:string):Promise<Array<string>>;
 
 export function OpenDatabase(arg1:string,arg2:string):Promise<Array<string>>;
 
-export function PerformExport(arg1:string):Promise<boolean>;
+export function PerformDump(arg1:string):Promise<boolean>;
 
 export function PurgeLogDirectory():Promise<void>;
 

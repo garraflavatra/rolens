@@ -5,26 +5,14 @@
   import busy from '$lib/stores/busy';
   import { connections } from '$lib/stores/connections';
   import applicationSettings from '$lib/stores/settings';
-  import { OpenConnection, OpenDatabase, PerformExport } from '$wails/go/app/App';
+  import { OpenConnection, OpenDatabase, PerformDump } from '$wails/go/app/App';
 
   export let info;
   export let hosts = {};
 
-  const actionLabel = {
-    export: 'Perform export',
-    dump: 'Perform dump',
-  };
-
   $: if (info) {
     info.outdir = info.outdir || $applicationSettings.defaultExportDirectory;
-    info.filename = info.filename || `Export ${new Date().getTime()}`;
-
-    if (info.filetype === 'bson') {
-      info.type = 'dump';
-    }
-    else {
-      info.type = 'export';
-    }
+    info.filename = info.filename || `Dump ${new Date().getTime()}`;
   }
 
   async function selectHost(hostKey) {
@@ -63,8 +51,11 @@
     }
   }
 
-  async function performExport() {
-    await PerformExport(JSON.stringify(info));
+  async function performDump() {
+    const ok = await PerformDump(JSON.stringify(info));
+    if (ok) {
+      info = undefined;
+    }
   }
 
   function selectCollection(collKey) {
@@ -72,37 +63,15 @@
   }
 </script>
 
-<Modal bind:show={info} title={actionLabel[info?.type]}>
-  <form on:submit|preventDefault={performExport}>
+<Modal bind:show={info} title="Perform dump">
+  <form on:submit|preventDefault={performDump}>
     <!-- svelte-ignore a11y-label-has-associated-control - input is in DirectoryChooser -->
     <label class="field">
       <span class="label">Output destination:</span>
       <DirectoryChooser bind:value={info.outdir} />
       <span class="label">/</span>
       <input type="text" bind:value={info.filename} />
-      <span class="label">.</span>
-      <select bind:value={info.filetype} class="filetype">
-        <optgroup label="Dump (via mongodump)">
-          <option value="bson">bson</option>
-        </optgroup>
-        <optgroup label="Export">
-          <option value="csv">csv</option>
-          <option value="json">json</option>
-        </optgroup>
-      </select>
     </label>
-
-    <div class="options">
-      {#if info.filetype === 'json'}
-        <label class="field">
-          <span class="label">Separate items using:</span>
-          <select bind:value={info.jsonType}>
-            <option value="newline">Newline</option>
-            <option value="array">JSON array</option>
-          </select>
-        </label>
-      {/if}
-    </div>
 
     <div class="location">
       <div class="grid">
@@ -156,7 +125,7 @@
     </div>
 
     <div>
-      <button type="submit" class="btn">{actionLabel[info.type]}</button>
+      <button type="submit" class="btn">Perform dump</button>
     </div>
   </form>
 </Modal>
@@ -164,7 +133,7 @@
 <style>
   form {
     display: grid;
-    grid-template: auto auto 1fr auto / 1fr;
+    grid-template: auto 1fr auto / 1fr;
     gap: 0.5rem;
   }
   .location {
@@ -175,9 +144,5 @@
   .location .grid {
     border: 1px solid #ccc;
     overflow-y: auto;
-  }
-
-  select.filetype {
-    flex: 0 1;
   }
 </style>

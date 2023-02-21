@@ -62,8 +62,8 @@ export function OpenDatabase(arg1, arg2) {
   return window['go']['app']['App']['OpenDatabase'](arg1, arg2);
 }
 
-export function PerformExport(arg1) {
-  return window['go']['app']['App']['PerformExport'](arg1);
+export function PerformDump(arg1) {
+  return window['go']['app']['App']['PerformDump'](arg1);
 }
 
 export function PurgeLogDirectory() {

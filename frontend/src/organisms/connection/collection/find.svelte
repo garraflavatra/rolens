@@ -160,13 +160,16 @@
       </label>
     </div>
 
-    <div class="form-row three">
+    <div class="form-row actions">
       <!-- <CodeExample {code} /> -->
       <button class="btn" type="button" on:click={loadQuery}>
         <Icon name="upload" /> Load query…
       </button>
       <button class="btn" type="button" on:click={saveQuery}>
         <Icon name="save" /> Save as…
+      </button>
+      <button class="btn" type="button" on:click={saveQuery}>
+        <Icon name="save" /> Export results…
       </button>
       <button type="submit" class="btn" title="Run query">
         <Icon name="play" /> Run
@@ -276,10 +279,10 @@
   .form-row.two {
     grid-template: 1fr / 5fr 1fr 1fr;
   }
-  .form-row.three {
+  .form-row.actions {
     margin-bottom: 0rem;
-    grid-template: 1fr / repeat(3, auto);
-    justify-content: end;
+    grid-template: 1fr / repeat(4, auto);
+    justify-content: start;
   }
 
   .result {

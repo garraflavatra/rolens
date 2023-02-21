@@ -3,14 +3,12 @@ package app
 import (
 	"context"
 	"errors"
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 
-	"github.com/garraflavatra/rolens/internal/open_file"
-	"github.com/gen2brain/beeep"
+	"github.com/garraflavatra/rolens/internal/ui"
 	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/menu/keys"
@@ -32,6 +30,7 @@ type EnvironmentInfo struct {
 
 type App struct {
 	ctx context.Context
+	ui  *ui.UI
 	Env EnvironmentInfo
 }
 
@@ -69,8 +68,9 @@ func NewApp() *App {
 	return a
 }
 
-func (a *App) Startup(ctx context.Context) {
+func (a *App) Startup(ctx context.Context, ui *ui.UI) {
 	a.ctx = ctx
+	a.ui = ui
 	wailsRuntime.LogInfo(a.ctx, "Startup")
 
 	wailsEnv := wailsRuntime.Environment(a.ctx)
@@ -113,8 +113,9 @@ func (a *App) Menu() *menu.Menu {
 	aboutMenu := appMenu.AddSubmenu("About")
 	aboutMenu.AddText("About…", nil, menuEventEmitter(a, "OpenAboutModal"))
 	aboutMenu.AddText("Prefrences…", keys.CmdOrCtrl(","), menuEventEmitter(a, "OpenPrefrences"))
+	aboutMenu.AddText("Open data directory…", nil, func(cd *menu.CallbackData) { a.ui.Reveal(a.Env.DataDirectory) })
 	aboutMenu.AddSeparator()
-	aboutMenu.AddText("Open log directory…", nil, func(cd *menu.CallbackData) { open_file.Reveal(a.Env.LogDirectory) })
+	aboutMenu.AddText("Open log directory…", nil, func(cd *menu.CallbackData) { a.ui.Reveal(a.Env.LogDirectory) })
 	aboutMenu.AddText("Purge logs", nil, func(cd *menu.CallbackData) { a.PurgeLogDirectory() })
 	aboutMenu.AddSeparator()
 	aboutMenu.AddText("Quit", keys.CmdOrCtrl("q"), func(cd *menu.CallbackData) { wailsRuntime.Quit(a.ctx) })
@@ -143,46 +144,4 @@ func (a *App) Menu() *menu.Menu {
 	helpMenu.AddText("User guide", nil, func(cd *menu.CallbackData) { wailsRuntime.BrowserOpenURL(a.ctx, "") })
 
 	return appMenu
-}
-
-func (a *App) OpenDirectory(id, title string) string {
-	if title == "" {
-		title = "Choose a directory"
-	}
-
-	wailsRuntime.LogInfo(a.ctx, fmt.Sprintf("Opening directory ('%v')", title))
-	dir, err := zenity.SelectFile(zenity.Title(title), zenity.Directory())
-
-	if err != nil && err != zenity.ErrCanceled {
-		wailsRuntime.LogWarning(a.ctx, "Encountered an error while opening directory:")
-		wailsRuntime.LogWarning(a.ctx, err.Error())
-		wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
-			Type:    wailsRuntime.ErrorDialog,
-			Title:   "Encountered an error while opening directory",
-			Message: err.Error(),
-		})
-	}
-
-	wailsRuntime.LogInfo(a.ctx, "Chosen directory: "+dir)
-	return dir
-}
-
-func (a *App) EnterText(title, info, defaultEntry string) string {
-	input, err := zenity.Entry(info, zenity.Title(title), zenity.EntryText(defaultEntry))
-
-	if err == zenity.ErrCanceled {
-		return ""
-	} else if err != nil {
-		zenity.Error(err.Error(), zenity.Title("Encountered an error!"), zenity.ErrorIcon)
-		return ""
-	} else {
-		return input
-	}
-}
-
-func (a *App) Beep() {
-	if runtime.GOOS == "windows" {
-		return
-	}
-	beeep.Beep(beeep.DefaultFreq, beeep.DefaultDuration)
 }

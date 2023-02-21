@@ -1,7 +1,8 @@
 <script>
   import busy from '$lib/stores/busy';
   import { connections } from '$lib/stores/connections';
-  import { EnterText, Hosts, RenameCollection } from '$wails/go/app/App';
+  import { Hosts, RenameCollection } from '$wails/go/app/App';
+  import { EnterText } from '$wails/go/ui/UI';
   import { EventsOn } from '$wails/runtime/runtime';
   import { onMount } from 'svelte';
   import CollectionDetail from './collection/index.svelte';

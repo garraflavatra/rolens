@@ -10,10 +10,6 @@ export function Aggregate(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['app']['App']['Aggregate'](arg1, arg2, arg3, arg4, arg5);
 }
 
-export function Beep() {
-  return window['go']['app']['App']['Beep']();
-}
-
 export function CreateIndex(arg1, arg2, arg3, arg4) {
   return window['go']['app']['App']['CreateIndex'](arg1, arg2, arg3, arg4);
 }
@@ -28,10 +24,6 @@ export function DropDatabase(arg1, arg2) {
 
 export function DropIndex(arg1, arg2, arg3, arg4) {
   return window['go']['app']['App']['DropIndex'](arg1, arg2, arg3, arg4);
-}
-
-export function EnterText(arg1, arg2, arg3) {
-  return window['go']['app']['App']['EnterText'](arg1, arg2, arg3);
 }
 
 export function Environment() {
@@ -68,10 +60,6 @@ export function OpenConnection(arg1) {
 
 export function OpenDatabase(arg1, arg2) {
   return window['go']['app']['App']['OpenDatabase'](arg1, arg2);
-}
-
-export function OpenDirectory(arg1, arg2) {
-  return window['go']['app']['App']['OpenDirectory'](arg1, arg2);
 }
 
 export function PerformExport(arg1) {
@@ -116,6 +104,10 @@ export function SavedQueries() {
 
 export function Settings() {
   return window['go']['app']['App']['Settings']();
+}
+
+export function Startup(arg1, arg2) {
+  return window['go']['app']['App']['Startup'](arg1, arg2);
 }
 
 export function TruncateCollection(arg1, arg2, arg3) {

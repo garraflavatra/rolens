@@ -1,6 +1,6 @@
-package open_file
+package ui
 
 // Reveal reveals the specified file in the Finder.
-func Reveal(fname string) {
+func (u *UI) Reveal(fname string) {
 	reveal(fname)
 }

@@ -4,12 +4,12 @@ import {app} from '../models';
 import {primitive} from '../models';
 import {map[string]app} from '../models';
 import {menu} from '../models';
+import {context} from '../models';
+import {ui} from '../models';
 
 export function AddHost(arg1:string):Promise<void>;
 
 export function Aggregate(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string):Promise<void>;
-
-export function Beep():Promise<void>;
 
 export function CreateIndex(arg1:string,arg2:string,arg3:string,arg4:string):Promise<string>;
 
@@ -18,8 +18,6 @@ export function DropCollection(arg1:string,arg2:string,arg3:string):Promise<bool
 export function DropDatabase(arg1:string,arg2:string):Promise<boolean>;
 
 export function DropIndex(arg1:string,arg2:string,arg3:string,arg4:string):Promise<boolean>;
-
-export function EnterText(arg1:string,arg2:string,arg3:string):Promise<string>;
 
 export function Environment():Promise<app.EnvironmentInfo>;
 
@@ -38,8 +36,6 @@ export function OpenCollection(arg1:string,arg2:string,arg3:string):Promise<prim
 export function OpenConnection(arg1:string):Promise<Array<string>>;
 
 export function OpenDatabase(arg1:string,arg2:string):Promise<Array<string>>;
-
-export function OpenDirectory(arg1:string,arg2:string):Promise<string>;
 
 export function PerformExport(arg1:string):Promise<boolean>;
 
@@ -62,6 +58,8 @@ export function SaveQuery(arg1:string):Promise<string>;
 export function SavedQueries():Promise<map[string]app.SavedQuery>;
 
 export function Settings():Promise<app.Settings>;
+
+export function Startup(arg1:context.Context,arg2:ui.UI):Promise<void>;
 
 export function TruncateCollection(arg1:string,arg2:string,arg3:string):Promise<boolean>;
 

@@ -1,5 +1,5 @@
 <script>
-  import { OpenDirectory } from '$wails/go/app/App';
+  import { OpenDirectory } from '$wails/go/ui/UI';
 
   export let value = '';
   export let id = '';

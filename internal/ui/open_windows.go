@@ -1,6 +1,6 @@
 //go:build windows
 
-package open_file
+package ui
 
 import "os/exec"
 

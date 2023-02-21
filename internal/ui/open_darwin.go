@@ -1,6 +1,6 @@
 //go:build darwin
 
-package open_file
+package ui
 
 import "os/exec"
 

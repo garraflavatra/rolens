@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"embed"
 	"path"
 
 	"github.com/garraflavatra/rolens/internal/app"
+	uictrl "github.com/garraflavatra/rolens/internal/ui"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -22,6 +24,8 @@ var (
 
 func main() {
 	app := app.NewApp()
+	ui := uictrl.New()
+
 	err := wails.Run(&options.App{
 		Title: "Rolens",
 
@@ -32,10 +36,13 @@ func main() {
 
 		BackgroundColour: &options.RGBA{R: 0, G: 0, B: 139, A: 1},
 		Menu:             app.Menu(),
-		Bind:             []interface{}{app},
+		Bind:             []interface{}{app, ui},
 		AssetServer:      &assetserver.Options{Assets: assets},
 
-		OnStartup:  app.Startup,
+		OnStartup: func(ctx context.Context) {
+			app.Startup(ctx, ui)
+			ui.Startup(ctx)
+		},
 		OnShutdown: app.Shutdown,
 
 		Logger:             logger.NewFileLogger(path.Join(app.Env.LogDirectory, "rolens.log")),

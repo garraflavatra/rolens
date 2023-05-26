@@ -66,6 +66,10 @@ export function PerformDump(arg1) {
   return window['go']['app']['App']['PerformDump'](arg1);
 }
 
+export function PerformFindExport(arg1, arg2, arg3, arg4) {
+  return window['go']['app']['App']['PerformFindExport'](arg1, arg2, arg3, arg4);
+}
+
 export function PurgeLogDirectory() {
   return window['go']['app']['App']['PurgeLogDirectory']();
 }

@@ -1,6 +1,6 @@
 <script>
   import Grid from '$components/grid.svelte';
-  import busy from '$lib/stores/busy';
+  import { startProgress } from '$lib/progress';
   import { connections } from '$lib/stores/connections';
   import { WindowSetTitle } from '$wails/runtime/runtime';
   import { createEventDispatcher } from 'svelte';
@@ -28,7 +28,7 @@
   }
 
   async function openConnection(hostKey) {
-    busy.start();
+    const progress = startProgress(`Connecting to "${hostKey}"…`);
     const databases = await OpenConnection(hostKey);
 
     if (databases) {
@@ -41,47 +41,47 @@
       WindowSetTitle(`${hosts[activeHostKey].name} - Rolens`);
     }
 
-    busy.end();
+    progress.end();
   }
 
   async function openDatabase(dbKey) {
-    busy.start();
+    const progress = startProgress(`Opening database "${dbKey}"…`);
     const collections = await OpenDatabase(activeHostKey, dbKey);
 
     for (const collKey of collections || []) {
       $connections[activeHostKey].databases[dbKey].collections[collKey] = {};
     }
 
-    busy.end();
+    progress.end();
   }
 
   async function dropDatabase(dbKey) {
-    busy.start();
+    const progress = startProgress(`Dropping database "${dbKey}"…`);
     await DropDatabase(activeHostKey, dbKey);
     await reload();
-    busy.end();
+    progress.end();
   }
 
   async function openCollection(collKey) {
-    busy.start();
+    const progress = startProgress(`Opening collection "${collKey}"…`);
     const stats = await OpenCollection(activeHostKey, activeDbKey, collKey);
     $connections[activeHostKey].databases[activeDbKey].collections[collKey] = $connections[activeHostKey].databases[activeDbKey].collections[collKey] || {};
     $connections[activeHostKey].databases[activeDbKey].collections[collKey].stats = stats;
-    busy.end();
+    progress.end();
   }
 
   async function truncateCollection(dbKey, collKey) {
-    busy.start();
+    const progress = startProgress(`Truncating collection "${collKey}"…`);
     await TruncateCollection(activeHostKey, dbKey, collKey);
     await reload();
-    busy.end();
+    progress.end();
   }
 
   async function dropCollection(dbKey, collKey) {
-    busy.start();
+    const progress = startProgress(`Dropping collection "${collKey}"…`);
     await DropCollection(activeHostKey, dbKey, collKey);
     await reload();
-    busy.end();
+    progress.end();
   }
 </script>
 

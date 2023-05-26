@@ -1,28 +1,33 @@
 package ui
 
-import "github.com/ncruces/zenity"
+import (
+	"time"
 
-func (u *UI) StartProgressBar(title string) {
-	if u.progress != nil {
-		// already loading
-		return
-	}
+	"github.com/ncruces/zenity"
+)
+
+func (u *UI) StartProgressBar(id uint, title string) {
 	if title == "" {
 		// default title
-		title = "Loading"
+		title = "Loading…"
 	}
-	p, err := zenity.Progress(zenity.Title(title), zenity.Pulsate(), zenity.NoCancel(), zenity.Modal())
+	p, err := zenity.Progress(zenity.Title(title), zenity.Pulsate(), zenity.Modal())
 	if err != nil {
 		return
 	}
-	u.progress = p
+	u.progressBars[id] = p
 }
 
-func (u *UI) StopProgressBar() {
-	if u.progress == nil {
-		return
+func (u *UI) StopProgressBar(id uint) {
+	for try := 0; try < 10; try++ {
+		p := u.progressBars[id]
+		if p != nil {
+			p.Complete()
+			p.Close()
+			p = nil
+			return
+		}
+		println("Progress dialog not found:", id, try)
+		time.Sleep(100 * time.Millisecond)
 	}
-	u.progress.Complete()
-	u.progress.Close()
-	u.progress = nil
 }

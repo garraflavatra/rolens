@@ -39,6 +39,8 @@ export function OpenDatabase(arg1:string,arg2:string):Promise<Array<string>>;
 
 export function PerformDump(arg1:string):Promise<boolean>;
 
+export function PerformFindExport(arg1:string,arg2:string,arg3:string,arg4:string):Promise<boolean>;
+
 export function PurgeLogDirectory():Promise<void>;
 
 export function RemoveHost(arg1:string):Promise<void>;

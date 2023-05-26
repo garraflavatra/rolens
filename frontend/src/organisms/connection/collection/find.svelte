@@ -1,19 +1,18 @@
 <script>
-  // import CodeExample from '$components/code-example.svelte';
   import Grid from '$components/grid.svelte';
   import Icon from '$components/icon.svelte';
   import ObjectGrid from '$components/objectgrid.svelte';
   import input from '$lib/actions/input';
   import { deepClone } from '$lib/objects';
-  import busy from '$lib/stores/busy';
+  import { startProgress } from '$lib/progress';
   import queries from '$lib/stores/queries';
   import applicationSettings from '$lib/stores/settings';
   import views from '$lib/stores/views';
   import { FindItems, RemoveItemById } from '$wails/go/app/App';
   import { EJSON } from 'bson';
   import { createEventDispatcher, onMount } from 'svelte';
+  import ExportInfo from './components/export.svelte';
   import QueryChooser from './components/querychooser.svelte';
-  // import ObjectViewer from '$components/objectviewer.svelte';
 
   export let collection;
   export let hosts = {};
@@ -35,6 +34,7 @@
   let objectViewerData;
   let queryToSave;
   let showQueryChooser = false;
+  let exportInfo;
 
   $: viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
@@ -42,7 +42,7 @@
   $: activePage = (submittedForm.limit && submittedForm.skip && result?.results?.length) ? submittedForm.skip / submittedForm.limit : 0;
 
   async function submitQuery() {
-    busy.start();
+    const progress = startProgress('Performing query…');
     activePath = [];
     const newResult = await FindItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
     if (newResult) {
@@ -50,7 +50,7 @@
       result = newResult;
       submittedForm = deepClone(form);
     }
-    busy.end();
+    progress.end();
     resetFocus();
   }
 
@@ -168,7 +168,7 @@
       <button class="btn" type="button" on:click={saveQuery}>
         <Icon name="save" /> Save as…
       </button>
-      <button class="btn" type="button" on:click={saveQuery}>
+      <button class="btn" type="button" on:click={() => exportInfo = {}}>
         <Icon name="save" /> Export results…
       </button>
       <button type="submit" class="btn" title="Run query">
@@ -244,6 +244,8 @@
   {hosts}
   {collection}
 />
+
+<ExportInfo on:openViewConfig bind:collection bind:info={exportInfo} />
 
 <!-- <ObjectViewer bind:data={objectViewerData} /> -->
 

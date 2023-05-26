@@ -2,7 +2,7 @@
   import DirectoryChooser from '$components/directorychooser.svelte';
   import Grid from '$components/grid.svelte';
   import Modal from '$components/modal.svelte';
-  import busy from '$lib/stores/busy';
+  import { startProgress } from '$lib/progress';
   import { connections } from '$lib/stores/connections';
   import applicationSettings from '$lib/stores/settings';
   import { OpenConnection, OpenDatabase, PerformDump } from '$wails/go/app/App';
@@ -21,7 +21,7 @@
     info.collKeys = [];
 
     if (hostKey) {
-      busy.start();
+      const progress = startProgress(`Opening connection to host "${hostKey}"`);
       const databases = await OpenConnection(hostKey);
 
       if (databases && !$connections[hostKey]) {
@@ -31,7 +31,7 @@
         });
       }
 
-      busy.end();
+      progress.end();
     }
   }
 
@@ -40,14 +40,14 @@
     info.dbKey = dbKey;
 
     if (dbKey) {
-      busy.start();
+      const progress = startProgress(`Opening database "${dbKey}"`);
       const collections = await OpenDatabase(info.hostKey, dbKey);
 
       for (const collKey of collections?.sort() || []) {
         $connections[info.hostKey].databases[dbKey].collections[collKey] = {};
       }
 
-      busy.end();
+      progress.end();
     }
   }
 

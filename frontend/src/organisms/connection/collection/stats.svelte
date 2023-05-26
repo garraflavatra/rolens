@@ -1,5 +1,4 @@
 <script>
-  // import CodeExample from '$components/code-example.svelte';
   import ObjectGrid from '$components/objectgrid.svelte';
 
   export let collection;

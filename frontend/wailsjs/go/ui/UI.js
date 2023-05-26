@@ -18,14 +18,14 @@ export function Reveal(arg1) {
   return window['go']['ui']['UI']['Reveal'](arg1);
 }
 
-export function StartProgressBar(arg1) {
-  return window['go']['ui']['UI']['StartProgressBar'](arg1);
+export function StartProgressBar(arg1, arg2) {
+  return window['go']['ui']['UI']['StartProgressBar'](arg1, arg2);
 }
 
 export function Startup(arg1) {
   return window['go']['ui']['UI']['Startup'](arg1);
 }
 
-export function StopProgressBar() {
-  return window['go']['ui']['UI']['StopProgressBar']();
+export function StopProgressBar(arg1) {
+  return window['go']['ui']['UI']['StopProgressBar'](arg1);
 }

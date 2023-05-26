@@ -1,5 +1,4 @@
 <script>
-  // import CodeExample from '$components/code-example.svelte';
   import Icon from '$components/icon.svelte';
   import input from '$lib/actions/input';
   import { atomicUpdateOperators } from '$lib/mongo';

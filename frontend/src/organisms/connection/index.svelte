@@ -1,5 +1,5 @@
 <script>
-  import busy from '$lib/stores/busy';
+  import { startProgress } from '$lib/progress';
   import { connections } from '$lib/stores/connections';
   import { Hosts, RenameCollection } from '$wails/go/app/App';
   import { EnterText } from '$wails/go/ui/UI';
@@ -44,13 +44,13 @@
   async function renameCollection(oldCollKey) {
     const newCollKey = await EnterText('Rename collection', `Enter a new name for collection ${oldCollKey}.`, oldCollKey);
     if (newCollKey && (newCollKey !== oldCollKey)) {
-      busy.start();
+      const progress = startProgress(`Renaming collection "${oldCollKey}" to "${newCollKey}"…`);
       const ok = await RenameCollection(activeHostKey, activeDbKey, oldCollKey, newCollKey);
       if (ok) {
         activeCollKey = newCollKey;
         await hostTree.reload();
       }
-      busy.end();
+      progress.end();
     }
   }
 

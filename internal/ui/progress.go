@@ -6,6 +6,7 @@ import (
 	"github.com/ncruces/zenity"
 )
 
+// @todo: this takes ~0.5 seconds. Improve?
 func (u *UI) StartProgressBar(id uint, title string) {
 	if title == "" {
 		// default title
@@ -20,13 +21,13 @@ func (u *UI) StartProgressBar(id uint, title string) {
 
 func (u *UI) StopProgressBar(id uint) {
 	for try := 0; try < 10; try++ {
-		p := u.progressBars[id]
-		if p != nil {
+		if p := u.progressBars[id]; p != nil {
 			p.Complete()
 			p.Close()
 			p = nil
 			return
 		}
+
 		println("Progress dialog not found:", id, try)
 		time.Sleep(100 * time.Millisecond)
 	}

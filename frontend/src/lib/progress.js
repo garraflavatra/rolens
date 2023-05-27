@@ -4,12 +4,23 @@ let taskCounter = 0;
 
 export function startProgress(taskDescription = 'Loading…') {
   const taskIndex = ++taskCounter;
-  StartProgressBar(taskIndex, taskDescription);
+  let started = false;
+
+  const debouncer = setTimeout(() => {
+    StartProgressBar(taskIndex, taskDescription);
+    started = true;
+  }, 150);
 
   const task = {
     id: taskIndex,
     description: taskDescription,
-    end: () => StopProgressBar(taskIndex),
+
+    end: () => {
+      clearTimeout(debouncer);
+      if (started) {
+        StopProgressBar(taskIndex);
+      }
+    },
   };
 
   return task;

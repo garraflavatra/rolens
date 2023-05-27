@@ -35,6 +35,7 @@
   let queryToSave;
   let showQueryChooser = false;
   let exportInfo;
+  let querying = false;
 
   $: viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
@@ -42,16 +43,24 @@
   $: activePage = (submittedForm.limit && submittedForm.skip && result?.results?.length) ? submittedForm.skip / submittedForm.limit : 0;
 
   async function submitQuery() {
+    if (querying) {
+      return;
+    }
+
+    querying = true;
     const progress = startProgress('Performing query…');
     activePath = [];
     const newResult = await FindItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
+
     if (newResult) {
       newResult.results = newResult.results?.map(s => EJSON.parse(s, { relaxed: false }));
       result = newResult;
       submittedForm = deepClone(form);
     }
+
     progress.end();
     resetFocus();
+    querying = false;
   }
 
   async function refresh() {

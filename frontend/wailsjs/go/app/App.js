@@ -98,6 +98,10 @@ export function RenameCollection(arg1, arg2, arg3, arg4) {
   return window['go']['app']['App']['RenameCollection'](arg1, arg2, arg3, arg4);
 }
 
+export function ReportSharedStateVariable(arg1, arg2) {
+  return window['go']['app']['App']['ReportSharedStateVariable'](arg1, arg2);
+}
+
 export function SaveQuery(arg1) {
   return window['go']['app']['App']['SaveQuery'](arg1);
 }

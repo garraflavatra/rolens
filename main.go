@@ -7,11 +7,13 @@ import (
 
 	"github.com/garraflavatra/rolens/internal/app"
 	uictrl "github.com/garraflavatra/rolens/internal/ui"
+	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 var (
@@ -40,8 +42,15 @@ func main() {
 		AssetServer:      &assetserver.Options{Assets: assets},
 
 		OnStartup: func(ctx context.Context) {
-			app.Startup(ctx, ui)
+			defer func() {
+				if p := recover(); p != nil {
+					runtime.LogFatalf(ctx, "Application panicked: %v", p)
+					zenity.Error("A fatal error occured.")
+				}
+			}()
+
 			ui.Startup(ctx)
+			app.Startup(ctx, ui)
 		},
 		OnShutdown: app.Shutdown,
 

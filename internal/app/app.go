@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -10,8 +11,6 @@ import (
 
 	"github.com/garraflavatra/rolens/internal/ui"
 	"github.com/ncruces/zenity"
-	"github.com/wailsapp/wails/v2/pkg/menu"
-	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -29,13 +28,16 @@ type EnvironmentInfo struct {
 }
 
 type App struct {
-	ctx context.Context
-	ui  *ui.UI
-	Env EnvironmentInfo
+	Env   EnvironmentInfo
+	State map[string]string
+	ctx   context.Context
+	ui    *ui.UI
 }
 
 func NewApp() *App {
-	a := &App{}
+	a := &App{
+		State: make(map[string]string),
+	}
 
 	_, err := exec.LookPath("mongodump")
 	a.Env.HasMongoDump = err == nil
@@ -71,7 +73,7 @@ func NewApp() *App {
 func (a *App) Startup(ctx context.Context, ui *ui.UI) {
 	a.ctx = ctx
 	a.ui = ui
-	wailsRuntime.LogInfo(a.ctx, "Startup")
+	wailsRuntime.LogInfo(a.ctx, "Runcycle: Startup")
 
 	wailsEnv := wailsRuntime.Environment(a.ctx)
 	a.Env.Arch = wailsEnv.Arch
@@ -80,7 +82,7 @@ func (a *App) Startup(ctx context.Context, ui *ui.UI) {
 }
 
 func (a *App) Shutdown(ctx context.Context) {
-	wailsRuntime.LogInfo(a.ctx, "Shutdown")
+	wailsRuntime.LogInfo(a.ctx, "Runcycle: Shutdown")
 }
 
 func (a *App) Environment() EnvironmentInfo {
@@ -101,47 +103,7 @@ func (a *App) PurgeLogDirectory() {
 	}
 }
 
-func menuEventEmitter(a *App, eventName string, data ...interface{}) func(cd *menu.CallbackData) {
-	return func(cd *menu.CallbackData) {
-		wailsRuntime.EventsEmit(a.ctx, eventName, data...)
-	}
-}
-
-func (a *App) Menu() *menu.Menu {
-	appMenu := menu.NewMenu()
-
-	aboutMenu := appMenu.AddSubmenu("About")
-	aboutMenu.AddText("About…", nil, menuEventEmitter(a, "OpenAboutModal"))
-	aboutMenu.AddText("Prefrences…", keys.CmdOrCtrl(","), menuEventEmitter(a, "OpenPrefrences"))
-	aboutMenu.AddText("Open data directory…", nil, func(cd *menu.CallbackData) { a.ui.Reveal(a.Env.DataDirectory) })
-	aboutMenu.AddSeparator()
-	aboutMenu.AddText("Open log directory…", nil, func(cd *menu.CallbackData) { a.ui.Reveal(a.Env.LogDirectory) })
-	aboutMenu.AddText("Purge logs", nil, func(cd *menu.CallbackData) { a.PurgeLogDirectory() })
-	aboutMenu.AddSeparator()
-	aboutMenu.AddText("Quit", keys.CmdOrCtrl("q"), func(cd *menu.CallbackData) { wailsRuntime.Quit(a.ctx) })
-
-	if runtime.GOOS == "darwin" {
-		appMenu.Append(menu.EditMenu())
-	}
-
-	hostMenu := appMenu.AddSubmenu("Host")
-	hostMenu.AddText("New host", keys.CmdOrCtrl("y"), menuEventEmitter(a, "CreateHost"))
-
-	databaseMenu := appMenu.AddSubmenu("Database")
-	databaseMenu.AddText("New database", keys.CmdOrCtrl("u"), menuEventEmitter(a, "CreateDatabase"))
-
-	collectionMenu := appMenu.AddSubmenu("Collection")
-	collectionMenu.AddText("New collection", keys.CmdOrCtrl("i"), menuEventEmitter(a, "CreateCollection"))
-	collectionMenu.AddSeparator()
-	collectionMenu.AddText("Stats", keys.Combo("h", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuEventEmitter(a, "OpenCollectionTab", "stats"))
-	collectionMenu.AddText("Find", keys.Combo("f", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuEventEmitter(a, "OpenCollectionTab", "find"))
-	collectionMenu.AddText("Insert", keys.Combo("i", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuEventEmitter(a, "OpenCollectionTab", "insert"))
-	collectionMenu.AddText("Update", keys.Combo("u", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuEventEmitter(a, "OpenCollectionTab", "update"))
-	collectionMenu.AddText("Remove", keys.Combo("r", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuEventEmitter(a, "OpenCollectionTab", "remove"))
-	collectionMenu.AddText("Indexes", keys.Combo("x", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuEventEmitter(a, "OpenCollectionTab", "indexes"))
-
-	helpMenu := appMenu.AddSubmenu("Help")
-	helpMenu.AddText("User guide", nil, func(cd *menu.CallbackData) { wailsRuntime.BrowserOpenURL(a.ctx, "") })
-
-	return appMenu
+func (a *App) ReportSharedStateVariable(key, value string) {
+	a.State[key] = value
+	wailsRuntime.LogDebug(a.ctx, fmt.Sprintf("State has been reported: %s=\"%s\"", key, value))
 }

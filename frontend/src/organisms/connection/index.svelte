@@ -9,6 +9,7 @@
   import DumpInfo from './dump.svelte';
   import HostDetail from './hostdetail.svelte';
   import HostTree from './hosttree.svelte';
+  import sharedState from '$lib/stores/sharedstate';
 
   export let hosts = {};
   export let activeHostKey = '';
@@ -19,6 +20,10 @@
   let showHostDetail = false;
   let hostDetailKey = '';
   let exportInfo;
+
+  $: sharedState.currentHost.set(activeHostKey);
+  $: sharedState.currentDb.set(activeDbKey);
+  $: sharedState.currentColl.set(activeCollKey);
 
   async function getHosts() {
     hosts = await Hosts();

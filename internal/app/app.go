@@ -2,10 +2,12 @@ package app
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"runtime"
 
@@ -83,6 +85,15 @@ func (a *App) Startup(ctx context.Context, ui *ui.UI) {
 	a.Env.Arch = wailsEnv.Arch
 	a.Env.BuildType = wailsEnv.BuildType
 	a.Env.Platform = wailsEnv.Platform
+
+	jsonEnv, err := json.MarshalIndent(a.Env, "", "    ")
+	if err != nil {
+		wailsRuntime.LogWarningf(a.ctx, "Could not marshal environment info: %s", err.Error())
+	}
+	err = os.WriteFile(path.Join(a.Env.LogDirectory, "environment.json"), jsonEnv, 0644)
+	if err != nil {
+		wailsRuntime.LogWarningf(a.ctx, "Could not save environment.json: %s", err.Error())
+	}
 }
 
 func (a *App) Shutdown(ctx context.Context) {
@@ -109,5 +120,5 @@ func (a *App) PurgeLogDirectory() {
 
 func (a *App) ReportSharedStateVariable(key, value string) {
 	a.State[key] = value
-	wailsRuntime.LogDebug(a.ctx, fmt.Sprintf("State has been reported: %s=\"%s\"", key, value))
+	wailsRuntime.LogDebug(a.ctx, fmt.Sprintf("State: %s=\"%s\"", key, value))
 }

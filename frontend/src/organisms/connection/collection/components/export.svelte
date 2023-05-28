@@ -1,8 +1,8 @@
 <script>
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
-  import { startProgress } from '$lib/progress';
   import views from '$lib/stores/views';
+  import { PerformFindExport } from '$wails/go/app/App';
   import { createEventDispatcher } from 'svelte';
 
   export let info;
@@ -11,16 +11,21 @@
   const dispatch = createEventDispatcher();
   let viewKey = collection.viewKey;
   $: viewKey = collection.viewKey;
+  $: if (info) {
+    info.viewKey = viewKey;
+  }
 
   async function performExport() {
-    const progress = startProgress('Performing export…');
     info.view = $views[viewKey];
-    //...
-    progress.end();
+    const success = await PerformFindExport(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(info));
+
+    if (success) {
+      info = undefined;
+    }
   }
 </script>
 
-<Modal bind:show={info} title="Export results" width="400px">
+<Modal bind:show={info} title="Export results" width="450px">
   <form on:submit|preventDefault={performExport}>
     <label class="field">
       <span class="label">Export</span>
@@ -30,14 +35,16 @@
         <option value="querylimitskip">all records matching query, considering limit and skip</option>
       </select>
     </label>
+
     <label class="field">
       <span class="label">Format</span>
       <select bind:value={info.format}>
         <option value="jsonarray">JSON array</option>
-        <option value="jsonnewline">JSON: newline-separated objects</option>
+        <option value="ndjson">Newline delimited JSON</option>
         <option value="csv">CSV</option>
       </select>
     </label>
+
     <label class="field">
       <span class="label">View to use</span>
       <select bind:value={viewKey}>
@@ -49,6 +56,11 @@
         <Icon name="cog" />
       </button>
     </label>
+
+    <button class="btn" type="submit">
+      <Icon name="play" />
+      Start export
+    </button>
   </form>
 </Modal>
 

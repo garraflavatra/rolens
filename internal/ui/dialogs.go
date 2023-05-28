@@ -2,7 +2,7 @@ package ui
 
 import "github.com/ncruces/zenity"
 
-func (u *UI) OpenDirectory(id, title string) string {
+func (u *UI) OpenDirectory(title string) string {
 	if title == "" {
 		title = "Choose a directory"
 	}

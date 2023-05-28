@@ -10,8 +10,8 @@ export function EnterText(arg1, arg2, arg3) {
   return window['go']['ui']['UI']['EnterText'](arg1, arg2, arg3);
 }
 
-export function OpenDirectory(arg1, arg2) {
-  return window['go']['ui']['UI']['OpenDirectory'](arg1, arg2);
+export function OpenDirectory(arg1) {
+  return window['go']['ui']['UI']['OpenDirectory'](arg1);
 }
 
 export function Reveal(arg1) {

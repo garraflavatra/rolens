@@ -9,6 +9,7 @@ export namespace app {
 	    homeDirectory: string;
 	    dataDirectory: string;
 	    logDirectory: string;
+	    downloadDirectory: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new EnvironmentInfo(source);
@@ -24,6 +25,7 @@ export namespace app {
 	        this.homeDirectory = source["homeDirectory"];
 	        this.dataDirectory = source["dataDirectory"];
 	        this.logDirectory = source["logDirectory"];
+	        this.downloadDirectory = source["downloadDirectory"];
 	    }
 	}
 	export class QueryResult {

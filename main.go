@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"embed"
-	"path"
 
+	"github.com/garraflavatra/rolens/internal"
 	"github.com/garraflavatra/rolens/internal/app"
 	uictrl "github.com/garraflavatra/rolens/internal/ui"
 	"github.com/ncruces/zenity"
@@ -54,7 +54,7 @@ func main() {
 		},
 		OnShutdown: app.Shutdown,
 
-		Logger:             logger.NewFileLogger(path.Join(app.Env.LogDirectory, "rolens.log")),
+		Logger:             internal.NewAppLogger(app.Env.LogDirectory, "rolens.log"),
 		LogLevel:           logger.TRACE,
 		LogLevelProduction: logger.INFO,
 

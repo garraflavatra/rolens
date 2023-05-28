@@ -22,9 +22,10 @@ type EnvironmentInfo struct {
 	HasMongoExport bool `json:"hasMongoExport"`
 	HasMongoDump   bool `json:"hasMongoDump"`
 
-	HomeDirectory string `json:"homeDirectory"`
-	DataDirectory string `json:"dataDirectory"`
-	LogDirectory  string `json:"logDirectory"`
+	HomeDirectory     string `json:"homeDirectory"`
+	DataDirectory     string `json:"dataDirectory"`
+	LogDirectory      string `json:"logDirectory"`
+	DownloadDirectory string `json:"downloadDirectory"`
 }
 
 type App struct {
@@ -54,12 +55,15 @@ func NewApp() *App {
 	case "windows":
 		a.Env.DataDirectory = filepath.Join(a.Env.HomeDirectory, "/AppData/Local/Rolens")
 		a.Env.LogDirectory = filepath.Join(a.Env.HomeDirectory, "/AppData/Local/Rolens/Logs")
+		a.Env.DownloadDirectory = filepath.Join(a.Env.HomeDirectory, "/Downloads")
 	case "darwin":
 		a.Env.DataDirectory = filepath.Join(a.Env.HomeDirectory, "/Library/Application Support/Rolens")
 		a.Env.LogDirectory = filepath.Join(a.Env.HomeDirectory, "/Library/Logs/Rolens")
+		a.Env.DownloadDirectory = filepath.Join(a.Env.HomeDirectory, "/Downloads")
 	case "linux":
 		a.Env.DataDirectory = filepath.Join(a.Env.HomeDirectory, "/.config/rolens")
 		a.Env.LogDirectory = filepath.Join(a.Env.HomeDirectory, "/.config/rolens/logs")
+		a.Env.DownloadDirectory = filepath.Join(a.Env.HomeDirectory, "/Downloads")
 	default:
 		panic(errors.New("unsupported platform"))
 	}

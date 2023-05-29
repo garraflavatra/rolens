@@ -5,9 +5,13 @@
   import { EditorState } from '@codemirror/state';
   import { EditorView, keymap } from '@codemirror/view';
   import { basicSetup } from 'codemirror';
-  import { onMount } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
 
   export let text = '';
+  export let editor = undefined;
+
+  const dispatch = createEventDispatcher();
+  let editorParent;
 
   const editorState = EditorState.create({
     doc: '',
@@ -17,16 +21,13 @@
       javascript(),
       EditorState.tabSize.of(4),
       EditorView.updateListener.of(e => {
-        // if (!e.docChanged) {
-        //   return;
-        // }
+        if (!e.docChanged) {
+          return;
+        }
         text = e.state.doc.toString();
       }),
     ],
   });
-
-  let editorParent;
-  let editor;
 
   onMount(() => {
     editor = new EditorView({
@@ -37,10 +38,12 @@
     editor.dispatch({
       changes: {
         from: 0,
-        to: editorState.doc.length,
+        to: editor.state.doc.length,
         insert: text,
       },
     });
+
+    dispatch('inited', { editor });
   });
 </script>
 
@@ -49,9 +52,11 @@
 <style>
   .editor {
     width: 100%;
+    background-color: #fff;
   }
 
   .editor :global(.cm-editor) {
     overflow: auto;
+    height: 100%;
   }
 </style>

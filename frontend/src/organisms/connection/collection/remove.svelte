@@ -1,32 +1,47 @@
 <script>
   import Icon from '$components/icon.svelte';
-  import input from '$lib/actions/input';
+  import ObjectEditor from '$components/objecteditor.svelte';
+  import { convertLooseJson } from '$lib/strings';
   import { RemoveItems } from '$wails/go/app/App';
+  import { onMount } from 'svelte';
 
   export let collection;
 
   let json = '';
   let many = true;
   let result = undefined;
+  let editor;
   $: code = `db.${collection.key}.remove(${json});`;
 
   async function removeItems() {
-    result = await RemoveItems(collection.hostKey, collection.dbKey, collection.key, json, many);
+    result = await RemoveItems(
+      collection.hostKey,
+      collection.dbKey,
+      collection.key,
+      convertLooseJson(json),
+      many
+    );
   }
+
+  onMount(() => {
+    editor.dispatch({
+      changes: {
+        from: 0,
+        to: editor.state.doc.length,
+        insert: '{\n\t\n}',
+      },
+      selection: {
+        anchor: 3,
+      },
+    });
+    editor.focus();
+  });
 </script>
 
 <form on:submit|preventDefault={removeItems}>
-  <!-- <CodeExample {code} /> -->
-
+  <!-- svelte-ignore a11y-label-has-associated-control -->
   <label class="field">
-    <textarea
-      cols="30"
-      rows="10"
-      placeholder={'{}'}
-      class="code"
-      bind:value={json}
-      use:input={{ type: 'json', autofocus: true }}
-    ></textarea>
+    <ObjectEditor bind:text={json} bind:editor />
   </label>
 
   <div class="actions">
@@ -58,9 +73,5 @@
 
   .many {
     display: inline-flex;
-  }
-
-  textarea {
-    resize: none;
   }
 </style>

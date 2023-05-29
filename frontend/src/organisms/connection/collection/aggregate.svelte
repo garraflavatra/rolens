@@ -3,7 +3,7 @@
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
   import MongoCollation from '$components/mongo-collation.svelte';
-  import input from '$lib/actions/input';
+  import ObjectEditor from '$components/objecteditor.svelte';
   import { aggregationStageDocumentationURL, aggregationStages } from '$lib/mongo';
   import { jsonLooseParse, looseJsonIsValid } from '$lib/strings';
   import { Aggregate } from '$wails/go/app/App';
@@ -32,7 +32,13 @@
 
   async function run() {
     const pipeline = stages.map(stage => ({ [stage.type]: jsonLooseParse(stage.data) }));
-    await Aggregate(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(pipeline), JSON.stringify(options));
+    await Aggregate(
+      collection.hostKey,
+      collection.dbKey,
+      collection.key,
+      JSON.stringify(pipeline),
+      JSON.stringify(options)
+    );
   }
 
   onMount(() => {
@@ -57,8 +63,22 @@
             <Icon name="info" />
           </button>
         </label>
+
+        <!-- svelte-ignore a11y-label-has-associated-control -->
         <label class="field">
-          <textarea bind:value={stage.data} class="code" use:input={{ type: 'json' }}></textarea>
+          <ObjectEditor bind:text={stage.data} on:inited={e => {
+            e.detail.editor.dispatch({
+              changes: {
+                from: 0,
+                to: e.detail.editor.state.doc.length,
+                insert: '{\n\t\n}',
+              },
+              selection: {
+                anchor: 3,
+              },
+            });
+            e.detail.editor.focus();
+          }} />
         </label>
       </Details>
     {/each}
@@ -102,6 +122,21 @@
     grid-template: 1fr auto / 1fr;
   }
 
+  .aggregate :global(details) {
+    position: relative;
+    z-index: 2;
+  }
+  .aggregate :global(details + details::before) {
+    content: "";
+    position: absolute;
+    top: -0.6rem;
+    left: 50%;
+    width: 1px;
+    height: 0.6rem;
+    background-color: #888;
+    z-index: 1;
+  }
+
   .settinggrid {
     margin-bottom: 0.5rem;
   }
@@ -112,8 +147,7 @@
     align-items: center;
   }
 
-  textarea {
-    min-height: 100px;
+  .field + .field {
     margin-top: 0.5rem;
   }
 </style>

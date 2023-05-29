@@ -3,21 +3,22 @@
   import Grid from '$components/grid.svelte';
   import Icon from '$components/icon.svelte';
   import ObjectViewer from '$components/objectviewer.svelte';
-  import input from '$lib/actions/input';
   import { randomString } from '$lib/math';
   import { inputTypes } from '$lib/mongo';
   import views from '$lib/stores/views';
   import { capitalise, convertLooseJson, jsonLooseParse } from '$lib/strings';
   import { InsertItems } from '$wails/go/app/App';
   import { EJSON } from 'bson';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import Form from './components/form.svelte';
+  import ObjectEditor from '$components/objecteditor.svelte';
 
   export let collection;
 
   const dispatch = createEventDispatcher();
   const formValidity = {};
 
+  let editor;
   let json = '';
   let newItems = [];
   let insertedIds;
@@ -46,7 +47,12 @@
   }
 
   async function insert() {
-    insertedIds = await InsertItems(collection.hostKey, collection.dbKey, collection.key, convertLooseJson(json));
+    insertedIds = await InsertItems(
+      collection.hostKey,
+      collection.dbKey,
+      collection.key,
+      convertLooseJson(json)
+    );
     if ((collection.viewKey === 'list') && insertedIds) {
       newItems = [];
     }
@@ -90,13 +96,30 @@
     newItems.splice(index, 1);
     newItems = newItems;
   }
+
+  onMount(() => {
+    if (collection.viewKey === 'list') {
+      editor.dispatch({
+        changes: {
+          from: 0,
+          to: editor.state.doc.length,
+          insert: '{\n\t\n}',
+        },
+        selection: {
+          anchor: 3,
+        },
+      });
+      editor.focus();
+    }
+  });
 </script>
 
 <form on:submit|preventDefault={insert}>
   <div class="items">
     {#if collection.viewKey === 'list'}
+      <!-- svelte-ignore a11y-label-has-associated-control -->
       <label class="field json">
-        <textarea placeholder="[]" class="code" bind:value={json} use:input={{ type: 'json', autofocus: true }}></textarea>
+        <ObjectEditor bind:text={json} bind:editor />
       </label>
     {:else if viewType === 'form'}
       <div class="form">
@@ -204,8 +227,5 @@
 
   .field.json {
     height: 100%;
-  }
-  .field.json textarea {
-    resize: none;
   }
 </style>

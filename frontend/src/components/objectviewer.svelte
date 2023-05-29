@@ -1,9 +1,9 @@
 <script>
+  import { jsonLooseParse } from '$lib/strings';
+  import { createEventDispatcher, onDestroy } from 'svelte';
   import Icon from './icon.svelte';
   import Modal from './modal.svelte';
-  import { createEventDispatcher, onDestroy } from 'svelte';
   import ObjectEditor from './objecteditor.svelte';
-  import { jsonLooseParse } from '$lib/strings';
 
   export let data;
   export let saveable = false;

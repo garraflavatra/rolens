@@ -2,6 +2,7 @@
   import Grid from '$components/grid.svelte';
   import Icon from '$components/icon.svelte';
   import ObjectGrid from '$components/objectgrid.svelte';
+  import ObjectViewer from '$components/objectviewer.svelte';
   import input from '$lib/actions/input';
   import { deepClone } from '$lib/objects';
   import { startProgress } from '$lib/progress';
@@ -13,7 +14,6 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import ExportInfo from './components/export.svelte';
   import QueryChooser from './components/querychooser.svelte';
-  import ObjectViewer from '$components/objectviewer.svelte';
 
   export let collection;
   export let hosts = {};

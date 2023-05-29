@@ -2,7 +2,7 @@
   import Details from '$components/details.svelte';
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
-  import MongoCollation from '$components/mongo-collation.svelte';
+  import Collation from '$lib/mongo/collation.svelte';
   import ObjectEditor from '$components/objecteditor.svelte';
   import { aggregationStageDocumentationURL, aggregationStages } from '$lib/mongo';
   import { jsonLooseParse, looseJsonIsValid } from '$lib/strings';
@@ -111,7 +111,7 @@
   </div>
 
   <Details title="Set custom collation options">
-    <MongoCollation bind:collation={options.collation} />
+    <Collation bind:collation={options.collation} />
   </Details>
 </Modal>
 

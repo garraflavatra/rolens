@@ -9,7 +9,6 @@
 
   let indexes = [];
   let activePath = [];
-  let objectViewerData = '';
   let creatingNewIndex = false;
 
   $: collection && getIndexes();
@@ -35,11 +34,6 @@
       activePath[0] = '';
     }
   }
-
-  function openJson(indexId) {
-    const item = indexes?.find(i => i.name == indexId);
-    objectViewerData = item;
-  }
 </script>
 
 <div class="indexes">
@@ -49,7 +43,6 @@
       data={indexes}
       getRootMenu={(_, idx) => [ { label: 'Drop this index', fn: () => drop(idx.name) } ]}
       bind:activePath
-      on:trigger={e => openJson(e.detail.itemKey)}
     />
   </div>
 
@@ -66,7 +59,6 @@
   </div>
 </div>
 
-<ObjectViewer bind:data={objectViewerData} />
 <IndexDetail bind:creatingNewIndex {collection} on:reload={getIndexes} />
 
 <style>

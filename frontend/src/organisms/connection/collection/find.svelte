@@ -13,6 +13,7 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import ExportInfo from './components/export.svelte';
   import QueryChooser from './components/querychooser.svelte';
+  import ObjectViewer from '$components/objectviewer.svelte';
 
   export let collection;
   export let hosts = {};
@@ -256,7 +257,10 @@
 
 <ExportInfo on:openViewConfig bind:collection bind:info={exportInfo} />
 
-<!-- <ObjectViewer bind:data={objectViewerData} /> -->
+{#key objectViewerData}
+  <!-- @todo Implement save -->
+  <ObjectViewer bind:data={objectViewerData} saveable />
+{/key}
 
 <datalist id="limits">
   {#each [ 1, 5, 10, 25, 50, 100, 200 ] as value}

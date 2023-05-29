@@ -6,8 +6,7 @@ import { LogError } from '$wails/runtime';
 import App from './app.svelte';
 
 window.addEventListener('unhandledrejection', event => {
-  LogError('Unhandled Rejection in JS! Reason:');
-  LogError(String(event.reason));
+  LogError('Unhandled JS rejection: ' + event.reason);
 });
 
 // @ts-ignore Argument IS correct.

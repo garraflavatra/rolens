@@ -62,6 +62,8 @@
       return false;
     }
 
+    toggleChildren(itemKey, false);
+
     if (activeKey !== itemKey) {
       activeKey = itemKey;
       if (level === 0) {
@@ -79,7 +81,7 @@
     dispatch('closeAll');
   }
 
-  function toggleChildren(itemKey, shift) {
+  function toggleChildren(itemKey, shift = false) {
     childrenOpen[itemKey] = !childrenOpen[itemKey];
     if (shift) {
       closeAll();
@@ -89,6 +91,7 @@
   function doubleClick(itemKey) {
     // toggleChildren(itemKey, false);
     dispatch('trigger', { level, itemKey });
+    childrenOpen[itemKey] = true;
   }
 
   function showContextMenu(evt, item) {

@@ -56,7 +56,7 @@
   main {
     height: 100vh;
     display: grid;
-    grid-template: 1fr / 250px 1fr;
+    grid-template: 1fr / minmax(300px, 0.3fr) 1fr;
   }
   #root.platform-darwin main {
     height: calc(100vh - var(--darwin-titlebar-height));

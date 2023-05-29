@@ -4,7 +4,7 @@
   import contextMenu from '$lib/stores/contextmenu';
   import environment from '$lib/stores/environment';
   import applicationInited from '$lib/stores/inited';
-  import About from '$organisms/about/index.svelte';
+  import About from '$organisms/about.svelte';
   import Connection from '$organisms/connection/index.svelte';
   import Settings from '$organisms/settings/index.svelte';
   import { EventsOn } from '$wails/runtime';
@@ -38,6 +38,7 @@
     {#key $contextMenu}
       <ContextMenu {...$contextMenu} on:close={contextMenu.hide} />
     {/key}
+
     <Settings bind:show={settingsModalOpen} />
     <About bind:show={aboutModalOpen} />
   {/if}

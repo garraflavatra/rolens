@@ -41,6 +41,19 @@ p strong {
   font-weight: 700;
 }
 
+a {
+  color: rgb(0, 0, 204);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+}
+
 .loading {
   cursor: wait;
 }

@@ -81,7 +81,7 @@
     margin-right: auto;
     margin-bottom: auto;
     width: 100%;
-    border-radius: 10px;
+    border-radius: var(--radius);
     display: flex;
     flex-flow: column;
     cursor: auto;
@@ -97,7 +97,7 @@
   header {
     display: flex;
     align-items: center;
-    padding: 1rem;
+    padding: 0.75rem;
   }
   header .title {
     font-size: 1.5rem;
@@ -114,14 +114,14 @@
     overflow-y: auto;
   }
   .content.padded {
-    padding: 1rem;
+    padding: 0.75rem;
   }
   header + .content.padded {
     border-top: 1px solid #ccc;
   }
 
   footer {
-    padding: 1rem;
+    padding: 0.75rem;
     border-top: 1px solid #ccc;
   }
 </style>

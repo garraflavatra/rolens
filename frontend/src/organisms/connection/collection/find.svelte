@@ -171,19 +171,20 @@
     </div>
 
     <div class="form-row actions">
-      <!-- <CodeExample {code} /> -->
-      <button class="btn" type="button" on:click={loadQuery}>
-        <Icon name="upload" /> Load query…
-      </button>
-      <button class="btn" type="button" on:click={saveQuery}>
-        <Icon name="save" /> Save as…
-      </button>
-      <button class="btn" type="button" on:click={() => exportInfo = {}}>
-        <Icon name="save" /> Export results…
-      </button>
       <button type="submit" class="btn" title="Run query">
         <Icon name="play" /> Run
       </button>
+      <button class="btn secondary" type="button" on:click={() => exportInfo = {}}>
+        <Icon name="save" /> Export results…
+      </button>
+      <div class="field">
+        <button class="btn secondary" type="button" on:click={loadQuery}>
+          <Icon name="upload" /> Load query…
+        </button>
+        <button class="btn secondary" type="button" on:click={saveQuery}>
+          <Icon name="save" /> Save as…
+        </button>
+      </div>
     </div>
   </form>
 

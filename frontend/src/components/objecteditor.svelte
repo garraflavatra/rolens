@@ -53,6 +53,8 @@
   .editor {
     width: 100%;
     background-color: #fff;
+    border-radius: var(--radius);
+    overflow: hidden;
   }
 
   .editor :global(.cm-editor) {

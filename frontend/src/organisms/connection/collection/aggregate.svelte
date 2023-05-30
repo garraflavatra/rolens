@@ -60,7 +60,7 @@
             {/each}
           </select>
           <button class="btn secondary" type="button" on:click={() => openStageDocs(stage.type)} title="Open documentation about {stage.type || 'this stage'} on mongodb.org">
-            <Icon name="info" />
+            <Icon name="?" />
           </button>
         </label>
 

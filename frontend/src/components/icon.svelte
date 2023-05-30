@@ -91,5 +91,7 @@
     <path d="m17 1 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
   {:else if name === 'chart'}
     <path d="M18 20V10M12 20V4M6 20v-6"/>
+  {:else if name === '?'}
+    <circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line>
   {/if}
 </svg>

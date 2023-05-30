@@ -1,0 +1,37 @@
+name: Feature request
+description: Do you have an idea that could extend Rolens's possibilities? This is the place to propose it.
+labels: [enhancement]
+assignees: [garraflavatra]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to propose a new feature!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature description
+      description: Give a brief description of the feature you'd like to see. What issue does it solve, and what is it capable of?
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version of Rolens are you running?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: importance
+    attributes:
+      label: Importance
+      options:
+        - Nice to have
+        - It would make Rolens more complete
+        - I cannot use Rolens without it
+    validations:
+      required: true

@@ -1,6 +1,5 @@
 <script>
-  import Icon from '$components/icon.svelte';
-import Modal from '$components/modal.svelte';
+  import Modal from '$components/modal.svelte';
   import alink from '$lib/actions/alink';
 
   export let show = true;

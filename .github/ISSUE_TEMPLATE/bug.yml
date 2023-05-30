@@ -1,0 +1,61 @@
+name: Bug report
+description: Use this to report something that is not working properly.
+labels: [bug]
+assignees: [garraflavatra]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug description
+      description: Give a brief description of the bug. What feature is broken?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include a reproduction if applicable. What did you do before the bug appeared?
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version of Rolens are you running?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment information
+      description: Please open Rolens and select _Rolens > Open log directory_. Open the `environment.json` file and paste its contents here.
+      render: shell
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity of this bug
+      options:
+        - Annoying
+        - Blocking a specific feature
+        - Blocking all usage
+    validations:
+      required: true

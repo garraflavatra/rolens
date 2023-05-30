@@ -81,6 +81,7 @@ select:disabled {
   background-color: #c00;
   border: 1px solid #c00;
 }
+.btn.danger:active,
 .btn.danger:focus {
   box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.2);
 }
@@ -107,8 +108,10 @@ select:disabled {
 .button-small:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
-.button-small:active {
+.button-small:active,
+.button-small:focus {
   background-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 0 2px rgba(0, 0, 139, 0.75);
 }
 .button-small svg {
   width: 13px;

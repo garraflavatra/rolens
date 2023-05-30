@@ -94,22 +94,22 @@
   <div class="actions">
     {#if type === 'objectid'}
       {#if objectIdInput?.disabled}
-        <button class="btn-sm" type="button" title="Edit object id" on:click={editObjectId}>
+        <button class="button-small" type="button" title="Edit object id" on:click={editObjectId}>
           <Icon name="edit" />
         </button>
       {/if}
-      <button class="btn-sm" type="button" title="Generate random object id" on:click={generateObjectId}>
+      <button class="button-small" type="button" title="Generate random object id" on:click={generateObjectId}>
         <Icon name="reload" />
       </button>
     {:else if type === 'date'}
-      <button class="btn-sm" type="button" title="Edit date" on:click={() => showDatepicker = true}>
+      <button class="button-small" type="button" title="Edit date" on:click={() => showDatepicker = true}>
         <Icon name="edit" />
       </button>
-      <button class="btn-sm" type="button" title="Set date to now" on:click={() => value = new Date()}>
+      <button class="button-small" type="button" title="Set date to now" on:click={() => value = new Date()}>
         <Icon name="o" />
       </button>
     {/if}
-    <button class="btn-sm" type="button" title="Reset field to default value" on:click={() => value = undefined}>
+    <button class="button-small" type="button" title="Reset field to default value" on:click={() => value = undefined}>
       <Icon name="trash" />
     </button>
   </div>

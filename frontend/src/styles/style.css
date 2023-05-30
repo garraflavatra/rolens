@@ -100,17 +100,17 @@ select:disabled {
   cursor: not-allowed;
 }
 
-.btn-sm {
+.button-small {
   padding: 3px;
   border-radius: 2px;
 }
-.btn-sm:hover {
+.button-small:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
-.btn-sm:active {
+.button-small:active {
   background-color: rgba(0, 0, 0, 0.2);
 }
-.btn-sm svg {
+.button-small svg {
   width: 13px;
   height: 13px;
   vertical-align: bottom;

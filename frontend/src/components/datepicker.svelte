@@ -112,7 +112,7 @@
                 <button
                   on:click={() => setValueToDate(day)}
                   type="button"
-                  class="btn-sm"
+                  class="button-small"
                   class:active={isSameDay(value, day)}
                   class:notinmonth={day.getMonth() !== month}
                 >{day.getDate()}</button>

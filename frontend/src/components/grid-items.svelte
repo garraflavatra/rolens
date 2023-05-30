@@ -173,7 +173,7 @@
 
     {#if canRemoveItems}
       <td class="has-button">
-        <button class="btn-sm" type="button" on:click|stopPropagation={() => removeItem(index, item[key])} on:dblclick|stopPropagation>
+        <button class="button-small" type="button" on:click|stopPropagation={() => removeItem(index, item[key])} on:dblclick|stopPropagation>
           <Icon name="x" />
         </button>
       </td>

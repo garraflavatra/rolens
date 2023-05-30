@@ -162,7 +162,7 @@
     {/if}
 
     {#if collection.viewKey !== 'list'}
-      <button class="btn-sm" type="button" on:click={addRow}>
+      <button class="button-small" type="button" on:click={addRow}>
         <Icon name="+" /> Add item
       </button>
     {/if}

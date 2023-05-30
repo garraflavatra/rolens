@@ -83,7 +83,7 @@
       </Details>
     {/each}
 
-    <button class="btn-sm" type="button" on:click={addStage}>
+    <button class="button-small" type="button" on:click={addStage}>
       <Icon name="+" /> Add stage
     </button>
   </div>

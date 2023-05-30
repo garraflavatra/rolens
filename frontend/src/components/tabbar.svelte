@@ -23,7 +23,7 @@
           {tab.title}
         </button>
         {#if tab.closable}
-          <button class="btn-sm" on:click={() => dispatch('closeTab', tab.key)}>
+          <button class="button-small" on:click={() => dispatch('closeTab', tab.key)}>
             <Icon name="x" />
           </button>
         {/if}
@@ -89,7 +89,7 @@
     cursor: not-allowed;
   }
 
-  .btn-sm {
+  .button-small {
     position: absolute;
     right: 7px;
     top: 7px;

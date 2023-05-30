@@ -2,7 +2,7 @@ module github.com/garraflavatra/rolens
 
 go 1.18
 
-require github.com/wailsapp/wails/v2 v2.3.1
+require github.com/wailsapp/wails/v2 v2.5.1
 
 require (
 	github.com/gen2brain/beeep v0.0.0-20220909211152-5a9ec94374f6
@@ -24,7 +24,6 @@ require (
 	github.com/go-toast/toast v0.0.0-20190211030409-01e6764cf0a4 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
-	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/jchv/go-winloader v0.0.0-20210711035445-715c2860da7e // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/labstack/echo/v4 v4.9.0 // indirect
@@ -50,9 +49,9 @@ require (
 	github.com/xdg-go/scram v1.1.1 // indirect
 	github.com/xdg-go/stringprep v1.0.3 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
-	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
+	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
-	golang.org/x/net v0.6.0 // indirect
+	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect
 	golang.org/x/text v0.9.0 // indirect

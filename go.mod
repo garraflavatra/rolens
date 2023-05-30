@@ -6,7 +6,7 @@ require github.com/wailsapp/wails/v2 v2.3.1
 
 require (
 	github.com/gen2brain/beeep v0.0.0-20220909211152-5a9ec94374f6
-	github.com/google/uuid v1.1.2
+	github.com/google/uuid v1.3.0
 	go.mongodb.org/mongo-driver v1.11.1
 )
 

@@ -25,8 +25,8 @@ WIP.
 
 ## Questions and bugs
 
-* Did you capture a **bug**? Please [report it](https://github.com/garraflavatra/rolens/issues/new) — thank you!
-* Would you like to see a new **feature**? You can [request it](https://github.com/garraflavatra/rolens/issues/new).
+* Did you capture a **bug**? Please [report it](https://github.com/garraflavatra/rolens/issues/new?assignees=garraflavatra&labels=bug&projects=&template=bug.yml) — thank you!
+* Would you like to see a new **feature**? You can [request it](https://github.com/garraflavatra/rolens/issues/new?assignees=garraflavatra&labels=enhancement&projects=&template=feature.yml).
 * Do you have a **question**? Ask questions on [the discussion board](https://github.com/garraflavatra/rolens/discussions/new?category=questions).
 
 Feel free to contact me if you have questions! [send me an e-mail](mailto:romein@vburen.nl)

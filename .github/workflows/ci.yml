@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build Rolens
+
+    strategy:
+      matrix:
+        platform: [windows-2022, macos-12, ubuntu-22.04]
+        go-version: [1.18]
+        node-version: [16]
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.go-version }}
+
+    - name: Install Wails
+      run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install frontend dependencies
+      run: cd frontend && npm ci && cd ..
+
+    - name: Build Rolens
+      run: wails build
+
+    - name: Upload binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: rolens-${{ matrix.platform }}
+        path: build/bin/*

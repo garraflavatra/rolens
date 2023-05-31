@@ -7,7 +7,7 @@ import {menu} from '../models';
 import {context} from '../models';
 import {ui} from '../models';
 
-export function AddHost(arg1:string):Promise<void>;
+export function AddHost(arg1:string):Promise<string>;
 
 export function Aggregate(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string):Promise<void>;
 
@@ -43,7 +43,7 @@ export function PerformFindExport(arg1:string,arg2:string,arg3:string,arg4:strin
 
 export function PurgeLogDirectory():Promise<void>;
 
-export function RemoveHost(arg1:string):Promise<void>;
+export function RemoveHost(arg1:string):Promise<boolean>;
 
 export function RemoveItemById(arg1:string,arg2:string,arg3:string,arg4:string):Promise<boolean>;
 
@@ -67,7 +67,7 @@ export function Startup(arg1:context.Context,arg2:ui.UI):Promise<void>;
 
 export function TruncateCollection(arg1:string,arg2:string,arg3:string):Promise<boolean>;
 
-export function UpdateHost(arg1:string,arg2:string):Promise<void>;
+export function UpdateHost(arg1:string,arg2:string):Promise<boolean>;
 
 export function UpdateItems(arg1:string,arg2:string,arg3:string,arg4:string):Promise<number>;
 

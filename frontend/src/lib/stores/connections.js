@@ -1,3 +1,5 @@
 import { writable } from 'svelte/store';
 
-export const connections = writable({});
+const connections = writable({});
+
+export default connections;

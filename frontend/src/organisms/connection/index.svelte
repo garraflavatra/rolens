@@ -1,6 +1,6 @@
 <script>
   import { startProgress } from '$lib/progress';
-  import { connections } from '$lib/stores/connections';
+  import connections from '$lib/stores/connections';
   import { Hosts, RenameCollection } from '$wails/go/app/App';
   import { EnterText } from '$wails/go/ui/UI';
   import { EventsOn } from '$wails/runtime/runtime';
@@ -10,8 +10,9 @@
   import HostDetail from './hostdetail.svelte';
   import HostTree from './hosttree.svelte';
   import sharedState from '$lib/stores/sharedstate';
+  import Icon from '$components/icon.svelte';
+  import hosts from '$lib/stores/hosts';
 
-  export let hosts = {};
   export let activeHostKey = '';
   export let activeDbKey = '';
   export let activeCollKey = '';
@@ -24,10 +25,6 @@
   $: sharedState.currentHost.set(activeHostKey);
   $: sharedState.currentDb.set(activeDbKey);
   $: sharedState.currentColl.set(activeCollKey);
-
-  async function getHosts() {
-    hosts = await Hosts();
-  }
 
   export function createHost() {
     hostDetailKey = '';
@@ -89,12 +86,16 @@
   EventsOn('CreateHost', createHost);
   EventsOn('CreateDatabase', createDatabase);
   EventsOn('CreateCollection', createCollection);
-  onMount(getHosts);
 </script>
 
 <div class="tree">
+  <div class="tree-buttons">
+    <button class="button-small" on:click={createHost}>
+      <Icon name="+" /> New host
+    </button>
+  </div>
+
   <HostTree
-    {hosts}
     bind:activeHostKey
     bind:activeCollKey
     bind:activeDbKey
@@ -114,21 +115,22 @@
   hostKey={activeHostKey}
   dbKey={activeDbKey}
   collectionKey={activeCollKey}
-  {hosts}
 />
 
 <HostDetail
   bind:show={showHostDetail}
-  on:reload={getHosts}
+  on:reload={hosts.update}
   hostKey={activeHostKey}
-  {hosts}
 />
 
-<DumpInfo bind:info={exportInfo} {hosts} />
+<DumpInfo bind:info={exportInfo} />
 
 <style>
   .tree {
     padding: 0.5rem;
     background-color: #fff;
+  }
+  .tree-buttons {
+    margin-bottom: 1rem;
   }
 </style>

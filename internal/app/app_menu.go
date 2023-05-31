@@ -45,6 +45,7 @@ func (a *App) Menu() *menu.Menu {
 	fileMenu.AddText("Update", keys.Combo("u", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuCallbackEmit(a, "OpenCollectionTab", "update"))
 	fileMenu.AddText("Remove", keys.Combo("r", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuCallbackEmit(a, "OpenCollectionTab", "remove"))
 	fileMenu.AddText("Indexes", keys.Combo("x", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuCallbackEmit(a, "OpenCollectionTab", "indexes"))
+	fileMenu.AddText("Aggregate", keys.Combo("a", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuCallbackEmit(a, "OpenCollectionTab", "aggregate"))
 
 	if runtime.GOOS == "darwin" {
 		appMenu.Append(menu.EditMenu())

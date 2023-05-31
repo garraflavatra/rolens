@@ -4,13 +4,13 @@
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
   import input from '$lib/actions/input';
+  import hosts from '$lib/stores/hosts';
   import queries from '$lib/stores/queries';
   import { createEventDispatcher } from 'svelte';
 
   export let queryToSave = undefined;
   export let collection = {};
   export let show = false;
-  export let hosts = {};
 
   const dispatch = createEventDispatcher();
   let gridSelectedPath = [];
@@ -88,7 +88,7 @@
         columns={[ { key: 'n', title: 'Query name' }, { key: 'h', title: 'Host' }, { key: 'ns', title: 'Namespace' } ]}
         key="n"
         items={Object.entries($queries).reduce((object, [ name, query ]) => {
-          object[query.name] = { n: name, h: hosts[query.hostKey]?.name || '?', ns: `${query.dbKey}.${query.collKey}` };
+          object[query.name] = { n: name, h: $hosts[query.hostKey]?.name || '?', ns: `${query.dbKey}.${query.collKey}` };
           return object;
         }, {})}
         showHeaders={true}
@@ -100,23 +100,25 @@
       />
     </div>
 
+    {#if queryToSave && Object.keys($queries).includes(queryToSave.name)}
+      <Hint>
+        You are about to <strong>overwrite</strong> a saved query. Give it
+        another name if you do not want to overwrite.
+      </Hint>
+    {/if}
+  </form>
+
+  <svelte:fragment slot="footer">
     {#if queryToSave}
-      <button class="btn" type="submit">
+      <button class="btn" on:click={submit}>
         <Icon name="save" /> Save query
       </button>
-
-      {#if Object.keys($queries).includes(queryToSave.name)}
-        <Hint>
-          You are about to <strong>overwrite</strong> a saved query. Give it
-          another name if you do not want to overwrite.
-        </Hint>
-      {/if}
     {:else}
-      <button class="btn" type="submit" disabled={!selectedKey}>
+      <button class="btn" on:click={submit} disabled={!selectedKey}>
         <Icon name="upload" /> Load query
       </button>
     {/if}
-  </form>
+  </svelte:fragment>
 </Modal>
 
 <style>

@@ -1,12 +1,13 @@
 <script>
   import Grid from '$components/grid.svelte';
   import { startProgress } from '$lib/progress';
-  import { connections } from '$lib/stores/connections';
+  import connections from '$lib/stores/connections';
   import { WindowSetTitle } from '$wails/runtime/runtime';
   import { createEventDispatcher } from 'svelte';
-  import { DropCollection, DropDatabase, OpenCollection, OpenConnection, OpenDatabase, TruncateCollection } from '../../../wailsjs/go/app/App';
+  import { DropCollection, DropDatabase, OpenCollection, OpenConnection, OpenDatabase, RemoveHost, TruncateCollection } from '../../../wailsjs/go/app/App';
+  import hosts from '$lib/stores/hosts';
+  import { tick } from 'svelte';
 
-  export let hosts = {};
   export let activeHostKey = '';
   export let activeDbKey = '';
   export let activeCollKey = '';
@@ -16,7 +17,7 @@
   $: activeHostKey = activeGridPath[0] || activeHostKey;
   $: activeDbKey = activeGridPath[1];
   $: activeCollKey = activeGridPath[2];
-  $: host = hosts[activeHostKey];
+  $: host = $hosts[activeHostKey];
   $: connection = $connections[activeHostKey];
   $: database = connection?.databases[activeDbKey];
   $: collection = database?.collections?.[activeCollKey];
@@ -38,10 +39,19 @@
       });
       activeHostKey = hostKey;
       dispatch('connected', hostKey);
-      WindowSetTitle(`${hosts[activeHostKey].name} - Rolens`);
+      WindowSetTitle(`${$hosts[activeHostKey].name} - Rolens`);
     }
 
     progress.end();
+  }
+
+  async function removeHost(hostKey) {
+    activeCollKey = '';
+    activeDbKey = '';
+    activeHostKey = '';
+    await tick();
+    await RemoveHost(hostKey);
+    hosts.update();
   }
 
   async function openDatabase(dbKey) {
@@ -88,9 +98,9 @@
 <Grid
   striped={false}
   columns={[ { key: 'name' }, { key: 'count', right: true } ]}
-  items={Object.keys(hosts).map(hostKey => ({
+  items={Object.keys($hosts).map(hostKey => ({
     id: hostKey,
-    name: hosts[hostKey].name,
+    name: $hosts[hostKey].name,
     icon: 'server',
     children: Object.keys(connection?.databases || {}).sort().map(dbKey => ({
       id: dbKey,
@@ -122,7 +132,8 @@
     menu: [
       { label: 'New database…', fn: () => dispatch('newDatabase') },
       { separator: true },
-      { label: `Edit host ${hosts[hostKey].name}…`, fn: () => dispatch('editHost', hostKey) },
+      { label: `Edit host ${$hosts[hostKey].name}…`, fn: () => dispatch('editHost', hostKey) },
+      { label: `Remove host…`, fn: () => removeHost(hostKey) },
     ],
   }))}
   bind:activePath={activeGridPath}

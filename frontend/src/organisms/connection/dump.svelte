@@ -3,12 +3,12 @@
   import Grid from '$components/grid.svelte';
   import Modal from '$components/modal.svelte';
   import { startProgress } from '$lib/progress';
-  import { connections } from '$lib/stores/connections';
+  import connections from '$lib/stores/connections';
+  import hosts from '$lib/stores/hosts';
   import applicationSettings from '$lib/stores/settings';
   import { OpenConnection, OpenDatabase, PerformDump } from '$wails/go/app/App';
 
   export let info;
-  export let hosts = {};
 
   $: if (info) {
     info.outdir = info.outdir || $applicationSettings.defaultExportDirectory;
@@ -83,7 +83,7 @@
           hideChildrenToggles
           items={[
             { id: undefined, name: '(localhost)' },
-            ...Object.keys(hosts).map(id => ({ id, name: hosts[id]?.name })),
+            ...Object.keys($hosts).map(id => ({ id, name: $hosts[id]?.name })),
           ]}
           on:select={e => selectHost(e.detail?.itemKey)}
         />
@@ -123,11 +123,11 @@
         />
       </div>
     </div>
-
-    <div>
-      <button type="submit" class="btn">Perform dump</button>
-    </div>
   </form>
+
+  <svelte:fragment slot="footer">
+    <button class="btn" on:click={performDump}>Perform dump</button>
+  </svelte:fragment>
 </Modal>
 
 <style>

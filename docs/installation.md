@@ -1,6 +1,4 @@
----
-title: Installation
----
+# Installing Rolens
 
 ## System requirements
 

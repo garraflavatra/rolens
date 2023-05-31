@@ -1,9 +1,10 @@
 <script>
   import BlankState from '$components/blankstate.svelte';
   import ContextMenu from '$components/contextmenu.svelte';
-  import { connections } from '$lib/stores/connections';
+  import connections from '$lib/stores/connections';
   import contextMenu from '$lib/stores/contextmenu';
   import environment from '$lib/stores/environment';
+  import hosts from '$lib/stores/hosts';
   import applicationInited from '$lib/stores/inited';
   import About from '$organisms/about.svelte';
   import Connection from '$organisms/connection/index.svelte';
@@ -11,18 +12,22 @@
   import { EventsEmit, EventsOn } from '$wails/runtime';
   import { tick } from 'svelte';
 
-  const hosts = {};
   const activeHostKey = '';
   let activeDbKey = '';
   let activeCollKey = '';
   let settingsModalOpen = false;
   let aboutModalOpen = false;
   let connectionManager;
-  let showWelcomeScreen = false;
+  let showWelcomeScreen = undefined;
 
   $: host = hosts[activeHostKey];
   $: connection = $connections[activeHostKey];
-  $: showWelcomeScreen = !Object.keys(hosts).length;
+
+  hosts.subscribe(h => {
+    if (h && (showWelcomeScreen === undefined)) {
+      showWelcomeScreen = !Object.keys($hosts || {}).length;
+    }
+  });
 
   async function createFirstHost() {
     showWelcomeScreen = false;
@@ -39,14 +44,14 @@
 <div id="root" class="platform-{$environment?.platform}">
   <div class="titlebar"></div>
 
-  {#if $applicationInited}
+  {#if $applicationInited && $hosts && (showWelcomeScreen !== undefined)}
     <main class:empty={showWelcomeScreen}>
       {#if showWelcomeScreen}
         <BlankState label="Welcome to Rolens!" image="/logo.png" pale={false} big={true}>
           <button class="btn" on:click={createFirstHost}>Add your first host</button>
         </BlankState>
       {:else}
-        <Connection {hosts} {activeHostKey} bind:activeCollKey bind:activeDbKey bind:this={connectionManager} />
+        <Connection {activeHostKey} bind:activeCollKey bind:activeDbKey bind:this={connectionManager} />
       {/if}
     </main>
 

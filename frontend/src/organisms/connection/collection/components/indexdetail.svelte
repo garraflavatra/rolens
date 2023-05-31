@@ -86,16 +86,16 @@
         No rules
       {/each}
     </div>
-
-    <div class="buttons">
-      <button class="btn" type="button" on:click={addRule} disabled={index.model.some(r => r.sort === 'hashed')}>
-        <Icon name="+" /> Add rule
-      </button>
-      <button class="btn" type="submit" disabled={!index.model.length || index.model.some(r => !r.key)}>
-        <Icon name="+" /> Create index
-      </button>
-    </div>
   </form>
+
+  <div class="buttons" slot="footer">
+    <button class="btn" on:click={addRule} disabled={index.model.some(r => r.sort === 'hashed')}>
+      <Icon name="+" /> Add rule
+    </button>
+    <button class="btn" on:click={create} disabled={!index.model.length || index.model.some(r => !r.key)}>
+      <Icon name="+" /> Create index
+    </button>
+  </div>
 </Modal>
 
 <style>
@@ -128,7 +128,7 @@
     display: flex;
     gap: 0.5rem;
   }
-  .buttons button[type="submit"] {
+  .buttons:nth-child(2) {
     margin-left: auto;
   }
 </style>

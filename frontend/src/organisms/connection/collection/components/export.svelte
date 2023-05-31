@@ -56,12 +56,13 @@
         <Icon name="cog" />
       </button>
     </label>
-
-    <button class="btn" type="submit">
-      <Icon name="play" />
-      Start export
-    </button>
   </form>
+
+  <svelte:fragment slot="footer">
+    <button class="btn" on:click={performExport}>
+      <Icon name="play" /> Start export
+    </button>
+  </svelte:fragment>
 </Modal>
 
 <style>

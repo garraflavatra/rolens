@@ -16,7 +16,6 @@
   import QueryChooser from './components/querychooser.svelte';
 
   export let collection;
-  export let hosts = {};
 
   const dispatch = createEventDispatcher();
   const defaults = {
@@ -252,7 +251,6 @@
   bind:queryToSave
   bind:show={showQueryChooser}
   on:select={queryChosen}
-  {hosts}
   {collection}
 />
 

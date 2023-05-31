@@ -16,7 +16,6 @@
   export let hostKey;
   export let dbKey;
   export let collectionKey;
-  export let hosts = {};
 
   let tab = 'find';
   let find;
@@ -62,7 +61,7 @@
 
       <div class="container">
         {#if tab === 'stats'} <Stats {collection} />
-        {:else if tab === 'find'} <Find {collection} {hosts} bind:this={find} on:openViewConfig={openViewConfig} />
+        {:else if tab === 'find'} <Find {collection} bind:this={find} on:openViewConfig={openViewConfig} />
         {:else if tab === 'insert'} <Insert {collection} on:performFind={catchQuery} on:openViewConfig={openViewConfig} />
         {:else if tab === 'update'} <Update {collection} on:performFind={catchQuery} />
         {:else if tab === 'remove'} <Remove {collection} />

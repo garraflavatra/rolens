@@ -1,18 +1,18 @@
 <script>
   import Modal from '$components/modal.svelte';
   import input from '$lib/actions/input';
+  import hosts from '$lib/stores/hosts';
   import { AddHost, UpdateHost } from '$wails/go/app/App';
   import { createEventDispatcher } from 'svelte';
 
   export let show = false;
   export let hostKey = '';
-  export let hosts = {};
 
   const dispatch = createEventDispatcher();
   let form = {};
   let error = '';
   $: valid = validate(form);
-  $: host = hosts[hostKey];
+  $: host = $hosts[hostKey];
 
   $: if (show || !show) {
     init();
@@ -36,7 +36,10 @@
         await UpdateHost(hostKey, JSON.stringify(form));
       }
       else {
-        await AddHost(JSON.stringify(form));
+        const newHostKey = await AddHost(JSON.stringify(form));
+        if (newHostKey) {
+          hostKey = newHostKey;
+        }
       }
       show = false;
       dispatch('reload');
@@ -58,18 +61,18 @@
       <span class="label">Connection string</span>
       <input type="text" placeholder="mongodb://..." bind:value={form.uri} spellcheck="false" use:input />
     </label>
-
-    <div class="result">
-      <div>
-        {#if error}
-          <div class="error">{error}</div>
-        {/if}
-      </div>
-      <button class="btn" disabled={!valid} type="submit">
-        {host ? 'Save' : 'Create'}
-      </button>
-    </div>
   </form>
+
+  <div class="result" slot="footer">
+    <div>
+      {#if error}
+        <div class="error">{error}</div>
+      {/if}
+    </div>
+    <button class="btn" disabled={!valid} on:click={submit}>
+      {host ? 'Save' : 'Create'}
+    </button>
+  </div>
 </Modal>
 
 <style>

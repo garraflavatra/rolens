@@ -34,8 +34,7 @@ func (a *App) Hosts() (map[string]Host, error) {
 	if err != nil {
 		// It's ok if the file cannot be opened, for example if it is not accessible.
 		// Therefore no error is returned.
-		runtime.LogInfo(a.ctx, "Could not open hosts.json")
-		runtime.LogInfo(a.ctx, err.Error())
+		runtime.LogInfof(a.ctx, "Could not open hosts.json (%s), trying to create it.", err.Error())
 		return make(map[string]Host, 0), nil
 	}
 
@@ -46,84 +45,80 @@ func (a *App) Hosts() (map[string]Host, error) {
 		err = json.Unmarshal(jsonData, &hosts)
 
 		if err != nil {
-			runtime.LogInfo(a.ctx, "host.json file contains malformatted JSON data")
-			runtime.LogInfo(a.ctx, err.Error())
+			runtime.LogInfof(a.ctx, "host.json file contains malformatted JSON data: %s", err.Error())
 			return nil, errors.New("host.json file contains malformatted JSON data")
 		}
 		return hosts, nil
 	}
 }
 
-func (a *App) AddHost(jsonData string) error {
+func (a *App) AddHost(jsonData string) string {
 	hosts, err := a.Hosts()
 	if err != nil {
 		zenity.Error(err.Error(), zenity.Title("Error while retrieving hosts"), zenity.ErrorIcon)
-		return errors.New("could not retrieve existing host list")
+		return ""
 	}
 
 	var newHost Host
 	err = json.Unmarshal([]byte(jsonData), &newHost)
 	if err != nil {
-		runtime.LogError(a.ctx, "Add host: malformed form")
-		runtime.LogError(a.ctx, err.Error())
+		runtime.LogErrorf(a.ctx, "Add host: malformed form: %s", err.Error())
 		zenity.Error(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
-		return errors.New("invalid JSON")
+		return ""
 	}
 
 	id, err := uuid.NewRandom()
 	if err != nil {
-		runtime.LogError(a.ctx, "Add host: failed to generate a UUID")
-		runtime.LogError(a.ctx, err.Error())
+		runtime.LogErrorf(a.ctx, "Add host: failed to generate a UUID: %s", err.Error())
 		zenity.Error(err.Error(), zenity.Title("Error while generating UUID"), zenity.ErrorIcon)
-		return errors.New("could not generate a UUID")
+		return ""
 	}
 
 	hosts[id.String()] = newHost
 	err = updateHostsFile(a, hosts)
 	if err != nil {
 		zenity.Error(err.Error(), zenity.Title("Error while updating host list"), zenity.ErrorIcon)
-		return errors.New("could not update host list")
+		return ""
 	}
 
-	return nil
+	return id.String()
 }
 
-func (a *App) UpdateHost(hostKey string, jsonData string) error {
+func (a *App) UpdateHost(hostKey string, jsonData string) bool {
 	hosts, err := a.Hosts()
 	if err != nil {
 		zenity.Error(err.Error(), zenity.Title("Error while getting hosts"), zenity.ErrorIcon)
-		return errors.New("could not retrieve existing host list")
+		return false
 	}
 
 	var host Host
 	err = json.Unmarshal([]byte(jsonData), &host)
 	if err != nil {
-		runtime.LogError(a.ctx, "Could not parse update host JSON")
-		runtime.LogError(a.ctx, err.Error())
+		runtime.LogErrorf(a.ctx, "Could not parse update host JSON: %s", err.Error())
 		zenity.Error(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
-		return errors.New("invalid JSON")
+		return false
 	}
 
 	hosts[hostKey] = host
 	err = updateHostsFile(a, hosts)
 	if err != nil {
 		zenity.Error(err.Error(), zenity.Title("Error while updating hosts"), zenity.ErrorIcon)
-		return errors.New("could not update host list")
+		return false
 	}
 
-	return nil
+	return true
 }
 
-func (a *App) RemoveHost(key string) error {
+func (a *App) RemoveHost(key string) bool {
 	hosts, err := a.Hosts()
 	if err != nil {
 		zenity.Error(err.Error(), zenity.Title("Error while retrieving hosts"), zenity.ErrorIcon)
-		return errors.New("could not retrieve existing host list")
+		return false
 	}
 
 	err = zenity.Question("Are you sure you want to remove "+hosts[key].Name+"?", zenity.Title("Confirm"), zenity.WarningIcon)
 	if err == zenity.ErrCanceled {
-		return errors.New("operation aborted")
+		return false
 	}
 
 	delete(hosts, key)
@@ -131,7 +126,8 @@ func (a *App) RemoveHost(key string) error {
 
 	if err != nil {
 		zenity.Error(err.Error(), zenity.Title("Error while updating hosts"), zenity.ErrorIcon)
-		return errors.New("could not update host list")
+		return false
 	}
-	return nil
+
+	return true
 }

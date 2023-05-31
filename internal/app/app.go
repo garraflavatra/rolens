@@ -14,6 +14,7 @@ import (
 	"github.com/garraflavatra/rolens/internal/ui"
 	"github.com/ncruces/zenity"
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
+	"golang.org/x/sync/syncmap"
 )
 
 type EnvironmentInfo struct {
@@ -32,15 +33,13 @@ type EnvironmentInfo struct {
 
 type App struct {
 	Env   EnvironmentInfo
-	State map[string]string
+	State syncmap.Map
 	ctx   context.Context
 	ui    *ui.UI
 }
 
 func NewApp() *App {
-	a := &App{
-		State: make(map[string]string),
-	}
+	a := &App{}
 
 	_, err := exec.LookPath("mongodump")
 	a.Env.HasMongoDump = err == nil
@@ -119,6 +118,6 @@ func (a *App) PurgeLogDirectory() {
 }
 
 func (a *App) ReportSharedStateVariable(key, value string) {
-	a.State[key] = value
+	a.State.Store(key, value)
 	wailsRuntime.LogDebug(a.ctx, fmt.Sprintf("State: %s=\"%s\"", key, value))
 }

@@ -21,7 +21,7 @@
     "eslint": "^8.41.0",
     "eslint-config-nodejs": "github:johbog/eslint-config-nodejs",
     "eslint-config-svelte3": "github:johbog/eslint-config-svelte3",
-    "svelte": "^3.49.0",
+    "svelte": "^3.59.1",
     "vite": "^3.0.0"
   },
   "eslintConfig": {

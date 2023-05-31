@@ -7,7 +7,7 @@
   export let show = false;
 </script>
 
-<Modal title="Prefrences" bind:show>
+<Modal title="Preferences" bind:show>
   <div class="prefs">
     <label for="defaultLimit">Initial number of items to retrieve using one query (limit):</label>
     <label class="field">

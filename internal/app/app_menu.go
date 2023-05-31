@@ -26,7 +26,7 @@ func (a *App) Menu() *menu.Menu {
 	aboutMenu := appMenu.AddSubmenu("Rolens")
 	aboutMenu.AddText("About Rolens", nil, menuCallbackEmit(a, "OpenAboutModal"))
 	aboutMenu.AddSeparator()
-	aboutMenu.AddText("Prefrences…", keys.CmdOrCtrl(","), menuCallbackEmit(a, "OpenPrefrences"))
+	aboutMenu.AddText("Preferences…", keys.CmdOrCtrl(","), menuCallbackEmit(a, "OpenPreferences"))
 	aboutMenu.AddSeparator()
 	aboutMenu.AddText("Open data directory…", nil, func(cd *menu.CallbackData) { a.ui.Reveal(a.Env.DataDirectory) })
 	aboutMenu.AddText("Open log directory…", nil, func(cd *menu.CallbackData) { a.ui.Reveal(a.Env.LogDirectory) })

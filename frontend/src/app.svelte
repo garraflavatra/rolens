@@ -30,7 +30,7 @@
     connectionManager.createHost();
   }
 
-  EventsOn('OpenPrefrences', () => settingsModalOpen = true);
+  EventsOn('OpenPreferences', () => settingsModalOpen = true);
   EventsOn('OpenAboutModal', () => aboutModalOpen = true);
 </script>
 

@@ -49,3 +49,8 @@ Feel free to contact me if you have questions! [Send an e-mail.](mailto:romein@v
 ## Author and license
 
 © [Romein van Buren](mailto:romein@vburen.nl) 2023. The source code and compiled binaries are released under the GNU GPLv3 license — see [LICENSE](./LICENSE) for the full license text.
+
+## Credits
+
+* Icons are from [Feather Icons](https://feathericons.com/) by [Cole Bemis](https://github.com/colebemis).
+* Vector drawings come from [unDraw](https://undraw.co/).

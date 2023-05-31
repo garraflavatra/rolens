@@ -1,4 +1,5 @@
 <script>
+  import BlankState from '$components/blankstate.svelte';
   import ContextMenu from '$components/contextmenu.svelte';
   import { connections } from '$lib/stores/connections';
   import contextMenu from '$lib/stores/contextmenu';
@@ -7,7 +8,8 @@
   import About from '$organisms/about.svelte';
   import Connection from '$organisms/connection/index.svelte';
   import Settings from '$organisms/settings/index.svelte';
-  import { EventsOn } from '$wails/runtime';
+  import { EventsEmit, EventsOn } from '$wails/runtime';
+  import { tick } from 'svelte';
 
   const hosts = {};
   const activeHostKey = '';
@@ -15,11 +17,18 @@
   let activeCollKey = '';
   let settingsModalOpen = false;
   let aboutModalOpen = false;
+  let connectionManager;
+  let showWelcomeScreen = false;
 
   $: host = hosts[activeHostKey];
   $: connection = $connections[activeHostKey];
-  $: database = connection?.databases[activeDbKey];
-  $: collection = database?.collections?.[activeCollKey];
+  $: showWelcomeScreen = !Object.keys(hosts).length;
+
+  async function createFirstHost() {
+    showWelcomeScreen = false;
+    await tick();
+    connectionManager.createHost();
+  }
 
   EventsOn('OpenPrefrences', () => settingsModalOpen = true);
   EventsOn('OpenAboutModal', () => aboutModalOpen = true);
@@ -31,8 +40,14 @@
   <div class="titlebar"></div>
 
   {#if $applicationInited}
-    <main class:empty={!host || !connection}>
-      <Connection {hosts} bind:activeCollKey bind:activeDbKey {activeHostKey} />
+    <main class:empty={showWelcomeScreen}>
+      {#if showWelcomeScreen}
+        <BlankState label="Welcome to Rolens!" image="/logo.png" pale={false} big={true}>
+          <button class="btn" on:click={createFirstHost}>Add your first host</button>
+        </BlankState>
+      {:else}
+        <Connection {hosts} {activeHostKey} bind:activeCollKey bind:activeDbKey bind:this={connectionManager} />
+      {/if}
     </main>
 
     {#key $contextMenu}
@@ -58,6 +73,9 @@
     height: 100vh;
     display: grid;
     grid-template: 1fr / minmax(300px, 0.3fr) 1fr;
+  }
+  main.empty {
+    grid-template: 1fr / 1fr;
   }
   #root.platform-darwin main {
     height: calc(100vh - var(--darwin-titlebar-height));

@@ -29,7 +29,7 @@
     hosts = await Hosts();
   }
 
-  function createHost() {
+  export function createHost() {
     hostDetailKey = '';
     showHostDetail = true;
   }
@@ -39,7 +39,7 @@
     showHostDetail = true;
   }
 
-  async function createDatabase() {
+  export async function createDatabase() {
     const name = await EnterText('Create a database', 'Enter the database name. Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.');
     if (name) {
       $connections[activeHostKey].databases[name] = { collections: {} };
@@ -59,7 +59,7 @@
     }
   }
 
-  async function createCollection() {
+  export async function createCollection() {
     const name = await EnterText('Create a collection', 'Note: collections in MongoDB do not exist until they have at least one item. Your new collection will not persist on the server; fill it to have it created.');
     if (name) {
       $connections[activeHostKey].databases[activeDbKey].collections[name] = {};

@@ -1,0 +1,195 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:svelte/recommended"
+  ],
+  "plugins": [
+    "svelte",
+    "import"
+  ],
+  "overrides": [{
+    "files": "*.svelte",
+    "rules": {
+      "no-inner-declarations": 0,
+      "svelte/no-inner-declarations": [
+        "error",
+        "functions"
+      ]
+    }
+  }],
+  "rules": {
+    "no-undef": [
+      "error",
+      { "typeof": true }
+    ],
+    "require-atomic-updates": 0,
+    "indent": [
+      "error",
+      2,
+      { "SwitchCase": 1 }
+    ],
+    "strict": 0,
+    "quotes": [ "error", "single" ],
+    "semi": [ "warn", "always" ],
+    "accessor-pairs": "error",
+    "array-bracket-spacing": [
+      "error",
+      "always"
+    ],
+    "arrow-body-style": [
+      "error",
+      "as-needed",
+      { "requireReturnForObjectLiteral": true }
+    ],
+    "arrow-parens": [ "error", "as-needed" ],
+    "arrow-spacing": "error",
+    "block-spacing": [ "error", "always" ],
+    "comma-dangle": [
+      "warn",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "never",
+        "exports": "never",
+        "functions": "never"
+      }
+    ],
+    "comma-spacing": "error",
+    "computed-property-spacing": [
+      "error",
+      "never"
+    ],
+    "generator-star-spacing": "error",
+    "id-blacklist": "error",
+    "id-match": "error",
+    "jsx-quotes": "error",
+    "keyword-spacing": "error",
+    "key-spacing": [
+      "warn",
+      { "beforeColon": false }
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "no-unused-vars": "warn",
+    "no-alert": "error",
+    "no-caller": "error",
+    "no-confusing-arrow": [
+      "error",
+      { "allowParens": true }
+    ],
+    "no-console": "off",
+    "no-div-regex": "error",
+    "no-duplicate-imports": "error",
+    "no-extend-native": "error",
+    "no-extra-label": "error",
+    "no-fallthrough": "off",
+    "no-floating-decimal": "error",
+    "no-implicit-coercion": [
+      "error",
+      {
+        "boolean": false,
+        "number": false,
+        "string": false
+      }
+    ],
+    "no-inner-declarations": [
+      "error",
+      "functions"
+    ],
+    "no-iterator": "error",
+    "no-label-var": "error",
+    "no-lone-blocks": "error",
+    "no-new-object": "error",
+    "no-new-require": "error",
+    "no-new-wrappers": "error",
+    "no-restricted-globals": [
+      "error",
+      "event",
+      "name"
+    ],
+    "no-restricted-imports": "error",
+    "no-restricted-modules": "error",
+    "no-restricted-syntax": "error",
+    "no-script-url": "error",
+    "no-self-compare": "error",
+    "no-sequences": "error",
+    "no-shadow-restricted-names": "error",
+    "no-spaced-func": "error",
+    "no-trailing-spaces": "error",
+    "no-unmodified-loop-condition": "error",
+    "no-useless-constructor": "error",
+    "no-whitespace-before-property": "error",
+    "no-with": "error",
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "prefer-const": "error",
+    "require-yield": "error",
+    "semi-spacing": [
+      "error"
+    ],
+    "space-before-blocks": "error",
+    "space-before-function-paren": [
+      "error",
+      "never"
+    ],
+    "space-in-parens": [
+      "error",
+      "never"
+    ],
+    "space-infix-ops": "error",
+    "space-unary-ops": "error",
+    "template-curly-spacing": "error",
+    "curly": 2,
+    "brace-style": [
+      "error",
+      "stroustrup"
+    ],
+    "wrap-iife": [
+      "error",
+      "any"
+    ],
+    "yield-star-spacing": "error",
+    "multiline-ternary": [
+      "warn",
+      "never"
+    ],
+    "no-nested-ternary": "error",
+    "svelte/html-quotes": [
+      "warn",
+      {
+        "prefer": "double",
+        "dynamic": { "quoted": false }
+      }
+    ],
+    "svelte/no-useless-mustaches": "warn",
+    "svelte/require-store-reactive-access": "warn",
+    "svelte/no-reactive-literals": "error",
+    "svelte/html-closing-bracket-spacing": "warn",
+    "svelte/indent": "warn",
+    "svelte/max-attributes-per-line": [
+      "warn",
+      { "multiline": 1, "singleline": 5 }
+    ],
+    "svelte/mustache-spacing": "warn",
+    "svelte/no-extra-reactive-curlies": "error",
+    "svelte/no-spaces-around-equal-signs-in-attribute": "warn",
+    "svelte/prefer-class-directive": "warn",
+    "svelte/shorthand-attribute": "warn",
+    "svelte/shorthand-directive": "warn",
+    "svelte/spaced-html-comment": "warn",
+    "svelte/no-at-html-tags": 0
+  }
+}

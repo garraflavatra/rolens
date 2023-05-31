@@ -85,6 +85,7 @@
     display: flex;
     flex-flow: column;
     cursor: auto;
+    overflow: hidden;
   }
   .inner > :global(*:first-child) {
     margin-top: 0;
@@ -98,6 +99,7 @@
     display: flex;
     align-items: center;
     padding: 0.75rem;
+    background-color: #eee;
   }
   header .title {
     font-size: 1.5rem;

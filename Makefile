@@ -1,0 +1,2 @@
+build: *
+	wails build

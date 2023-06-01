@@ -1,0 +1,14 @@
+{
+  "collections": [
+    { "description": "Open Stats panel", "option": true, "ctrl": true, "symbol": "H", "link": "/user-guide/collections/stats/" },
+    { "description": "Open Find panel", "option": true, "ctrl": true, "symbol": "F", "link": "/user-guide/collections/find/" },
+    { "description": "Open Insert panel", "option": true, "ctrl": true, "symbol": "I", "link": "/user-guide/collections/insert/" },
+    { "description": "Open Update panel", "option": true, "ctrl": true, "symbol": "U", "link": "/user-guide/collections/update/" },
+    { "description": "Open Remove panel", "option": true, "ctrl": true, "symbol": "R", "link": "/user-guide/collections/remove/" },
+    { "description": "Open Indexes panel", "option": true, "ctrl": true, "symbol": "X", "link": "/user-guide/collections/indexes/" },
+    { "description": "Open Aggregate panel", "option": true, "ctrl": true, "symbol": "A", "link": "/user-guide/collections/aggregate/" }
+  ],
+  "preferences": [
+    { "description": "Open preferences", "ctrl": true, "symbol": ",", "link": "/user-guide/preferences/" }
+  ]
+}

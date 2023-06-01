@@ -1,4 +1,10 @@
+.DS_Store
+
 /build/bin/
+/build/windows/installer/tmp/
+
 /frontend/node_modules/
 /frontend/dist/
-/build/windows/installer/tmp/
+
+/website/node_modules/
+/website-dist/

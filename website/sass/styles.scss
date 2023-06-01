@@ -1,0 +1,283 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: #442cce;
+
+  &:active {
+    color: #b40101;
+  }
+}
+
+code {
+  background-color: #ddd;
+  border-radius: 4px;
+  padding: 3px 5px;
+}
+
+svg.icon {
+  width: 1em;
+  height: 1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: -2px;
+}
+
+kbd {
+  display: inline-block;
+  background-color: #eee;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  margin: 0 1px;
+  padding: 0 4px;
+  font: inherit;
+  font-size: 80%;
+}
+
+// GLOBAL LAYOUT
+
+main {
+  display: grid;
+  line-height: 1.5;
+
+  > aside {
+    order: -1;
+    display: flex;
+    flex-direction: column;
+
+    > nav#sitetoc {
+      display: none;
+      flex: 1;
+    }
+
+    @media (min-width: 768px) {
+      position: sticky;
+      height: 100vh;
+      top: 0;
+    }
+  }
+
+  article { padding: 1rem 2rem; }
+}
+
+// SITEHEAD
+
+header#sitehead {
+  background-color: #b40101;
+  color: #fff;
+  text-align: center;
+
+  a {
+    font: inherit;
+    color: inherit;
+    text-decoration: none;
+    padding: 1rem;
+    display: grid;
+    grid-template: 1fr / auto 1fr;
+    align-items: center;
+    gap: 1rem;
+
+    &:hover {
+      background-color: #970404;
+    }
+  }
+
+  img {
+    width: 100px;
+    grid-row: 1 / 3;
+
+    @media (min-width: 768px) {
+      width: 150px;
+    }
+  }
+
+  .sitetitle {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .tagline {
+    font-size: 1.15rem;
+    line-height: 1.15;
+  }
+}
+
+// SITETOC
+
+nav#sitetoc {
+  padding: 1rem;
+  background-color: #efefef;
+  overflow-y: auto;
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li.haschildren > ul {
+    border-left: 1px solid #ddd;
+    margin: 0.5rem 0;
+  }
+
+  a {
+    color: inherit;
+    display: block;
+    text-decoration: none;
+
+    &:hover {
+      color: #970404;
+    }
+
+    &.current {
+      font-weight: 700;
+      color: #970404;
+    }
+  }
+
+  > ul > li {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+
+    > a {
+      font-weight: 500;
+      text-decoration: underline;
+    }
+
+    ul li {
+      margin: 0.2rem 0 0.2rem 1rem;
+    }
+  }
+}
+
+#sitetoctoggle {
+  display: block;
+  padding: 0.5rem 1rem;
+  background-color: #eee;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ddd;
+  }
+}
+
+#sitetocopen {
+  display: none;
+
+  &:checked ~ nav#sitetoc {
+    display: block;
+  }
+}
+
+@media (min-width: 768px) {
+  main { grid-template-columns: minmax(250px, 25%) 1fr; }
+  main > article { padding: 2rem 3rem; }
+  #sitetoctoggle { display: none; }
+  nav#sitetoc { display: block !important; }
+}
+
+// ARTICLE
+
+article {
+  h2, h3, h4, h5, h6 {
+    margin: 0;
+    margin-bottom: 0.5rem;
+    margin-top: 2rem;
+  }
+
+  h1 {
+    font-weight: 600;
+    font-size: 2.5rem;
+    margin: 0 0 2.75rem 0;
+  }
+
+  h2 {
+    font-weight: 600;
+    font-size: 1.6rem;
+    margin-top: 2rem;
+  }
+
+  h3 { font-size: 1.4rem; }
+
+  header {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #ddd;
+
+    h1 { margin-bottom: 0; }
+
+    p {
+      font-size: 1.45rem;
+      font-weight: 300;
+    }
+  }
+
+  p {
+    margin: 0;
+    margin-bottom: 1rem;
+  }
+
+  ol, ul {
+    padding: 0 0 0 1rem;
+
+    li { margin: 0.2rem 0; }
+    + p { margin-top: 1rem; }
+  }
+
+  table {
+    max-width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 0.4rem 0.6rem;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 700;
+      background-color: #eee;
+    }
+  }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ddd;
+    color: #777;
+
+    a { color: #6b54ea; }
+  }
+}
+
+// MISC
+
+.githubstars {
+  display: inline-block;
+  text-decoration: none;
+  color: #000;
+  background-color: #ddd;
+  padding: 0 4px;
+  border-radius: 2px;
+  box-shadow: 0 1.25px #aaa;
+
+  &:hover { background-color: #ccc; }
+  .star { color: #a69e2c; }
+  .count { font-weight: 700; margin-right: 8px; }
+}

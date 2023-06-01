@@ -1,0 +1,68 @@
+---
+layout: base.liquid
+navigationOptions:
+  listItemHasChildrenClass: haschildren
+  activeAnchorClass: current
+---
+
+<main>
+  <aside>
+    <header id="sitehead">
+      <a href="/">
+        <img src="/logo.png" alt="" />
+        <div>
+          <div class="sitetitle">Rolens</div>
+          <div class="tagline">The intuitive MongoDB administration tool</div>
+        </div>
+      </a>
+    </header>
+
+    <label id="sitetoctoggle" for="sitetocopen">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      Toggle navigation
+    </label>
+    <input type="checkbox" id="sitetocopen" />
+
+    <nav id="sitetoc">
+      {{ collections.all | eleventyNavigation | eleventyNavigationToHtml: navigationOptions }}
+    </nav>
+  </aside>
+
+  <article>
+    {% if title or summary %}
+    <header>
+      {% if title %}<h1>{{ title }}</h1>{% endif %}
+      {% if summary %}<p>{{ summary | markdowninline }}</p>{% endif %}
+    </header>
+    {% endif %}
+
+    {{ content }}
+
+    {% if stub %}
+    <div class="wipdoc">
+      <p>
+        Oops… this Rolens documentation page is a work-in-progress! You could
+        <a href="{{ github.pageSourceUrl }}" target="_blank">help writing it</a> — thanks!
+      </p>
+    </div>
+    {% endif %}
+
+    <footer>
+      <p>
+        Spotted an error on this page? Please
+        <a href="{{ github.reportDocsIssue }}" target="_blank">report it</a>
+        — thank you! You could also directly
+        <a href="{{ github.pageSourceUrl }}" target="_blank">edit the page</a>
+        on GitHub.
+      </p>
+      <p>{% render "githubstars" %}</p>
+      <p>
+        © <a href="mailto:romein@vburen.nl">Romein van Buren</a> 2023.
+        The <a href="{{ meta.repoUrl }}">source code</a> and compiled
+        binaries are released under the
+        <a href="{{ github.licenseUrl }}">GNU GPLv3</a>
+        license.
+      </p>
+    </footer>
+  </article>
+</main>

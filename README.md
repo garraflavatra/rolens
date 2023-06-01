@@ -15,6 +15,8 @@ This project arose from all flaws of similar tools many of which are slow, compl
 - [x] **Low overhead**: Typical query results against a local database are returned whithin milliseconds.
 - [x] **Intuitive interface**: You know MongoDB? You know Rolens.
 
+![Impression of Rolens's interface](./docs/images/home-impression.png)
+
 This project is heavily inspired by the excellent [MongoHub](https://github.com/bububa/MongoHub-Mac) application, which sadly has not been updated since 2011.
 
 ## Download and installation
@@ -32,11 +34,11 @@ You can obtain a pre-compiled Rolens binary for macOS or installer for Windows f
 
 ### Compiling from source
 
-Please refer to the [documentation](./wip) for detailed compilation instructions.
+Please refer to [the documentation](https://garraflavatra.github.io/rolens/installation/) for detailed compilation instructions.
 
 ## User guide
 
-WIP.
+Rolens is designed to be as intuitive as possible. But if something is unclear nevertheless, you can consult [the user manual](https://garraflavatra.github.io/rolens/) to learn how to use the program.
 
 ## Questions and bugs
 
@@ -48,7 +50,7 @@ Feel free to contact me if you have questions! [Send an e-mail.](mailto:romein@v
 
 ## Author and license
 
-© [Romein van Buren](mailto:romein@vburen.nl) 2023. The source code and compiled binaries are released under the GNU GPLv3 license — see [LICENSE](./LICENSE) for the full license text.
+© [Romein van Buren](mailto:romein@vburen.nl) 2023. The source code and compiled binaries are released under the GNU GPLv3 license — see [`LICENSE`](./LICENSE) for the full license text.
 
 ## Credits
 

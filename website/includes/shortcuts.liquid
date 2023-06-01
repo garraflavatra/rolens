@@ -1,0 +1,10 @@
+<table><thead><tr><th>Shortcut</th><th>Action</th></tr></thead><tbody>
+    {%- for sc in shortcuts -%}
+      <tr><td>
+        {%- if sc.link -%}<a href="{{ sc.link }}">{%- endif -%}
+        {%- render "shortcut", shortcut: sc -%}
+        {%- if sc.link -%}</a>{%- endif -%}
+      </td>
+      <td>{{ sc.description }}</td></tr>
+    {%- endfor -%}
+</tbody></table>

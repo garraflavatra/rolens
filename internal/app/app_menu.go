@@ -52,9 +52,11 @@ func (a *App) Menu() *menu.Menu {
 	}
 
 	helpMenu := appMenu.AddSubmenu("Help")
-	helpMenu.AddText("User guide", nil, menuCallbackURL(a, ""))
+	helpMenu.AddText("User guide", nil, menuCallbackURL(a, "https://garraflavatra.github.io/rolens/user-guide/"))
+	helpMenu.AddText("Website", nil, menuCallbackURL(a, "https://garraflavatra.github.io/rolens/"))
 	helpMenu.AddSeparator()
 	helpMenu.AddText("Report a problem", nil, menuCallbackURL(a, "https://github.com/garraflavatra/rolens/issues/new"))
+	helpMenu.AddText("Ask a question", nil, menuCallbackURL(a, "https://github.com/garraflavatra/rolens/discussions/new?category=questions"))
 	helpMenu.AddSeparator()
 	helpMenu.AddText("Star Rolens on GitHub", nil, menuCallbackURL(a, "https://github.com/garraflavatra/rolens"))
 	helpMenu.AddText("License", nil, menuCallbackURL(a, "https://github.com/garraflavatra/rolens/blob/main/LICENSE"))

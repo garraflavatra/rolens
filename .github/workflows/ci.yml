@@ -49,11 +49,6 @@ jobs:
     - name: Build Rolens
       run: wails build
 
-  upload-artifact:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
     - name: Upload binary
       uses: actions/upload-artifact@v2
       with:

@@ -32,6 +32,10 @@ jobs:
     - name: Install Wails
       run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
+    - name: Install Wails dependencies for Linux
+      if: matrix.platform == 'ubuntu-22.04'
+      run: sudo dnf install gtk3-devel webkit2gtk4.0-devel webkit2gtk3-devel gcc-c++
+
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:

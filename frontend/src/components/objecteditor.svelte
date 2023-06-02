@@ -25,6 +25,7 @@
           return;
         }
         text = e.state.doc.toString();
+        dispatch('updated', { text });
       }),
     ],
   });

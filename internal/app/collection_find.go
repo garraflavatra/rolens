@@ -46,24 +46,21 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 
 	err = bson.UnmarshalExtJSON([]byte(form.Query), true, &query)
 	if err != nil {
-		runtime.LogInfo(a.ctx, "Invalid find query:")
-		runtime.LogInfo(a.ctx, err.Error())
+		runtime.LogInfof(a.ctx, "Invalid find query: %s", err.Error())
 		zenity.Error(err.Error(), zenity.Title("Invalid query"), zenity.ErrorIcon)
 		return out
 	}
 
 	err = json.Unmarshal([]byte(form.Fields), &projection)
 	if err != nil {
-		runtime.LogInfo(a.ctx, "Invalid find projection:")
-		runtime.LogInfo(a.ctx, err.Error())
+		runtime.LogInfof(a.ctx, "Invalid find projection: %s", err.Error())
 		zenity.Error(err.Error(), zenity.Title("Invalid projection"), zenity.ErrorIcon)
 		return out
 	}
 
 	err = json.Unmarshal([]byte(form.Sort), &sort)
 	if err != nil {
-		runtime.LogInfo(a.ctx, "Invalid find sort:")
-		runtime.LogInfo(a.ctx, err.Error())
+		runtime.LogInfof(a.ctx, "Invalid find sort: %s", err.Error())
 		zenity.Error(err.Error(), zenity.Title("Invalid sort"), zenity.ErrorIcon)
 		return out
 	}
@@ -77,16 +74,14 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 
 	total, err := client.Database(dbKey).Collection(collKey).CountDocuments(ctx, query, nil)
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Encountered an error while counting documents:")
-		runtime.LogWarning(a.ctx, err.Error())
+		runtime.LogWarningf(a.ctx, "Encountered an error while counting documents: %s", err.Error())
 		zenity.Error(err.Error(), zenity.Title("Error while counting docs"), zenity.ErrorIcon)
 		return out
 	}
 
 	cur, err := client.Database(dbKey).Collection(collKey).Find(ctx, query, &opt)
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Encountered an error while performing query:")
-		runtime.LogWarning(a.ctx, err.Error())
+		runtime.LogWarningf(a.ctx, "Encountered an error while performing query: %s", err.Error())
 		zenity.Error(err.Error(), zenity.Title("Error while querying"), zenity.ErrorIcon)
 		return out
 	}
@@ -96,14 +91,14 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 	err = cur.All(ctx, &results)
 
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Encountered an error while performing query:")
-		runtime.LogWarning(a.ctx, err.Error())
+		runtime.LogWarningf(a.ctx, "Encountered an error while performing query: %s", err.Error())
 		zenity.Error(err.Error(), zenity.Title("Error while querying"), zenity.ErrorIcon)
 		return out
 	}
 
-	out.Results = make([]string, 0)
 	out.Total = total
+	out.Results = make([]string, 0)
+
 	for _, r := range results {
 		marshalled, err := bson.MarshalExtJSON(r, true, true)
 		if err != nil {
@@ -116,4 +111,34 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 	}
 
 	return out
+}
+
+func (a *App) UpdateFoundDocument(hostKey, dbKey, collKey, idJson, newDocJson string) bool {
+	var id bson.M
+	if err := bson.UnmarshalExtJSON([]byte(idJson), true, &id); err != nil {
+		runtime.LogWarningf(a.ctx, "Could not parse find/update query: %s", err.Error())
+		zenity.Error(err.Error(), zenity.Title("Couldn't parse update query"), zenity.ErrorIcon)
+		return false
+	}
+
+	var newDoc bson.M
+	if err := bson.UnmarshalExtJSON([]byte(newDocJson), true, &newDoc); err != nil {
+		runtime.LogWarningf(a.ctx, "Could not parse new find/update document: %s", err.Error())
+		zenity.Error(err.Error(), zenity.Title("Couldn't parse document"), zenity.ErrorIcon)
+		return false
+	}
+
+	client, ctx, close, err := a.connectToHost(hostKey)
+	if err != nil {
+		return false
+	}
+	defer close()
+
+	if _, err := client.Database(dbKey).Collection(collKey).UpdateOne(ctx, id, bson.M{"$set": newDoc}); err != nil {
+		runtime.LogInfof(a.ctx, "Error while performing find/update: %s", err.Error())
+		zenity.Error(err.Error(), zenity.Title("Unable to perform update"), zenity.ErrorIcon)
+		return false
+	}
+
+	return true
 }

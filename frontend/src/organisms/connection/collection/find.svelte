@@ -9,7 +9,7 @@
   import queries from '$lib/stores/queries';
   import applicationSettings from '$lib/stores/settings';
   import views from '$lib/stores/views';
-  import { FindItems, RemoveItemById } from '$wails/go/app/App';
+  import { FindItems, RemoveItemById, UpdateFoundDocument } from '$wails/go/app/App';
   import { EJSON } from 'bson';
   import { createEventDispatcher, onMount } from 'svelte';
   import ExportInfo from './components/export.svelte';
@@ -36,6 +36,7 @@
   let showQueryChooser = false;
   let exportInfo;
   let querying = false;
+  let objectViewerSuccessMessage = '';
 
   $: viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
   $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
@@ -124,14 +125,32 @@
     queryField?.select();
   }
 
-  function openJson(itemId) {
-    const item = result?.results?.find(i => i._id == itemId);
+  function openJson(index) {
+    const item = result?.results?.[index];
     objectViewerData = item;
   }
 
   export function performQuery(q) {
     form = { ...defaults, ...q };
     submitQuery();
+  }
+
+  async function saveDocument(event) {
+    const progress = startProgress('Performing update…');
+    const success = await UpdateFoundDocument(
+      collection.hostKey,
+      collection.dbKey,
+      collection.key,
+      EJSON.stringify({ _id: event.detail.originalData._id }),
+      event.detail.text
+    );
+
+    if (success) {
+      objectViewerSuccessMessage = 'Document has been saved!';
+      submitQuery();
+    }
+
+    progress.end();
   }
 
   $: collection && refresh();
@@ -195,7 +214,7 @@
             data={result.results}
             hideObjectIndicators={$views[collection.viewKey]?.hideObjectIndicators}
             bind:activePath
-            on:trigger={e => openJson(e.detail?.itemKey)}
+            on:trigger={e => openJson(e.detail?.index)}
           />
         {:else}
           <Grid
@@ -204,7 +223,7 @@
             showHeaders={true}
             items={result.results ? result.results.map(r => EJSON.deserialize(r)) : []}
             bind:activePath
-            on:trigger={e => openJson(e.detail?.itemKey)}
+            on:trigger={e => openJson(e.detail?.index)}
           />
         {/if}
       {/key}
@@ -258,7 +277,7 @@
 
 {#if objectViewerData}
   <!-- @todo Implement save -->
-  <ObjectViewer bind:data={objectViewerData} saveable />
+  <ObjectViewer bind:data={objectViewerData} saveable on:save={saveDocument} bind:successMessage={objectViewerSuccessMessage} />
 {/if}
 
 <datalist id="limits">

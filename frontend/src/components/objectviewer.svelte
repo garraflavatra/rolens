@@ -1,28 +1,20 @@
 <script>
-  import { jsonLooseParse } from '$lib/strings';
+  import { jsonLooseParse, looseJsonIsValid } from '$lib/strings';
   import { createEventDispatcher, onDestroy } from 'svelte';
   import Icon from './icon.svelte';
   import Modal from './modal.svelte';
   import ObjectEditor from './objecteditor.svelte';
+  import { EJSON } from 'bson';
 
   export let data;
   export let saveable = false;
+  export let successMessage = '';
 
   const dispatch = createEventDispatcher();
   let copySucceeded = false;
   let timeout;
-  let text = JSON.stringify(data, undefined, '\t');
-  let newData;
-  let invalid = false;
-
-  $: {
-    try {
-      newData = jsonLooseParse(text);
-    }
-    catch {
-      invalid = true;
-    }
-  }
+  let text = EJSON.stringify(data, undefined, '\t');
+  $: invalid = !looseJsonIsValid(text);
 
   async function copy() {
     await navigator.clipboard.writeText(text);
@@ -36,7 +28,7 @@
   }
 
   function save() {
-    dispatch('save', text);
+    dispatch('save', { text, originalData: data });
   }
 
   onDestroy(() => clearTimeout(timeout));
@@ -45,7 +37,7 @@
 {#if data}
   <Modal bind:show={data} contentPadding={false}>
     <div class="objectviewer">
-      <ObjectEditor {text} />
+      <ObjectEditor bind:text on:updated={() => successMessage = ''} />
     </div>
 
     <svelte:fragment slot="footer">
@@ -62,6 +54,10 @@
       <button class="btn secondary" on:click={copy}>
         <Icon name={copySucceeded ? 'check' : 'clipboard'} /> Copy
       </button>
+
+      {#if successMessage}
+        <span class="flash-green">{successMessage}</span>
+      {/if}
     </svelte:fragment>
   </Modal>
 {/if}
@@ -73,5 +69,9 @@
     justify-content: stretch;
     align-items: stretch;
     height: 100%;
+  }
+
+  .flash-green {
+    margin-left: 0.5rem;
   }
 </style>

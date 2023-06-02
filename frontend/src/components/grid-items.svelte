@@ -57,7 +57,7 @@
     }
   }
 
-  function select(itemKey) {
+  function select(itemKey, index) {
     if (!canSelect) {
       return false;
     }
@@ -72,7 +72,7 @@
       else {
         activePath = [ ...path, itemKey ];
       }
-      dispatch('select', { level, itemKey });
+      dispatch('select', { level, itemKey, index });
     }
   }
 
@@ -88,9 +88,9 @@
     }
   }
 
-  function doubleClick(itemKey) {
+  function doubleClick(itemKey, index) {
     // toggleChildren(itemKey, false);
-    dispatch('trigger', { level, itemKey });
+    dispatch('trigger', { level, itemKey, index });
     childrenOpen[itemKey] = true;
   }
 
@@ -132,8 +132,8 @@
 
 {#each _items as item, index}
   <tr
-    on:click={() => select(item[key])}
-    on:dblclick={() => doubleClick(item[key])}
+    on:click={() => select(item[key], index)}
+    on:dblclick={() => doubleClick(item[key], index)}
     on:contextmenu|preventDefault={evt => showContextMenu(evt, item)}
     class:selectable={canSelect}
     class:selected={canSelect && !activePath[level + 1] && activePath.every(k => path.includes(k) || k === item[key]) && (activePath[level] === item[key])}

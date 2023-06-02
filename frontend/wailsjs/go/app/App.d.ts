@@ -67,6 +67,8 @@ export function Startup(arg1:context.Context,arg2:ui.UI):Promise<void>;
 
 export function TruncateCollection(arg1:string,arg2:string,arg3:string):Promise<boolean>;
 
+export function UpdateFoundDocument(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string):Promise<boolean>;
+
 export function UpdateHost(arg1:string,arg2:string):Promise<boolean>;
 
 export function UpdateItems(arg1:string,arg2:string,arg3:string,arg4:string):Promise<number>;

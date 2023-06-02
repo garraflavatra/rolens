@@ -122,6 +122,10 @@ export function TruncateCollection(arg1, arg2, arg3) {
   return window['go']['app']['App']['TruncateCollection'](arg1, arg2, arg3);
 }
 
+export function UpdateFoundDocument(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['app']['App']['UpdateFoundDocument'](arg1, arg2, arg3, arg4, arg5);
+}
+
 export function UpdateHost(arg1, arg2) {
   return window['go']['app']['App']['UpdateHost'](arg1, arg2);
 }

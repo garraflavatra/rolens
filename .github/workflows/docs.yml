@@ -36,7 +36,7 @@ jobs:
         run: cd website; npm ci
 
       - name: Build site
-        run: npm run build; cd ..
+        run: cd website; npm run build
 
       - name: Upload built website
         uses: actions/upload-pages-artifact@v1

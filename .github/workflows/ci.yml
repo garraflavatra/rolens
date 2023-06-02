@@ -34,7 +34,7 @@ jobs:
 
     - name: Install Wails dependencies for Linux
       if: matrix.platform == 'ubuntu-22.04'
-      run: sudo apt-get install gtk+-3.0 webkit2gtk-4.0 gio-unix-2.0
+      run: sudo apt-get install gtk+-3.0 webkit2gtk-4.0
 
     - name: Set up Node.js
       uses: actions/setup-node@v3

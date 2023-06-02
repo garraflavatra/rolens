@@ -33,10 +33,10 @@ jobs:
         uses: actions/configure-pages@v3
 
       - name: Install dependencies
-        run: cd website && npm ci
+        run: cd website; npm ci
 
       - name: Build site
-        run: npm run build && cd ..
+        run: npm run build; cd ..
 
       - name: Upload built website
         uses: actions/upload-pages-artifact@v1

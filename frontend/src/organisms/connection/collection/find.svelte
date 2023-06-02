@@ -256,10 +256,10 @@
 
 <ExportInfo on:openViewConfig bind:collection bind:info={exportInfo} />
 
-{#key objectViewerData}
+{#if objectViewerData}
   <!-- @todo Implement save -->
   <ObjectViewer bind:data={objectViewerData} saveable />
-{/key}
+{/if}
 
 <datalist id="limits">
   {#each [ 1, 5, 10, 25, 50, 100, 200 ] as value}

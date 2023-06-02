@@ -55,7 +55,10 @@ navigationOptions:
         <a href="{{ github.pageSourceUrl }}" target="_blank">edit the page</a>
         on GitHub.
       </p>
-      <p>{% render "githubstars" %}</p>
+      <p>
+        {% render "githubstars" %}
+        {% render "mastodon" %}
+      </p>
       <p>
         © <a href="mailto:romein@vburen.nl">Romein van Buren</a> 2023.
         The <a href="{{ meta.repoUrl }}">source code</a> and compiled

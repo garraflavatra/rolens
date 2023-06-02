@@ -268,16 +268,23 @@ article {
 
 // MISC
 
-.githubstars {
+.socialbadge {
   display: inline-block;
   text-decoration: none;
   color: #000;
   background-color: #ddd;
   padding: 0 4px;
   border-radius: 2px;
+  margin: 0 0 4px 0;
   box-shadow: 0 1.25px #aaa;
 
   &:hover { background-color: #ccc; }
   .star { color: #a69e2c; }
+  .toot { color: #595aff; }
   .count { font-weight: 700; margin-right: 8px; }
+
+  svg {
+    fill: currentColor;
+    stroke: none;
+  }
 }

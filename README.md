@@ -2,7 +2,7 @@
 
 Robust, blazing-fast, comprehensive, yet simple [MongoDB](https://www.mongodb.com/) administration tool for Windows, macOS and Linux.
 
-[![CI](https://github.com/garraflavatra/rolens/actions/workflows/ci.yml/badge.svg)](https://github.com/garraflavatra/rolens/actions/workflows/ci.yml)
+[![CI](https://github.com/garraflavatra/rolens/actions/workflows/ci.yml/badge.svg)](https://github.com/garraflavatra/rolens/actions/workflows/ci.yml) [![Documentation](./.github/docs-badge.svg)](https://garraflavatra.github.io/rolens)
 
 ## Why another MongoDB client?
 

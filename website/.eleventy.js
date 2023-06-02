@@ -90,9 +90,10 @@ module.exports = function (eleventyConfig) {
   });
 
   // Retrieve content of a file
-  eleventyConfig.addFilter('filecontent', function (fname) {
+  eleventyConfig.addShortcode('filecontent', function (fname, startLine = 0) {
     const buf = fs.readFileSync(path.join(indir, fname));
-    return buf.toString();
+    const str = buf.toString().split('\n').slice(startLine).join('\n');
+    return str;
   });
 
   // Global options

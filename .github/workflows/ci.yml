@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -43,11 +44,41 @@ jobs:
         cache: npm
         cache-dependency-path: frontend/package-lock.json
 
-    - name: Build Rolens
-      run: wails build
+    - name: Cross-compile Rolens for Windows
+      run: |
+        mkdir releases
+        wails build -platform windows/amd64
+        tar -czvf releases\rolens-${{ matrix.platform }}-amd64.tar.gz --directory build\bin Rolens.exe
+        rmdir build\bin
+        wails build -platform windows/arm64
+        tar -czvf releases\rolens-${{ matrix.platform }}-arm64.tar.gz --directory build\bin Rolens.exe
 
-    - name: Upload binary
+    - name: Cross-compile Rolens for Darwin
+      run: |
+        mkdir releases
+        wails build -platform darwin/amd64
+        tar -czvf releases/rolens-${{ matrix.platform }}-amd64.tar.gz --directory build/bin Rolens.app
+        rm -rf build/bin
+        wails build -platform darwin/arm64
+        tar -czvf releases/rolens-${{ matrix.platform }}-arm64.tar.gz --directory build/bin Rolens.app
+
+    - name: Cross-compile Rolens for Linux
+      run: |
+        mkdir releases
+        wails build -platform darwin/amd64
+        tar -czvf releases/rolens-${{ matrix.platform }}-amd64.tar.gz --directory build/bin Rolens
+        rm -rf build/bin
+        wails build -platform windows/arm64
+        tar -czvf releases/rolens-${{ matrix.platform }}-arm64.tar.gz --directory build/bin Rolens
+
+    - name: Upload generated amd64 binary
       uses: actions/upload-artifact@v2
       with:
-        name: rolens-${{ matrix.platform }}
-        path: build/bin/*
+        name: rolens-${{ matrix.platform }}-amd64
+        path: releases/rolens-${{ matrix.platform }}-amd64.tar.gz
+
+    - name: Upload generated arm64 binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: rolens-${{ matrix.platform }}-arm64
+        path: releases/rolens-${{ matrix.platform }}-arm64.tar.gz

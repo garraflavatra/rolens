@@ -50,11 +50,11 @@ jobs:
         mkdir releases
         wails build -platform windows/amd64
         tar -czvf releases\rolens-windows-10+-amd64.tar.gz --directory build\bin Rolens.exe
-        "tar_amd64=releases/rolens-windows-10+-amd64.tar.gz" >> $env:GITHUB_ENV
-        rmdir build\bin
+        "tar_amd64=rolens-windows-10+-amd64.tar.gz" >> $env:GITHUB_ENV
+        rmdir ".\build\bin"
         wails build -platform windows/arm64
         tar -czvf releases\rolens-windows-10+-arm64.tar.gz --directory build\bin Rolens.exe
-        "tar_amd64=releases/rolens-windows-10+-arm64.tar.gz" >> $env:GITHUB_ENV
+        "tar_amd64=rolens-windows-10+-arm64.tar.gz" >> $env:GITHUB_ENV
 
     - name: Cross-compile Rolens for Darwin
       if: matrix.platform == 'macos-12'
@@ -62,11 +62,11 @@ jobs:
         mkdir releases
         wails build -platform darwin/amd64
         tar -czvf releases/rolens-macos-10.13+-amd64.tar.gz --directory build/bin Rolens.app
-        echo "tar_amd64=releases/rolens-macos-10.13+-amd64.tar.gz" >> "$GITHUB_ENV"
+        echo "tar_amd64=rolens-macos-10.13+-amd64.tar.gz" >> "$GITHUB_ENV"
         rm -rf build/bin
         wails build -platform darwin/arm64
         tar -czvf releases/rolens-11.0+-arm64.tar.gz --directory build/bin Rolens.app
-        echo "tar_amd64=releases/releases/rolens-11.0+-arm64.tar.gz" >> "$GITHUB_ENV"
+        echo "tar_amd64=rolens-11.0+-arm64.tar.gz" >> "$GITHUB_ENV"
 
     - name: Cross-compile Rolens for Linux
       if: matrix.platform == 'ubuntu-22.04'
@@ -74,19 +74,21 @@ jobs:
         mkdir releases
         wails build -platform linux/amd64
         tar -czvf releases/rolens-linux-amd64.tar.gz --directory build/bin Rolens
-        echo "tar_amd64=releases/rolens-linux-amd64.tar.gz" >> "$GITHUB_ENV"
-        rm -rf build/bin
-        wails build -platform linux/arm64
-        tar -czvf releases/rolens-linux-arm64.tar.gz --directory build/bin Rolens
-        echo "tar_arm64=releases/rolens-linux-arm64.tar.gz" >> "$GITHUB_ENV"
+        echo "tar_amd64=rolens-linux-amd64.tar.gz" >> "$GITHUB_ENV"
+        # rm -rf build/bin
+        # wails build -platform linux/arm64
+        # tar -czvf releases/rolens-linux-arm64.tar.gz --directory build/bin Rolens
+        # echo "tar_arm64=rolens-linux-arm64.tar.gz" >> "$GITHUB_ENV"
 
     - name: Upload generated amd64 binary
+      if: env.tar_amd64
       uses: actions/upload-artifact@v2
       with:
         name: ${{ env.tar_amd64 }}
         path: releases/${{ env.tar_amd64 }}
 
     - name: Upload generated arm64 binary
+      if: env.rat_arm64
       uses: actions/upload-artifact@v2
       with:
         name: ${{ env.tar_arm64 }}

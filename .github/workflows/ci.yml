@@ -101,7 +101,7 @@ jobs:
     - name: Place all tarballs in the same directory
       run: |
         mkdir bundle
-        mv artifacts/* bundle
+        mv artifacts/*/* bundle
 
     - name: Upload the bundle as an artifact
       uses: actions/upload-artifact@v3

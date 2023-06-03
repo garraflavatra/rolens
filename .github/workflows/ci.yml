@@ -71,11 +71,11 @@ jobs:
     - name: Cross-compile Rolens for Linux
       run: |
         mkdir releases
-        wails build -platform darwin/amd64
+        wails build -platform linux/amd64
         tar -czvf releases/rolens-linux-amd64.tar.gz --directory build/bin Rolens
         echo "tar_amd64=releases/rolens-linux-amd64.tar.gz" >> "$GITHUB_ENV"
         rm -rf build/bin
-        wails build -platform windows/arm64
+        wails build -platform linux/arm64
         tar -czvf releases/rolens-linux-arm64.tar.gz --directory build/bin Rolens
         echo "tar_arm64=releases/rolens-linux-arm64.tar.gz" >> "$GITHUB_ENV"
 

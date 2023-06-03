@@ -86,3 +86,25 @@ jobs:
       with:
         name: rolens-${{ matrix.platform }}
         path: releases/*
+
+  bundle:
+    name: Bundle artifacts
+    needs: build
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        path: artifacts
+
+    - name: Place all tarballs in the same directory
+      run: |
+        mkdir bundle
+        mv artifacts/* bundle
+
+    - name: Upload the bundle as an artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: rolens-bundle
+        path: bundle

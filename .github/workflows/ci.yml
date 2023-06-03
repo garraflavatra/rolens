@@ -69,6 +69,7 @@ jobs:
         echo "tar_amd64=releases/releases/rolens-11.0+-arm64.tar.gz" >> "$GITHUB_ENV"
 
     - name: Cross-compile Rolens for Linux
+      if: matrix.platform == 'ubuntu-22.04'
       run: |
         mkdir releases
         wails build -platform linux/amd64

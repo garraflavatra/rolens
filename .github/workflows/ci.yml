@@ -14,7 +14,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [windows-2022, macos-12, ubuntu-22.04]
+        platform:
+          - windows-2019
+          - windows-2022
+          - macos-11
+          - macos-12
+          - macos-13
+          - ubuntu-20.04
+          - ubuntu-22.04
         go-version: [1.18]
         node-version: [16]
 
@@ -34,7 +41,7 @@ jobs:
       run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
     - name: Install Wails dependencies for Linux
-      if: matrix.platform == 'ubuntu-22.04'
+      if: contains(matrix.platform, 'ubuntu')
       run: sudo apt-get install gtk+-3.0 webkit2gtk-4.0
 
     - name: Set up Node.js
@@ -45,40 +52,37 @@ jobs:
         cache-dependency-path: frontend/package-lock.json
 
     - name: Cross-compile Rolens for Windows
-      if: matrix.platform == 'windows-2022'
+      if: contains(matrix.platform, 'windows')
       run: |
-        "built_on=windows" >> $env:GITHUB_ENV
         mkdir releases
         wails build -platform windows/amd64
-        tar -czvf releases\rolens-windows-10+-amd64.tar.gz --directory build\bin Rolens.exe
+        tar -czvf releases\rolens-${{ matrix.platform }}-10+-amd64.tar.gz --directory build\bin Rolens.exe
         Remove-Item -Recurse -Confirm:$false .\build\bin
         wails build -platform windows/arm64
-        tar -czvf releases\rolens-windows-10+-arm64.tar.gz --directory build\bin Rolens.exe
+        tar -czvf releases\rolens-${{ matrix.platform }}-10+-arm64.tar.gz --directory build\bin Rolens.exe
 
     - name: Cross-compile Rolens for Darwin
-      if: matrix.platform == 'macos-12'
+      if: contains(matrix.platform, 'macos')
       run: |
-        echo "built_on=macos" >> "$GITHUB_ENV"
         mkdir releases
         wails build -platform darwin/amd64
-        tar -czvf releases/rolens-macos-10.13+-amd64.tar.gz --directory build/bin Rolens.app
+        tar -czvf releases/rolens-${{ matrix.platform }}-10.13+-amd64.tar.gz --directory build/bin Rolens.app
         rm -rf build/bin
         wails build -platform darwin/arm64
-        tar -czvf releases/rolens-11.0+-arm64.tar.gz --directory build/bin Rolens.app
+        tar -czvf releases/rolens-${{ matrix.platform }}-11.0+-arm64.tar.gz --directory build/bin Rolens.app
 
     - name: Cross-compile Rolens for Linux
-      if: matrix.platform == 'ubuntu-22.04'
+      if: contains(matrix.platform, 'ubuntu')
       run: |
-        echo "built_on=linux" >> "$GITHUB_ENV"
         mkdir releases
         wails build -platform linux/amd64
-        tar -czvf releases/rolens-linux-amd64.tar.gz --directory build/bin Rolens
+        tar -czvf releases/rolens-${{ matrix.platform }}-amd64.tar.gz --directory build/bin Rolens
         # rm -rf build/bin
         # wails build -platform linux/arm64
-        # tar -czvf releases/rolens-linux-arm64.tar.gz --directory build/bin Rolens
+        # tar -czvf releases/rolens-${{ matrix.platform }}-arm64.tar.gz --directory build/bin Rolens
 
     - name: Upload generated binaries
       uses: actions/upload-artifact@v2
       with:
-        name: rolens-${{ env.built_on }}
+        name: rolens-${{ matrix.platform }}
         path: releases/*

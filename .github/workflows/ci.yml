@@ -51,7 +51,7 @@ jobs:
         wails build -platform windows/amd64
         tar -czvf releases\rolens-windows-10+-amd64.tar.gz --directory build\bin Rolens.exe
         "tar_amd64=rolens-windows-10+-amd64.tar.gz" >> $env:GITHUB_ENV
-        rmdir ".\build\bin"
+        rmdir /s ".\build\bin"
         wails build -platform windows/arm64
         tar -czvf releases\rolens-windows-10+-arm64.tar.gz --directory build\bin Rolens.exe
         "tar_amd64=rolens-windows-10+-arm64.tar.gz" >> $env:GITHUB_ENV

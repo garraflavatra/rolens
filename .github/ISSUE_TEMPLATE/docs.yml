@@ -22,10 +22,8 @@ body:
     attributes:
       label: Problem
       description: Why is it wrong?
-    validations:
-      required: true
 
-  - type: input
+  - type: textarea
     id: solution
     attributes:
       label: Solution

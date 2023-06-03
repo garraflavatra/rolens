@@ -54,5 +54,6 @@ Feel free to contact me if you have questions! [Send an e-mail.](mailto:romein@v
 
 ## Credits
 
+* [Wails](https://wails.io/) facilitates the build process for multiple OSes.
 * Icons are from [Feather Icons](https://feathericons.com/) by [Cole Bemis](https://github.com/colebemis).
 * Vector drawings come from [unDraw](https://undraw.co/).

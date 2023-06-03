@@ -7,5 +7,6 @@ Rolens is © [Romein van Buren](mailto:romein@vburen.nl) 2023. The source code a
 
 ## Credits
 
+* [Wails](https://wails.io/) facilitates the build process for multiple OSes.
 * Icons are from [Feather Icons](https://feathericons.com/) by [Cole Bemis](https://github.com/colebemis).
 * Vector drawings come from [unDraw](https://undraw.co/).

@@ -37,6 +37,6 @@ To obtain a copy of the source code, do either of the following:
 `cd` into the root directory of the source code and run either:
 
 * `wails build` to generate an executable for your platform.
-* `wails build -nsis` to generate an [NSIS installer](https://nsis.sourceforge.io/Main_Page). This requires that you have NSIS installed on your machine.
+* `wails build -nsis` to generate an [NSIS installer](https://nsis.sourceforge.io/Main_Page) for Windows. This requires that you have NSIS installed on your machine.
 
 The generated binary will live in `build/bin`. You may want to run the installer (Windows) or move the app to the Applications folder (Mac).

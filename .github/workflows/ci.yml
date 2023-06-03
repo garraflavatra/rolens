@@ -78,7 +78,6 @@ jobs:
         # tar -czvf releases/rolens-linux-arm64.tar.gz --directory build/bin Rolens
 
     - name: Upload generated binaries
-      if: env.tar_amd64
       uses: actions/upload-artifact@v2
       with:
         name: rolens-${{ env.built_on }}

@@ -40,7 +40,11 @@ jobs:
     - name: Install Wails
       run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
-    - name: Install Wails dependencies for Linux
+    - name: Install build dependencies for macOS
+      if: contains(matrix.platform, 'macos')
+      run: brew install create-dmg
+
+    - name: Install build dependencies for Linux
       if: contains(matrix.platform, 'ubuntu')
       run: sudo apt-get install gtk+-3.0 webkit2gtk-4.0
 
@@ -53,33 +57,15 @@ jobs:
 
     - name: Cross-compile Rolens for Windows
       if: contains(matrix.platform, 'windows')
-      run: |
-        mkdir releases
-        wails build -platform windows/amd64
-        Compress-Archive -Path build\bin\* -DestinationPath releases\rolens-${{ matrix.platform }}-amd64.zip
-        Remove-Item -Recurse -Confirm:$false .\build\bin
-        wails build -platform windows/arm64
-        Compress-Archive -Path build\bin\* -DestinationPath releases\rolens-${{ matrix.platform }}-arm64.zip
+      run: ./build/windows/ci_generate.ps1 -platform "${{ matrix.platform }}"
 
     - name: Cross-compile Rolens for Darwin
       if: contains(matrix.platform, 'macos')
-      run: |
-        mkdir releases
-        wails build -platform darwin/amd64
-        tar -czvf releases/rolens-${{ matrix.platform }}-amd64.tar.gz --directory build/bin Rolens.app
-        rm -rf build/bin
-        wails build -platform darwin/arm64
-        tar -czvf releases/rolens-${{ matrix.platform }}-arm64.tar.gz --directory build/bin Rolens.app
+      run: ./build/darwin/ci_generate.sh "${{ matrix.platform }}"
 
     - name: Cross-compile Rolens for Linux
       if: contains(matrix.platform, 'ubuntu')
-      run: |
-        mkdir releases
-        wails build -platform linux/amd64
-        tar -czvf releases/rolens-${{ matrix.platform }}-amd64.tar.gz --directory build/bin Rolens
-        # rm -rf build/bin
-        # wails build -platform linux/arm64
-        # tar -czvf releases/rolens-${{ matrix.platform }}-arm64.tar.gz --directory build/bin Rolens
+      run: ./build/linux/ci_generate.sh "${{ matrix.platform }}"
 
     - name: Upload generated binaries
       uses: actions/upload-artifact@v2

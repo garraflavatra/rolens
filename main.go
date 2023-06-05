@@ -22,10 +22,13 @@ var (
 
 	//go:embed build/appicon.png
 	appIcon []byte
+
+	//go:embed build/version.txt
+	version string
 )
 
 func main() {
-	app := app.NewApp()
+	app := app.NewApp(version)
 	ui := uictrl.New()
 
 	err := wails.Run(&options.App{

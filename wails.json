@@ -16,5 +16,8 @@
     "productVersion": "0.2.0",
     "comments": "The intuitive MongoDB administration tool",
     "copyright": "© Romein van Buren 2023 (GNU GPL 3.0)."
+  },
+  "preBuildHooks": {
+    "*/*": "node ../version2file.js"
   }
 }

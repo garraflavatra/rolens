@@ -1,6 +1,7 @@
 <script>
   import Modal from '$components/modal.svelte';
   import alink from '$lib/actions/alink';
+  import environment from '$lib/stores/environment';
 
   export let show = true;
 </script>
@@ -9,7 +10,10 @@
   <div class="brand">
     <img src="/logo.png" alt="Rolens logo" />
     <div>
-      <div class="title">Rolens</div>
+      <div class="title">
+        Rolens
+        <span class="version">{$environment.version}</span>
+      </div>
       <div class="description">Intuitive MongoDB <br/> administration tool</div>
     </div>
   </div>
@@ -41,6 +45,11 @@
     font-size: 2.25rem;
     font-weight: 600;
     line-height: 2.5rem;
+  }
+  .brand .title .version {
+    font-size: 80%;
+    font-weight: 300;
+    opacity: 0.65;
   }
   .brand .description {
     font-size: 1.5rem;

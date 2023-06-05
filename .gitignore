@@ -1,5 +1,6 @@
 .DS_Store
 
+/build/version.txt
 /build/bin/
 /build/windows/installer/tmp/
 

@@ -1,3 +1,7 @@
+## Unreleased
+
+* Added version number of the running Rolens instance in the about dialog (#25, #28)
+
 ## [v0.2.0](https://github.com/garraflavatra/rolens/releases/tag/v0.2.0)
 
 * Added some external links related to Rolens to the application menu.

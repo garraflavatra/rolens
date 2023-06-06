@@ -4,6 +4,7 @@ export namespace app {
 	    arch: string;
 	    buildType: string;
 	    platform: string;
+	    version: string;
 	    hasMongoExport: boolean;
 	    hasMongoDump: boolean;
 	    homeDirectory: string;
@@ -20,6 +21,7 @@ export namespace app {
 	        this.arch = source["arch"];
 	        this.buildType = source["buildType"];
 	        this.platform = source["platform"];
+	        this.version = source["version"];
 	        this.hasMongoExport = source["hasMongoExport"];
 	        this.hasMongoDump = source["hasMongoDump"];
 	        this.homeDirectory = source["homeDirectory"];

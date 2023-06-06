@@ -10,6 +10,7 @@ import (
 	"path"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/garraflavatra/rolens/internal/ui"
 	"github.com/ncruces/zenity"
@@ -21,6 +22,7 @@ type EnvironmentInfo struct {
 	Arch      string `json:"arch"`
 	BuildType string `json:"buildType"`
 	Platform  string `json:"platform"`
+	Version   string `json:"version"`
 
 	HasMongoExport bool `json:"hasMongoExport"`
 	HasMongoDump   bool `json:"hasMongoDump"`
@@ -38,8 +40,9 @@ type App struct {
 	ui    *ui.UI
 }
 
-func NewApp() *App {
+func NewApp(version string) *App {
 	a := &App{}
+	a.Env.Version = strings.TrimSpace(version)
 
 	_, err := exec.LookPath("mongodump")
 	a.Env.HasMongoDump = err == nil

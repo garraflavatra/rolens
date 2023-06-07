@@ -5,6 +5,7 @@
   import { EnterText } from '$wails/go/ui/UI';
   import { EventsOn } from '$wails/runtime/runtime';
   import { onMount } from 'svelte';
+  import HostView from './host/index.svelte';
   import DatabaseView from './database/index.svelte';
   import CollectionView from './collection/index.svelte';
   import DumpInfo from './dump.svelte';
@@ -123,6 +124,11 @@
     database={$connections[activeHostKey]?.databases[activeDbKey]}
     hostKey={activeHostKey}
     dbKey={activeDbKey}
+  />
+{:else if activeHostKey}
+  <HostView
+    host={$connections[activeHostKey]}
+    hostKey={activeHostKey}
   />
 {/if}
 

@@ -44,6 +44,22 @@ export namespace app {
 	        this.downloadDirectory = source["downloadDirectory"];
 	    }
 	}
+	export class HostInfo {
+	    databases: string[];
+	    status: {[key: string]: any};
+	    systemInfo: {[key: string]: any};
+	
+	    static createFrom(source: any = {}) {
+	        return new HostInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.databases = source["databases"];
+	        this.status = source["status"];
+	        this.systemInfo = source["systemInfo"];
+	    }
+	}
 	export class QueryResult {
 	    total: number;
 	    results: string[];

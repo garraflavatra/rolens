@@ -12,6 +12,12 @@ import (
 	mongoOptions "go.mongodb.org/mongo-driver/mongo/options"
 )
 
+type HostInfo struct {
+	Databases  []string `json:"databases"`
+	Status     bson.M   `json:"status"`
+	SystemInfo bson.M   `json:"systemInfo"`
+}
+
 func (a *App) connectToHost(hostKey string) (*mongo.Client, context.Context, func(), error) {
 	hosts, err := a.Hosts()
 	if err != nil {
@@ -43,18 +49,38 @@ func (a *App) connectToHost(hostKey string) (*mongo.Client, context.Context, fun
 	}, nil
 }
 
-func (a *App) OpenConnection(hostKey string) (databases []string) {
+func (a *App) OpenConnection(hostKey string) (info HostInfo) {
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		return nil
+		return
 	}
-	databases, err = client.ListDatabaseNames(ctx, bson.M{})
+
+	info.Databases, err = client.ListDatabaseNames(ctx, bson.M{})
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not retrieve database names for host "+hostKey)
 		runtime.LogWarning(a.ctx, err.Error())
 		zenity.Error(err.Error(), zenity.Title("Error while getting databases"), zenity.ErrorIcon)
-		return nil
+		return
 	}
+
+	command := bson.M{"serverStatus": 1}
+	err = client.Database("admin").RunCommand(ctx, command).Decode(&info.Status)
+	if err != nil {
+		runtime.LogWarning(a.ctx, "Could not retrieve server status")
+		runtime.LogWarning(a.ctx, err.Error())
+		zenity.Error(err.Error(), zenity.Title("Could not get server status"), zenity.ErrorIcon)
+		return
+	}
+
+	command = bson.M{"hostInfo": 1}
+	err = client.Database("admin").RunCommand(ctx, command).Decode(&info.SystemInfo)
+	if err != nil {
+		runtime.LogWarning(a.ctx, "Could not retrieve system info")
+		runtime.LogWarning(a.ctx, err.Error())
+		zenity.Error(err.Error(), zenity.Title("Could not get system info"), zenity.ErrorIcon)
+		return
+	}
+
 	defer close()
-	return databases
+	return
 }

@@ -30,17 +30,24 @@
 
   async function openConnection(hostKey) {
     const progress = startProgress(`Connecting to "${hostKey}"…`);
+
     activeCollKey = '';
     activeDbKey = '';
     activeHostKey = hostKey;
-    const databases = await OpenConnection(hostKey);
+
+    const { databases, status, systemInfo } = await OpenConnection(hostKey);
 
     if (databases) {
-      $connections[hostKey] = { databases: {} };
+      $connections[hostKey] = $connections[hostKey] || {};
+      $connections[hostKey].status = status;
+      $connections[hostKey].systemInfo = systemInfo;
+
+      $connections[hostKey].databases = $connections[hostKey].databases || {};
       databases.forEach(dbKey => {
         $connections[hostKey].databases[dbKey] =
           $connections[hostKey].databases[dbKey] || { collections: {} };
       });
+
       activeHostKey = hostKey;
       dispatch('connected', hostKey);
       WindowSetTitle(`${$hosts[activeHostKey].name} - Rolens`);

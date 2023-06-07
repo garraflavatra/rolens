@@ -2,37 +2,41 @@
   import BlankState from '$components/blankstate.svelte';
   import TabBar from '$components/tabbar.svelte';
   import { EventsOn } from '$wails/runtime/runtime';
-  import Stats from './stats.svelte';
+  import Status from './status.svelte';
+  import SystemInfo from './systeminfo.svelte';
 
-  export let database;
+  export let host;
   export let hostKey;
-  export let dbKey;
 
-  let tab = 'stats';
+  let tab = 'status';
 
-  $: if (database) {
-    database.hostKey = hostKey;
-    database.dbKey = dbKey;
+  $: if (host) {
+    host.hostKey = hostKey;
   }
 
   $: if (hostKey || dbKey) {
-    tab = 'stats';
+    tab = 'status';
   }
 
-  EventsOn('OpenStatsTab', name => (tab = name || tab));
+  EventsOn('OpenStatusTab', name => (tab = name || tab));
 </script>
 
-<div class="view" class:empty={!database}>
-  {#if database}
-    {#key database}
-      <TabBar tabs={[ { key: 'stats', icon: 'chart', title: 'Database stats' } ]} bind:selectedKey={tab} />
+<div class="view" class:empty={!host}>
+  {#if host}
+    {#key host}
+      <TabBar tabs={[
+        { key: 'status', icon: 'chart', title: 'Host status' },
+        { key: 'systemInfo', icon: 'server', title: 'System info' }
+      ]} bind:selectedKey={tab} />
+
       <div class="container">
-        {#if tab === 'stats'} <Stats {database} />
+        {#if tab === 'status'} <Status {host} />
+        {:else if tab === 'systemInfo'} <SystemInfo {host} />
         {/if}
       </div>
     {/key}
   {:else}
-    <BlankState label="Select a database to continue" />
+    <BlankState label="Select a host to continue" />
   {/if}
 </div>
 

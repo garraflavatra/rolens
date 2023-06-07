@@ -64,10 +64,8 @@ export function deepClone(obj) {
 
 export function pathsAreEqual(x, y) {
   const lengthOfLongest = (x.length >= y.length) ? x.length : y.length;
-  console.log(x, y)
 
   for (let i = 0; i < lengthOfLongest; i++) {
-    console.log(x[i], y[i])
     if (x[i] !== y[i]) {
       return false;
     }

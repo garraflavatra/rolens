@@ -33,7 +33,7 @@ export function Menu():Promise<menu.Menu>;
 
 export function OpenCollection(arg1:string,arg2:string,arg3:string):Promise<primitive.M>;
 
-export function OpenConnection(arg1:string):Promise<Array<string>>;
+export function OpenConnection(arg1:string):Promise<app.HostInfo>;
 
 export function OpenDatabase(arg1:string,arg2:string):Promise<app.DatabaseInfo>;
 

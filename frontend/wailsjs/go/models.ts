@@ -1,5 +1,19 @@
 export namespace app {
 	
+	export class DatabaseInfo {
+	    collections: string[];
+	    stats: {[key: string]: any};
+	
+	    static createFrom(source: any = {}) {
+	        return new DatabaseInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.collections = source["collections"];
+	        this.stats = source["stats"];
+	    }
+	}
 	export class EnvironmentInfo {
 	    arch: string;
 	    buildType: string;

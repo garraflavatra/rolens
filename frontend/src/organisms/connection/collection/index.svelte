@@ -15,7 +15,7 @@
   export let collection;
   export let hostKey;
   export let dbKey;
-  export let collectionKey;
+  export let collKey;
 
   let tab = 'find';
   let find;
@@ -25,10 +25,10 @@
   $: if (collection) {
     collection.hostKey = hostKey;
     collection.dbKey = dbKey;
-    collection.key = collectionKey;
+    collection.key = collKey;
   }
 
-  $: if (hostKey || dbKey || collectionKey) {
+  $: if (hostKey || dbKey || collKey) {
     tab = 'find';
   }
 
@@ -46,7 +46,7 @@
   }
 </script>
 
-<div class="collection" class:empty={!collection}>
+<div class="view" class:empty={!collection}>
   {#if collection}
     {#key collection}
       <TabBar tabs={[
@@ -85,12 +85,12 @@
 {/if}
 
 <style>
-  .collection {
+  .view {
     height: 100%;
     display: grid;
     grid-template: auto 1fr / 1fr;
   }
-  .collection.empty {
+  .view.empty {
     grid-template: 1fr / 1fr;
   }
 

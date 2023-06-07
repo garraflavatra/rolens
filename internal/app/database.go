@@ -6,22 +6,36 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (a *App) OpenDatabase(hostKey, dbKey string) (collections []string) {
+type DatabaseInfo struct {
+	Collections []string `json:"collections"`
+	Stats       bson.M   `json:"stats"`
+}
+
+func (a *App) OpenDatabase(hostKey, dbKey string) (info DatabaseInfo) {
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		return nil
+		return
 	}
 
-	collections, err = client.Database(dbKey).ListCollectionNames(ctx, bson.D{})
+	command := bson.M{"dbStats": 1}
+	err = client.Database(dbKey).RunCommand(ctx, command).Decode(&info.Stats)
+	if err != nil {
+		runtime.LogWarning(a.ctx, "Could not retrieve database stats for "+dbKey)
+		runtime.LogWarning(a.ctx, err.Error())
+		zenity.Error(err.Error(), zenity.Title("Could not get stats"), zenity.ErrorIcon)
+		return
+	}
+
+	info.Collections, err = client.Database(dbKey).ListCollectionNames(ctx, bson.D{})
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not retrieve collection list for db "+dbKey)
 		runtime.LogWarning(a.ctx, err.Error())
 		zenity.Error(err.Error(), zenity.Title("Error while getting collections"), zenity.ErrorIcon)
-		return nil
+		return
 	}
 
 	defer close()
-	return collections
+	return
 }
 
 func (a *App) DropDatabase(hostKey, dbKey string) bool {

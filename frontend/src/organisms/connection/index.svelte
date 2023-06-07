@@ -5,7 +5,8 @@
   import { EnterText } from '$wails/go/ui/UI';
   import { EventsOn } from '$wails/runtime/runtime';
   import { onMount } from 'svelte';
-  import CollectionDetail from './collection/index.svelte';
+  import DatabaseView from './database/index.svelte';
+  import CollectionView from './collection/index.svelte';
   import DumpInfo from './dump.svelte';
   import HostDetail from './hostdetail.svelte';
   import HostTree from './hosttree.svelte';
@@ -110,12 +111,20 @@
   />
 </div>
 
-<CollectionDetail
-  collection={$connections[activeHostKey]?.databases[activeDbKey]?.collections?.[activeCollKey]}
-  hostKey={activeHostKey}
-  dbKey={activeDbKey}
-  collectionKey={activeCollKey}
-/>
+{#if activeCollKey}
+  <CollectionView
+    collection={$connections[activeHostKey]?.databases[activeDbKey]?.collections?.[activeCollKey]}
+    hostKey={activeHostKey}
+    dbKey={activeDbKey}
+    collKey={activeCollKey}
+  />
+{:else if activeDbKey}
+  <DatabaseView
+    database={$connections[activeHostKey]?.databases[activeDbKey]}
+    hostKey={activeHostKey}
+    dbKey={activeDbKey}
+  />
+{/if}
 
 <HostDetail
   bind:show={showHostDetail}

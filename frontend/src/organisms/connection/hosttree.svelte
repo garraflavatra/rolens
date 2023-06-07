@@ -62,9 +62,10 @@
 
   async function openDatabase(dbKey) {
     const progress = startProgress(`Opening database "${dbKey}"…`);
-    const collections = await OpenDatabase(activeHostKey, dbKey);
+    const { collections, stats } = await OpenDatabase(activeHostKey, dbKey);
     activeDbKey = dbKey;
     activeCollKey = '';
+    $connections[activeHostKey].databases[dbKey].stats = stats;
 
     for (const collKey of collections || []) {
       $connections[activeHostKey].databases[dbKey].collections[collKey] =

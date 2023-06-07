@@ -1,5 +1,5 @@
 <script>
-  import { resolveKeypath, setValue } from '$lib/objects';
+  import { pathsAreEqual, resolveKeypath, setValue } from '$lib/objects';
   import contextMenu from '$lib/stores/contextmenu';
   import { createEventDispatcher } from 'svelte';
   import FormInput from './forminput.svelte';
@@ -62,18 +62,9 @@
       return false;
     }
 
-    toggleChildren(itemKey, false);
-
-    if (activeKey !== itemKey) {
-      activeKey = itemKey;
-      if (level === 0) {
-        activePath = [ itemKey ];
-      }
-      else {
-        activePath = [ ...path, itemKey ];
-      }
-      dispatch('select', { level, itemKey, index });
-    }
+    activeKey = itemKey;
+    activePath = [ ...path.slice(0, level), itemKey ];
+    dispatch('select', { level, itemKey, index });
   }
 
   function closeAll() {
@@ -89,7 +80,7 @@
   }
 
   function doubleClick(itemKey, index) {
-    // toggleChildren(itemKey, false);
+    toggleChildren(itemKey, false);
     dispatch('trigger', { level, itemKey, index });
     childrenOpen[itemKey] = true;
   }
@@ -136,7 +127,7 @@
     on:dblclick={() => doubleClick(item[key], index)}
     on:contextmenu|preventDefault={evt => showContextMenu(evt, item)}
     class:selectable={canSelect}
-    class:selected={canSelect && !activePath[level + 1] && activePath.every(k => path.includes(k) || k === item[key]) && (activePath[level] === item[key])}
+    class:selected={canSelect && pathsAreEqual(activePath, [ ...path, item[key] ])}
     class:striped
   >
     {#if !hideChildrenToggles}

@@ -1,13 +1,17 @@
 ## Unreleased
 
-* Added version number of the running Rolens instance in the about dialog (#25, #28)
+* Added version number of the running Rolens instance in the about dialog (#25, #28).
+* Fixed host/database selection bug in grid.
 
-## [v0.2.0](https://github.com/garraflavatra/rolens/releases/tag/v0.2.0)
+## [v0.2.0]
 
 * Added some external links related to Rolens to the application menu.
 * Fix an infinite loop bug when a document in the find view has been double clicked.
 * Find view: added the ability to make changes to single documents from within the object editor.
 
-## [v0.1.0](https://github.com/garraflavatra/rolens/releases/tag/v0.1.0)
+## [v0.1.0]
 
 Initial release.
+
+[v0.2.0]: https://github.com/garraflavatra/rolens/releases/tag/v0.2.0
+[v0.1.0]: https://github.com/garraflavatra/rolens/releases/tag/v0.1.0

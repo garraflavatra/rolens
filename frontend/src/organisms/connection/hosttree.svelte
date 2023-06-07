@@ -14,9 +14,9 @@
 
   const dispatch = createEventDispatcher();
   let activeGridPath = [];
-  $: activeHostKey = activeGridPath[0] || activeHostKey;
-  $: activeDbKey = activeGridPath[1];
-  $: activeCollKey = activeGridPath[2];
+  // $: activeGridPath[0] = activeHostKey || undefined;
+  // $: activeGridPath[1] = activeDbKey || undefined;
+  // $: activeGridPath[2] = activeCollKey || undefined;
   $: host = $hosts[activeHostKey];
   $: connection = $connections[activeHostKey];
   $: database = connection?.databases[activeDbKey];
@@ -30,12 +30,16 @@
 
   async function openConnection(hostKey) {
     const progress = startProgress(`Connecting to "${hostKey}"…`);
+    activeCollKey = '';
+    activeDbKey = '';
+    activeHostKey = hostKey;
     const databases = await OpenConnection(hostKey);
 
     if (databases) {
       $connections[hostKey] = { databases: {} };
       databases.forEach(dbKey => {
-        $connections[hostKey].databases[dbKey] = { collections: {} };
+        $connections[hostKey].databases[dbKey] =
+          $connections[hostKey].databases[dbKey] || { collections: {} };
       });
       activeHostKey = hostKey;
       dispatch('connected', hostKey);
@@ -49,17 +53,22 @@
     activeCollKey = '';
     activeDbKey = '';
     activeHostKey = '';
+
     await tick();
     await RemoveHost(hostKey);
-    hosts.update();
+    await reload();
+    await hosts.update();
   }
 
   async function openDatabase(dbKey) {
     const progress = startProgress(`Opening database "${dbKey}"…`);
     const collections = await OpenDatabase(activeHostKey, dbKey);
+    activeDbKey = dbKey;
+    activeCollKey = '';
 
     for (const collKey of collections || []) {
-      $connections[activeHostKey].databases[dbKey].collections[collKey] = {};
+      $connections[activeHostKey].databases[dbKey].collections[collKey] =
+        $connections[activeHostKey].databases[dbKey].collections[collKey] ||{};
     }
 
     progress.end();
@@ -67,14 +76,19 @@
 
   async function dropDatabase(dbKey) {
     const progress = startProgress(`Dropping database "${dbKey}"…`);
-    await DropDatabase(activeHostKey, dbKey);
-    await reload();
+    const success = await DropDatabase(activeHostKey, dbKey);
+    if (success) {
+      activeCollKey = '';
+      activeDbKey = '';
+      await reload();
+    }
     progress.end();
   }
 
   async function openCollection(collKey) {
     const progress = startProgress(`Opening collection "${collKey}"…`);
     const stats = await OpenCollection(activeHostKey, activeDbKey, collKey);
+    activeCollKey = collKey;
     $connections[activeHostKey].databases[activeDbKey].collections[collKey] = $connections[activeHostKey].databases[activeDbKey].collections[collKey] || {};
     $connections[activeHostKey].databases[activeDbKey].collections[collKey].stats = stats;
     progress.end();
@@ -89,8 +103,11 @@
 
   async function dropCollection(dbKey, collKey) {
     const progress = startProgress(`Dropping collection "${collKey}"…`);
-    await DropCollection(activeHostKey, dbKey, collKey);
-    await reload();
+    const success = await DropCollection(activeHostKey, dbKey, collKey);
+    if (success) {
+      activeCollKey = '';
+      await reload();
+    }
     progress.end();
   }
 </script>
@@ -98,6 +115,7 @@
 <Grid
   striped={false}
   columns={[ { key: 'name' }, { key: 'count', right: true } ]}
+  bind:activePath={activeGridPath}
   items={Object.keys($hosts).map(hostKey => ({
     id: hostKey,
     name: $hosts[hostKey].name,
@@ -136,7 +154,6 @@
       { label: `Remove host…`, fn: () => removeHost(hostKey) },
     ],
   }))}
-  bind:activePath={activeGridPath}
   on:select={e => {
     const key = e.detail.itemKey;
     switch (e.detail?.level) {

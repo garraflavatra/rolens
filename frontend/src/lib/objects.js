@@ -58,6 +58,20 @@ export function setValue(object, path, value) {
 }
 
 export function deepClone(obj) {
-  // Room for improvement below
+  // @todo: Room for improvement below
   return JSON.parse(JSON.stringify(obj));
+}
+
+export function pathsAreEqual(x, y) {
+  const lengthOfLongest = (x.length >= y.length) ? x.length : y.length;
+  console.log(x, y)
+
+  for (let i = 0; i < lengthOfLongest; i++) {
+    console.log(x[i], y[i])
+    if (x[i] !== y[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }

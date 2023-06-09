@@ -2,11 +2,11 @@
   import Grid from '$components/grid.svelte';
   import { startProgress } from '$lib/progress';
   import connections from '$lib/stores/connections';
-  import { WindowSetTitle } from '$wails/runtime/runtime';
   import { createEventDispatcher } from 'svelte';
   import { DropCollection, DropDatabase, OpenCollection, OpenConnection, OpenDatabase, RemoveHost, TruncateCollection } from '../../../wailsjs/go/app/App';
   import hosts from '$lib/stores/hosts';
   import { tick } from 'svelte';
+  import windowTitle from '$lib/stores/windowtitle';
 
   export let activeHostKey = '';
   export let activeDbKey = '';
@@ -50,10 +50,13 @@
 
       activeHostKey = hostKey;
       dispatch('connected', hostKey);
-      WindowSetTitle(`${$hosts[activeHostKey].name} - Rolens`);
     }
 
     progress.end();
+
+    if (databases) {
+      windowTitle.setSegments($hosts[activeHostKey].name, 'Rolens');
+    }
   }
 
   async function removeHost(hostKey) {
@@ -80,6 +83,7 @@
     }
 
     progress.end();
+    windowTitle.setSegments(activeDbKey, $hosts[activeHostKey].name, 'Rolens');
   }
 
   async function dropDatabase(dbKey) {
@@ -100,6 +104,7 @@
     $connections[activeHostKey].databases[activeDbKey].collections[collKey] = $connections[activeHostKey].databases[activeDbKey].collections[collKey] || {};
     $connections[activeHostKey].databases[activeDbKey].collections[collKey].stats = stats;
     progress.end();
+    windowTitle.setSegments(activeDbKey + '.' + activeCollKey, $hosts[activeHostKey].name, 'Rolens');
   }
 
   async function truncateCollection(dbKey, collKey) {

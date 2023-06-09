@@ -6,6 +6,7 @@
   import environment from '$lib/stores/environment';
   import hosts from '$lib/stores/hosts';
   import applicationInited from '$lib/stores/inited';
+  import windowTitle from '$lib/stores/windowtitle';
   import About from '$organisms/about.svelte';
   import Connection from '$organisms/connection/index.svelte';
   import Settings from '$organisms/settings/index.svelte';
@@ -42,7 +43,7 @@
 <svelte:window on:contextmenu|preventDefault />
 
 <div id="root" class="platform-{$environment?.platform}">
-  <div class="titlebar"></div>
+  <div class="titlebar">{$windowTitle}</div>
 
   {#if $applicationInited && $hosts && (showWelcomeScreen !== undefined)}
     <main class:empty={showWelcomeScreen}>
@@ -69,6 +70,10 @@
     height: 0;
     background-color: #00002a;
     --wails-draggable: drag;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   #root.platform-darwin .titlebar {
     height: var(--darwin-titlebar-height);

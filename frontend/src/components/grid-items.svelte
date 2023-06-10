@@ -64,7 +64,7 @@
 
     activeKey = itemKey;
     activePath = [ ...path.slice(0, level), itemKey ];
-    dispatch('select', { level, itemKey, index });
+    dispatch('select', { level, itemKey, index, path: activePath });
   }
 
   function closeAll() {

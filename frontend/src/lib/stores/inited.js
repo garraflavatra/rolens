@@ -10,7 +10,7 @@ const defer = listener => {
     listener();
   }
   else {
-    listeners.push(listener)
+    listeners.push(listener);
   }
 };
 
@@ -18,16 +18,12 @@ const { subscribe } = derived([ environment, applicationSettings ], ([ env, sett
   if (alreadyInited) {
     return;
   }
-
-  if (env && settings) {
-    set(true);
-    alreadyInited = true;
-
-    // Remove loading spinner.
-    document.getElementById('app-loading')?.remove();
-
-    // Call hooks
-    listeners.forEach(l => l());
+  else if (env && settings) {
+    Promise.all(listeners.map(l => l())).then(() => {
+      set(true);
+      alreadyInited = true;
+      document.getElementById('app-loading')?.remove();
+    });
   }
 }, false);
 

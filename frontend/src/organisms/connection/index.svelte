@@ -15,20 +15,21 @@
   import Icon from '$components/icon.svelte';
   import hosts from '$lib/stores/hosts';
 
-  export let activeHostKey = '';
-  export let activeDbKey = '';
-  export let activeCollKey = '';
-
   let hostTree;
   let showHostDetail = false;
   let hostDetailKey = '';
   let exportInfo;
+  let path = [];
+
+  $: activeHostKey = path[0];
+  $: activeDbKey = path[1];
+  $: activeCollKey = path[2];
 
   $: sharedState.currentHost.set(activeHostKey);
   $: sharedState.currentDb.set(activeDbKey);
   $: sharedState.currentColl.set(activeCollKey);
 
-  export function createHost() {
+  function createHost() {
     hostDetailKey = '';
     showHostDetail = true;
   }
@@ -38,7 +39,7 @@
     showHostDetail = true;
   }
 
-  export async function createDatabase() {
+  async function createDatabase() {
     const name = await EnterText('Create a database', 'Enter the database name. Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.');
     if (name) {
       $connections[activeHostKey].databases[name] = { collections: {} };
@@ -58,7 +59,7 @@
     }
   }
 
-  export async function createCollection() {
+  async function createCollection() {
     const name = await EnterText('Create a collection', 'Note: collections in MongoDB do not exist until they have at least one item. Your new collection will not persist on the server; fill it to have it created.');
     if (name) {
       $connections[activeHostKey].databases[activeDbKey].collections[name] = {};
@@ -97,19 +98,7 @@
     </button>
   </div>
 
-  <HostTree
-    bind:activeHostKey
-    bind:activeCollKey
-    bind:activeDbKey
-    bind:this={hostTree}
-    on:newHost={createHost}
-    on:newDatabase={createDatabase}
-    on:newCollection={createCollection}
-    on:editHost={e => editHost(e.detail)}
-    on:renameCollection={e => renameCollection(e.detail)}
-    on:exportCollection={e => exportCollection(e.detail)}
-    on:dumpCollection={e => dumpCollection(e.detail)}
-  />
+  <HostTree bind:path />
 </div>
 
 {#if activeCollKey}
@@ -135,7 +124,7 @@
 <HostDetail
   bind:show={showHostDetail}
   on:reload={hosts.update}
-  hostKey={activeHostKey}
+  hostKey={hostDetailKey}
 />
 
 <DumpInfo bind:info={exportInfo} />

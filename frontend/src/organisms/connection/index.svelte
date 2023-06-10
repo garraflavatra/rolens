@@ -8,12 +8,11 @@
   import HostView from './host/index.svelte';
   import DatabaseView from './database/index.svelte';
   import CollectionView from './collection/index.svelte';
-  import DumpInfo from './dump.svelte';
-  import HostDetail from './hostdetail.svelte';
+  import DumpInfo from './database/dialogs/dump.svelte';
+  import HostDetail from './host/dialogs/hostdetail.svelte';
   import HostTree from './hosttree.svelte';
   import sharedState from '$lib/stores/sharedstate';
   import Icon from '$components/icon.svelte';
-  import hosts from '$lib/stores/hosts';
 
   let hostTree;
   let showHostDetail = false;
@@ -29,71 +28,12 @@
   $: sharedState.currentDb.set(activeDbKey);
   $: sharedState.currentColl.set(activeCollKey);
 
-  function createHost() {
-    hostDetailKey = '';
-    showHostDetail = true;
-  }
-
-  function editHost(hostKey) {
-    hostDetailKey = hostKey;
-    showHostDetail = true;
-  }
-
-  async function createDatabase() {
-    const name = await EnterText('Create a database', 'Enter the database name. Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.');
-    if (name) {
-      $connections[activeHostKey].databases[name] = { collections: {} };
-    }
-  }
-
-  async function renameCollection(oldCollKey) {
-    const newCollKey = await EnterText('Rename collection', `Enter a new name for collection ${oldCollKey}.`, oldCollKey);
-    if (newCollKey && (newCollKey !== oldCollKey)) {
-      const progress = startProgress(`Renaming collection "${oldCollKey}" to "${newCollKey}"…`);
-      const ok = await RenameCollection(activeHostKey, activeDbKey, oldCollKey, newCollKey);
-      if (ok) {
-        activeCollKey = newCollKey;
-        await hostTree.reload();
-      }
-      progress.end();
-    }
-  }
-
-  async function createCollection() {
-    const name = await EnterText('Create a collection', 'Note: collections in MongoDB do not exist until they have at least one item. Your new collection will not persist on the server; fill it to have it created.');
-    if (name) {
-      $connections[activeHostKey].databases[activeDbKey].collections[name] = {};
-    }
-  }
-
-  function exportCollection(collKey) {
-    exportInfo = {
-      type: 'export',
-      filetype: 'json',
-      hostKey: activeHostKey,
-      dbKey: activeDbKey,
-      collKeys: [ collKey ],
-    };
-  }
-
-  function dumpCollection(collKey) {
-    exportInfo = {
-      type: 'dump',
-      filetype: 'bson',
-      hostKey: activeHostKey,
-      dbKey: activeDbKey,
-      collKeys: [ collKey ],
-    };
-  }
-
   EventsOn('CreateHost', createHost);
-  EventsOn('CreateDatabase', createDatabase);
-  EventsOn('CreateCollection', createCollection);
 </script>
 
 <div class="tree">
   <div class="tree-buttons">
-    <button class="button-small" on:click={createHost}>
+    <button class="button-small" on:click={hostTree.newHost}>
       <Icon name="+" /> New host
     </button>
   </div>
@@ -123,7 +63,7 @@
 
 <HostDetail
   bind:show={showHostDetail}
-  on:reload={hosts.update}
+  on:reload={hostTree.refresh}
   hostKey={hostDetailKey}
 />
 

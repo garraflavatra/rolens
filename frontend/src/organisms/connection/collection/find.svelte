@@ -12,7 +12,7 @@
   import { FindItems, RemoveItemById, UpdateFoundDocument } from '$wails/go/app/App';
   import { EJSON } from 'bson';
   import { createEventDispatcher, onMount } from 'svelte';
-  import ExportInfo from './components/export.svelte';
+  import ExportInfo from './dialogs/export.svelte';
   import QueryChooser from './components/querychooser.svelte';
 
   export let collection;

@@ -1,10 +1,9 @@
 <script>
   import BlankState from '$components/blankstate.svelte';
   import ContextMenu from '$components/contextmenu.svelte';
-  import connections from '$lib/stores/connections';
   import contextMenu from '$lib/stores/contextmenu';
   import environment from '$lib/stores/environment';
-  import hosts from '$lib/stores/hosts';
+  import hostTree from '$lib/stores/hosttree';
   import applicationInited from '$lib/stores/inited';
   import windowTitle from '$lib/stores/windowtitle';
   import About from '$organisms/about.svelte';
@@ -21,19 +20,16 @@
   let connectionManager;
   let showWelcomeScreen = undefined;
 
-  $: host = hosts[activeHostKey];
-  $: connection = $connections[activeHostKey];
-
-  hosts.subscribe(h => {
+  hostTree.subscribe(h => {
     if (h && (showWelcomeScreen === undefined)) {
-      showWelcomeScreen = !Object.keys($hosts || {}).length;
+      showWelcomeScreen = !Object.keys(hostTree.get() || {}).length;
     }
   });
 
   async function createFirstHost() {
     showWelcomeScreen = false;
     await tick();
-    connectionManager.createHost();
+    hostTree.newHost();
   }
 
   EventsOn('OpenPreferences', () => settingsModalOpen = true);
@@ -45,7 +41,7 @@
 <div id="root" class="platform-{$environment?.platform}">
   <div class="titlebar">{$windowTitle}</div>
 
-  {#if $applicationInited && $hosts && (showWelcomeScreen !== undefined)}
+  {#if $applicationInited && (showWelcomeScreen !== undefined)}
     <main class:empty={showWelcomeScreen}>
       {#if showWelcomeScreen}
         <BlankState label="Welcome to Rolens!" image="/logo.png" pale={false} big={true}>

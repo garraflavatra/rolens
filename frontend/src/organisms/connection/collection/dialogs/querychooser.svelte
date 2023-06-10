@@ -4,7 +4,7 @@
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
   import input from '$lib/actions/input';
-  import hosts from '$lib/stores/hosts';
+  import hostTree from '$lib/stores/hosttree';
   import queries from '$lib/stores/queries';
   import { createEventDispatcher } from 'svelte';
 
@@ -88,7 +88,7 @@
         columns={[ { key: 'n', title: 'Query name' }, { key: 'h', title: 'Host' }, { key: 'ns', title: 'Namespace' } ]}
         key="n"
         items={Object.entries($queries).reduce((object, [ name, query ]) => {
-          object[query.name] = { n: name, h: $hosts[query.hostKey]?.name || '?', ns: `${query.dbKey}.${query.collKey}` };
+          object[query.name] = { n: name, h: $hostTree[query.hostKey]?.name || '?', ns: `${query.dbKey}.${query.collKey}` };
           return object;
         }, {})}
         showHeaders={true}

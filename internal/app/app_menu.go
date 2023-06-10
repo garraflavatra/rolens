@@ -36,8 +36,6 @@ func (a *App) Menu() *menu.Menu {
 
 	fileMenu := appMenu.AddSubmenu("File")
 	fileMenu.AddText("New host…", keys.CmdOrCtrl("y"), menuCallbackEmit(a, "CreateHost"))
-	fileMenu.AddText("New database", keys.CmdOrCtrl("y"), menuCallbackEmit(a, "CreateDatabase"))
-	fileMenu.AddText("New collection…", keys.CmdOrCtrl("i"), menuCallbackEmit(a, "CreateCollection"))
 	fileMenu.AddSeparator()
 	fileMenu.AddText("Stats", keys.Combo("h", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuCallbackEmit(a, "OpenCollectionTab", "stats"))
 	fileMenu.AddText("Find", keys.Combo("f", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuCallbackEmit(a, "OpenCollectionTab", "find"))

@@ -4,6 +4,7 @@
 * Added version number of the running Rolens instance in the about dialog (#25, #28).
 * Fixed host/database selection bug in grid.
 * Added meaningful window titles, and actually show these in the title bar (macOS).
+* Corrected link to documentation in the about box (#30).
 
 ## [v0.2.0]
 

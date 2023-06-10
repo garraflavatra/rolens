@@ -23,7 +23,7 @@
   <div class="info">
     <p class="copy">© Romein van Buren, 2023.</p>
     <p>
-      <a href="" use:alink>Documentation</a> |
+      <a href="https://garraflavatra.github.io/rolens/" use:alink>Documentation</a> |
       <a href="https://github.com/garraflavatra/rolens" use:alink>GitHub</a> |
       <a href="https://github.com/garraflavatra/rolens/issues/new" use:alink>Report a bug</a> |
       <a href="https://github.com/garraflavatra/rolens/blob/main/LICENSE" use:alink>License</a>

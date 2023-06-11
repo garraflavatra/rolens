@@ -4,7 +4,7 @@
   import { EventsOn } from '$wails/runtime/runtime';
   import { tick } from 'svelte';
   import Aggregate from './aggregate.svelte';
-  import ViewConfig from './components/viewconfig.svelte';
+  import ViewConfig from './dialogs/viewconfig.svelte';
   import Find from './find.svelte';
   import Indexes from './indexes.svelte';
   import Insert from './insert.svelte';
@@ -57,7 +57,8 @@
         { key: 'remove', icon: 'trash', title: 'Remove' },
         { key: 'indexes', icon: 'list', title: 'Indexes' },
         { key: 'aggregate', icon: 're', title: 'Aggregate' },
-      ]} bind:selectedKey={tab} />
+      ]}
+        bind:selectedKey={tab} />
 
       <div class="container">
         {#if tab === 'stats'} <Stats {collection} />

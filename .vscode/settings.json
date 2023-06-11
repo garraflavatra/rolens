@@ -14,5 +14,12 @@
   "[css]": {
     "editor.suggest.insertMode": "replace",
     "editor.tabSize": 2
-  }
+  },
+
+  "eslint.format.enable": true,
+  "eslint.lintTask.enable": true,
+  "eslint.lintTask.options": "frontend",
+  "eslint.workingDirectories": [
+    "frontend"
+  ]
 }

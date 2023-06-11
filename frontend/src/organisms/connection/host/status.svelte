@@ -7,7 +7,7 @@
   let copySucceeded = false;
 
   async function copy() {
-    const json = JSON.stringify(collection.stats, undefined, '\t');
+    const json = JSON.stringify(host.status, undefined, '\t');
     await navigator.clipboard.writeText(json);
     copySucceeded = true;
     setTimeout(() => copySucceeded = false, 1500);

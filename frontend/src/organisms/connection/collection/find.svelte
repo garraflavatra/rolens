@@ -13,7 +13,7 @@
   import { EJSON } from 'bson';
   import { createEventDispatcher, onMount } from 'svelte';
   import ExportInfo from './dialogs/export.svelte';
-  import QueryChooser from './components/querychooser.svelte';
+  import QueryChooser from './dialogs/querychooser.svelte';
 
   export let collection;
 
@@ -38,8 +38,8 @@
   let querying = false;
   let objectViewerSuccessMessage = '';
 
+  // $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
   $: viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
-  $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
   $: lastPage = (submittedForm.limit && result?.results?.length) ? Math.max(0, Math.ceil((result.total - submittedForm.limit) / submittedForm.limit)) : 0;
   $: activePage = (submittedForm.limit && submittedForm.skip && result?.results?.length) ? submittedForm.skip / submittedForm.limit : 0;
 
@@ -162,7 +162,12 @@
     <div class="form-row one">
       <label class="field">
         <span class="label">Query or id</span>
-        <input type="text" class="code" bind:this={queryField} bind:value={form.query} use:input={{ type: 'json', autofocus: true }} placeholder={defaults.query} />
+        <input type="text"
+          class="code"
+          bind:this={queryField}
+          bind:value={form.query}
+          use:input={{ type: 'json', autofocus: true }}
+          placeholder={defaults.query} />
       </label>
 
       <label class="field">
@@ -179,12 +184,22 @@
 
       <label class="field">
         <span class="label">Skip</span>
-        <input type="number" min="0" bind:value={form.skip} use:input placeholder={defaults.skip} list="skipstops" />
+        <input type="number"
+          min="0"
+          bind:value={form.skip}
+          use:input
+          placeholder={defaults.skip}
+          list="skipstops" />
       </label>
 
       <label class="field">
         <span class="label">Limit</span>
-        <input type="number" min="0" bind:value={form.limit} use:input placeholder={defaults.limit} list="limits" />
+        <input type="number"
+          min="0"
+          bind:value={form.limit}
+          use:input
+          placeholder={defaults.limit}
+          list="limits" />
       </label>
     </div>
 
@@ -219,7 +234,9 @@
         {:else}
           <Grid
             key="_id"
-            columns={$views[collection.viewKey]?.columns?.map(c => ({ key: c.key, title: c.key })) || []}
+            columns={$views[collection.viewKey]?.columns?.map(c => {
+              return { key: c.key, title: c.key };
+            }) || []}
             showHeaders={true}
             items={result.results ? result.results.map(r => EJSON.deserialize(r)) : []}
             bind:activePath
@@ -238,7 +255,7 @@
       <div>
         <label class="field inline">
           <select bind:value={collection.viewKey}>
-            {#each Object.entries(viewsForCollection) as [key, view]}
+            {#each Object.entries(viewsForCollection) as [ key, view ]}
               <option value={key}>{view.name}</option>
             {/each}
           </select>

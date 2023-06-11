@@ -1,5 +1,5 @@
-import { WindowSetTitle } from "$wails/runtime/runtime";
-import { writable } from "svelte/store";
+import { WindowSetTitle } from '$wails/runtime/runtime';
+import { writable } from 'svelte/store';
 
 const { set, subscribe } = writable('Rolens');
 

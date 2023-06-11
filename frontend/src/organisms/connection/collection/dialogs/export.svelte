@@ -48,7 +48,7 @@
     <label class="field">
       <span class="label">View to use</span>
       <select bind:value={viewKey}>
-        {#each Object.entries(views.forCollection(collection.hostKey, collection.dbKey, collection.key)) as [key, { name }]}
+        {#each Object.entries(views.forCollection(collection.hostKey, collection.dbKey, collection.key)) as [ key, { name } ]}
           <option value={key}>{name}</option>
         {/each}
       </select>

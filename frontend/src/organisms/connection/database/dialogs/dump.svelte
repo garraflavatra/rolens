@@ -3,12 +3,15 @@
   import Grid from '$components/grid.svelte';
   import Modal from '$components/modal.svelte';
   import { startProgress } from '$lib/progress';
-  import connections from '$lib/stores/connections';
   import hostTree from '$lib/stores/hosttree';
   import applicationSettings from '$lib/stores/settings';
   import { OpenConnection, OpenDatabase, PerformDump } from '$wails/go/app/App';
+  import { writable } from 'svelte/store';
 
   export let info;
+
+  // @todo
+  const connections = writable({});
 
   $: if (info) {
     info.outdir = info.outdir || $applicationSettings.defaultExportDirectory;
@@ -65,7 +68,6 @@
 
 <Modal bind:show={info} title="Perform dump">
   <form on:submit|preventDefault={performDump}>
-    <!-- svelte-ignore a11y-label-has-associated-control - input is in DirectoryChooser -->
     <label class="field">
       <span class="label">Output destination:</span>
       <DirectoryChooser bind:value={info.outdir} />
@@ -83,7 +85,9 @@
           hideChildrenToggles
           items={[
             { id: undefined, name: '(localhost)' },
-            ...Object.keys($hostTree).map(id => ({ id, name: $hostTree[id]?.name })),
+            ...Object.keys($hostTree).map(id => {
+              return { id, name: $hostTree[id]?.name };
+            }),
           ]}
           on:select={e => selectHost(e.detail?.itemKey)}
         />
@@ -97,9 +101,9 @@
           hideChildrenToggles
           items={[
             { id: undefined, name: '(all databases)' },
-            ...($connections[info.hostKey]?.databases
-              ? Object.keys($connections[info.hostKey].databases).map(id => ({ id, name: id }))
-              : []
+            ...($connections[info.hostKey]?.databases ? Object.keys($connections[info.hostKey].databases).map(id => {
+              return { id, name: id };
+            }) : []
             ),
           ]}
           on:select={e => selectDatabase(e.detail?.itemKey)}
@@ -114,9 +118,9 @@
           hideChildrenToggles
           items={[
             { id: undefined, name: '(all collections)' },
-            ...($connections[info.hostKey]?.databases[info.dbKey]?.collections
-              ? Object.keys($connections[info.hostKey].databases[info.dbKey].collections).map(id => ({ id, name: id }))
-              : []
+            ...($connections[info.hostKey]?.databases[info.dbKey]?.collections ? Object.keys($connections[info.hostKey].databases[info.dbKey].collections).map(id => {
+              return { id, name: id };
+            }) : []
             ),
           ]}
           on:select={e => selectCollection(e.detail?.itemKey)}

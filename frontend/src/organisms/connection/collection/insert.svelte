@@ -60,9 +60,7 @@
 
   function showDocs() {
     dispatch('performFind', {
-      query: insertedIds.length === 1
-        ? `{ "_id": ${JSON.stringify(insertedIds[0])} }`
-        : `{ "_id": { "$in": [ ${insertedIds.map(id => JSON.stringify(id)).join(', ')} ] } }`,
+      query: insertedIds.length === 1 ? `{ "_id": ${JSON.stringify(insertedIds[0])} }` : `{ "_id": { "$in": [ ${insertedIds.map(id => JSON.stringify(id)).join(', ')} ] } }`,
     });
   }
 
@@ -146,11 +144,11 @@
         <Grid
           key="id"
           items={newItems}
-          columns={
-            $views[collection.viewKey]?.columns
-              ?.filter(c => inputTypes.includes(c.inputType))
-              .map(c => ({ ...c, id: randomString(8), title: c.key })) || []
-          }
+          columns={$views[collection.viewKey]?.columns
+            ?.filter(c => inputTypes.includes(c.inputType))
+            .map(c => {
+              return { ...c, id: randomString(8), title: c.key };
+            }) || []}
           showHeaders={true}
           canSelect={false}
           canRemoveItems={true}
@@ -188,7 +186,7 @@
       {/if}
       <label class="field inline">
         <select bind:value={collection.viewKey}>
-          {#each Object.entries(viewsForCollection) as [key, view]}
+          {#each Object.entries(viewsForCollection) as [ key, view ]}
             <option value={key}>{key === 'list' ? 'Raw JSON' : view.name}</option>
           {/each}
         </select>

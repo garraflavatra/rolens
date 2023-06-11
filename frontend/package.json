@@ -19,7 +19,23 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.1",
     "eslint": "^8.42.0",
+    "eslint-config-svelte3": "github:johbog/eslint-config-svelte3",
     "svelte": "^3.59.1",
     "vite": "^3.2.7"
+  },
+  "eslintConfig": {
+    "extends": "svelte3",
+    "ignorePatterns": ["dist", "wailsjs"],
+    "rules": {
+      "svelte/html-quotes": [
+        "warn",
+        {
+          "prefer": "double",
+          "dynamic": { "quoted": false }
+        }
+      ],
+      "svelte/no-useless-mustaches": "off",
+      "svelte/no-extra-reactive-curlies": "off"
+    }
   }
 }

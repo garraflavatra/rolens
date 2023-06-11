@@ -31,7 +31,9 @@
   }
 
   async function run() {
-    const pipeline = stages.map(stage => ({ [stage.type]: jsonLooseParse(stage.data) }));
+    const pipeline = stages.map(stage => {
+      return { [stage.type]: jsonLooseParse(stage.data) };
+    });
     await Aggregate(
       collection.hostKey,
       collection.dbKey,
@@ -66,19 +68,20 @@
 
         <!-- svelte-ignore a11y-label-has-associated-control -->
         <label class="field">
-          <ObjectEditor bind:text={stage.data} on:inited={e => {
-            e.detail.editor.dispatch({
-              changes: {
-                from: 0,
-                to: e.detail.editor.state.doc.length,
-                insert: '{\n\t\n}',
-              },
-              selection: {
-                anchor: 3,
-              },
-            });
-            e.detail.editor.focus();
-          }} />
+          <ObjectEditor bind:text={stage.data}
+            on:inited={e => {
+              e.detail.editor.dispatch({
+                changes: {
+                  from: 0,
+                  to: e.detail.editor.state.doc.length,
+                  insert: '{\n\t\n}',
+                },
+                selection: {
+                  anchor: 3,
+                },
+              });
+              e.detail.editor.focus();
+            }} />
         </label>
       </Details>
     {/each}

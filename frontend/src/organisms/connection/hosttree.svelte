@@ -8,48 +8,54 @@
 <Grid
   striped={false}
   columns={[ { key: 'name' }, { key: 'count', right: true } ]}
-  items={Object.values($hostTree || {}).map(host => ({
-    id: host.key,
-    name: host.name,
-    icon: 'server',
-    children: Object.values(host.databases || {})
-      .sort((a, b) => a.key.localeCompare(b))
-      .map(database => ({
-        id: database.key,
-        name: database.key,
-        icon: 'db',
-        count: Object.keys(database.collections || {}).length || '',
-        children: Object.values(database.collections)
-          .sort((a, b) => a.key.localeCompare(b))
-          .map(collection => ({
-            id: collection.key,
-            name: collection.key,
-            icon: 'list',
+  items={Object.values($hostTree || {}).map(host => {
+    return {
+      id: host.key,
+      name: host.name,
+      icon: 'server',
+      children: Object.values(host.databases || {})
+        .sort((a, b) => a.key.localeCompare(b))
+        .map(database => {
+          return {
+            id: database.key,
+            name: database.key,
+            icon: 'db',
+            count: Object.keys(database.collections || {}).length || '',
+            children: Object.values(database.collections)
+              .sort((a, b) => a.key.localeCompare(b))
+              .map(collection => {
+                return {
+                  id: collection.key,
+                  name: collection.key,
+                  icon: 'list',
+                  menu: [
+                    { label: 'Export collection (JSON, CSV)…', fn: collection.export },
+                    { label: 'Dump collection (BSON via mongodump)…', fn: collection.dump },
+                    { separator: true },
+                    { label: 'Rename collection…', fn: collection.rename },
+                    { label: 'Truncate collection…', fn: collection.truncate },
+                    { label: 'Drop collection…', fn: collection.drop },
+                    { separator: true },
+                    { label: 'New collection…', fn: database.newCollection },
+                  ],
+                };
+              }) || [],
             menu: [
-              { label: 'Export collection (JSON, CSV)…', fn: collection.export },
-              { label: 'Dump collection (BSON via mongodump)…', fn: collection.dump },
+              { label: 'Drop database…', fn: database.drop },
               { separator: true },
-              { label: 'Rename collection…', fn: collection.rename },
-              { label: 'Truncate collection…', fn: collection.truncate },
-              { label: 'Drop collection…', fn: collection.drop },
-              { separator: true },
+              { label: 'New database…', fn: host.newDatabase },
               { label: 'New collection…', fn: database.newCollection },
             ],
-          })) || [],
-        menu: [
-          { label: 'Drop database…', fn: database.drop },
-          { separator: true },
-          { label: 'New database…', fn: host.newDatabase },
-          { label: 'New collection…', fn: database.newCollection },
-        ],
-      })),
+          };
+        }),
       menu: [
         { label: 'New database…', fn: host.newDatabase },
         { separator: true },
         { label: `Edit host ${host.name}…`, fn: host.edit },
-        { label: `Remove host…`, fn: host.remove },
+        { label: 'Remove host…', fn: host.remove },
       ],
-  }))}
+    };
+  })}
   on:select={e => {
     let level;
     ({ path, level } = e.detail);

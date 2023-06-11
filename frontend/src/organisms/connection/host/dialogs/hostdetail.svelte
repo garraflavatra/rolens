@@ -1,6 +1,7 @@
 <script>
   import Modal from '$components/modal.svelte';
   import input from '$lib/actions/input';
+  import hostTree from '$lib/stores/hosttree';
   import { AddHost, UpdateHost } from '$wails/go/app/App';
   import { createEventDispatcher } from 'svelte';
 
@@ -11,6 +12,7 @@
   let form = {};
   let error = '';
   $: valid = validate(form);
+  $: host = $hostTree[hostKey];
 
   $: if (show || !show) {
     init();

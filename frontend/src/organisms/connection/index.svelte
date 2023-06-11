@@ -1,10 +1,4 @@
 <script>
-  import { startProgress } from '$lib/progress';
-  import connections from '$lib/stores/connections';
-  import { Hosts, RenameCollection } from '$wails/go/app/App';
-  import { EnterText } from '$wails/go/ui/UI';
-  import { EventsOn } from '$wails/runtime/runtime';
-  import { onMount } from 'svelte';
   import HostView from './host/index.svelte';
   import DatabaseView from './database/index.svelte';
   import CollectionView from './collection/index.svelte';
@@ -13,12 +7,16 @@
   import HostTree from './hosttree.svelte';
   import sharedState from '$lib/stores/sharedstate';
   import Icon from '$components/icon.svelte';
+  import { writable } from 'svelte/store';
 
   let hostTree;
   let showHostDetail = false;
-  let hostDetailKey = '';
+  const hostDetailKey = '';
   let exportInfo;
   let path = [];
+
+  // @todo
+  const connections = writable({});
 
   $: activeHostKey = path[0];
   $: activeDbKey = path[1];
@@ -27,8 +25,6 @@
   $: sharedState.currentHost.set(activeHostKey);
   $: sharedState.currentDb.set(activeDbKey);
   $: sharedState.currentColl.set(activeCollKey);
-
-  EventsOn('CreateHost', createHost);
 </script>
 
 <div class="tree">

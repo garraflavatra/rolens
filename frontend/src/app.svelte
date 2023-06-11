@@ -9,7 +9,7 @@
   import About from '$organisms/about.svelte';
   import Connection from '$organisms/connection/index.svelte';
   import Settings from '$organisms/settings/index.svelte';
-  import { EventsEmit, EventsOn } from '$wails/runtime';
+  import { EventsOn } from '$wails/runtime';
   import { tick } from 'svelte';
 
   const activeHostKey = '';

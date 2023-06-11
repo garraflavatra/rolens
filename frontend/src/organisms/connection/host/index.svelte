@@ -14,7 +14,7 @@
     host.hostKey = hostKey;
   }
 
-  $: if (hostKey || dbKey) {
+  $: if (hostKey) {
     tab = 'status';
   }
 
@@ -26,8 +26,9 @@
     {#key host}
       <TabBar tabs={[
         { key: 'status', icon: 'chart', title: 'Host status' },
-        { key: 'systemInfo', icon: 'server', title: 'System info' }
-      ]} bind:selectedKey={tab} />
+        { key: 'systemInfo', icon: 'server', title: 'System info' },
+      ]}
+        bind:selectedKey={tab} />
 
       <div class="container">
         {#if tab === 'status'} <Status {host} />

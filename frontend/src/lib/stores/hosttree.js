@@ -14,6 +14,8 @@ import { EnterText } from '$wails/go/ui/UI';
 import { get, writable } from 'svelte/store';
 import applicationInited from './inited';
 import windowTitle from './windowtitle';
+import dialogs from '$lib/dialogs';
+import HostDetailDialog from '$organisms/connection/host/dialogs/hostdetail.svelte';
 
 const { set, subscribe } = writable({});
 const getValue = () => get({ subscribe });
@@ -160,7 +162,14 @@ async function refresh() {
   set(hostTree);
 }
 
-async function newHost() {}
+function newHost() {
+  const dialog = dialogs.new(HostDetailDialog, { hostKey: '' });
+  return new Promise(resolve => {
+    dialog.$on('close', () => {
+      refresh().then(resolve);
+    });
+  });
+}
 
 applicationInited.defer(refresh);
 

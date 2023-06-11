@@ -6,13 +6,15 @@
   import { Beep } from '$wails/go/ui/UI';
   import { fade, fly } from 'svelte/transition';
   import Icon from './icon.svelte';
+  import { createEventDispatcher } from 'svelte';
 
-  export let show = false;
+  export let show = true;
   export let title = undefined;
   export let contentPadding = true;
   export let width = '80vw';
   export let overflow = true;
 
+  const dispatch = createEventDispatcher();
   const level = numberOfModalsOpen + 1;
   let isNew = true;
 
@@ -29,8 +31,12 @@
   function keydown(event) {
     if ((event.key === 'Escape') && (level === numberOfModalsOpen)) {
       event.preventDefault();
-      show = false;
+      close();
     }
+  }
+
+  function close() {
+    dispatch('close');
   }
 </script>
 
@@ -42,7 +48,7 @@
       {#if title}
         <header>
           <div class="title">{title}</div>
-          <button class="btn close" on:click={() => show = false} title="close" type="button">
+          <button class="btn close" on:click={close} title="close" type="button">
             <Icon name="x" />
           </button>
         </header>
@@ -69,6 +75,7 @@
     background-color: rgba(0, 0, 0, 0.5);
     margin: 0;
     padding-top: 50px;
+    --wails-draggable: drag;
   }
   :global(#root.platform-darwin) .outer {
     margin-top: var(--darwin-titlebar-height);
@@ -86,6 +93,7 @@
     flex-flow: column;
     cursor: auto;
     overflow: hidden;
+    --wails-draggable: nodrag;
   }
   .inner > :global(*:first-child) {
     margin-top: 0;

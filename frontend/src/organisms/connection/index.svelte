@@ -2,21 +2,12 @@
   import HostView from './host/index.svelte';
   import DatabaseView from './database/index.svelte';
   import CollectionView from './collection/index.svelte';
-  import DumpInfo from './database/dialogs/dump.svelte';
-  import HostDetail from './host/dialogs/hostdetail.svelte';
   import HostTree from './hosttree.svelte';
   import sharedState from '$lib/stores/sharedstate';
   import Icon from '$components/icon.svelte';
-  import { writable } from 'svelte/store';
+  import hostTree from '$lib/stores/hosttree';
 
-  let hostTree;
-  let showHostDetail = false;
-  const hostDetailKey = '';
-  let exportInfo;
   let path = [];
-
-  // @todo
-  const connections = writable({});
 
   $: activeHostKey = path[0];
   $: activeDbKey = path[1];
@@ -39,31 +30,23 @@
 
 {#if activeCollKey}
   <CollectionView
-    collection={$connections[activeHostKey]?.databases[activeDbKey]?.collections?.[activeCollKey]}
+    collection={$hostTree[activeHostKey]?.databases[activeDbKey]?.collections?.[activeCollKey]}
     hostKey={activeHostKey}
     dbKey={activeDbKey}
     collKey={activeCollKey}
   />
 {:else if activeDbKey}
   <DatabaseView
-    database={$connections[activeHostKey]?.databases[activeDbKey]}
+    database={$hostTree[activeHostKey]?.databases[activeDbKey]}
     hostKey={activeHostKey}
     dbKey={activeDbKey}
   />
 {:else if activeHostKey}
   <HostView
-    host={$connections[activeHostKey]}
+    host={$hostTree[activeHostKey]}
     hostKey={activeHostKey}
   />
 {/if}
-
-<HostDetail
-  bind:show={showHostDetail}
-  on:reload={hostTree.refresh}
-  hostKey={hostDetailKey}
-/>
-
-<DumpInfo bind:info={exportInfo} />
 
 <style>
   .tree {

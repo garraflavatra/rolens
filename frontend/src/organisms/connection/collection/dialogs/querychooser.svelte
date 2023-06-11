@@ -10,7 +10,6 @@
 
   export let queryToSave = undefined;
   export let collection = {};
-  export let show = false;
 
   const dispatch = createEventDispatcher();
   let gridSelectedPath = [];
@@ -38,7 +37,7 @@
 
   function select() {
     dispatch('select', selectedKey);
-    show = false;
+    dispatch('close');
   }
 
   function gridSelect(event) {
@@ -71,7 +70,7 @@
   }
 </script>
 
-<Modal bind:show title={queryToSave ? 'Save query' : 'Load query'} width="500px">
+<Modal title={queryToSave ? 'Save query' : 'Load query'} width="500px">
   <form on:submit|preventDefault={submit}>
     {#if queryToSave}
       <label class="field queryname">

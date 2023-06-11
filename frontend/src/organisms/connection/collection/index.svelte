@@ -76,15 +76,6 @@
   {/if}
 </div>
 
-{#if collection}
-  <ViewConfig
-    bind:show={viewConfigModalOpen}
-    bind:activeViewKey={collection.viewKey}
-    {firstItem}
-    {collection}
-  />
-{/if}
-
 <style>
   .view {
     height: 100%;

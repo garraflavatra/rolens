@@ -283,14 +283,6 @@
   </div>
 </div>
 
-<QueryChooser
-  bind:queryToSave
-  bind:show={showQueryChooser}
-  on:select={queryChosen}
-  {collection}
-/>
-
-<ExportInfo on:openViewConfig bind:collection bind:info={exportInfo} />
 
 {#if objectViewerData}
   <!-- @todo Implement save -->

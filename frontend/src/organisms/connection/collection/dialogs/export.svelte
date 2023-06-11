@@ -25,7 +25,7 @@
   }
 </script>
 
-<Modal bind:show={info} title="Export results" width="450px">
+<Modal title="Export results" width="450px">
   <form on:submit|preventDefault={performExport}>
     <label class="field">
       <span class="label">Export</span>

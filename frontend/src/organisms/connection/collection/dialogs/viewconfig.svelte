@@ -7,7 +7,6 @@
   import views from '$lib/stores/views';
 
   export let collection;
-  export let show = false;
   export let activeViewKey = 'list';
   export let firstItem = {};
 
@@ -96,7 +95,7 @@
   }
 </script>
 
-<Modal title="View configuration" bind:show contentPadding={false}>
+<Modal title="View configuration" contentPadding={false}>
   <TabBar
     {tabs}
     canAddTab={true}

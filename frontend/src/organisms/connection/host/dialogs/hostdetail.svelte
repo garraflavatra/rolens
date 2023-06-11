@@ -3,9 +3,8 @@
   import input from '$lib/actions/input';
   import hostTree from '$lib/stores/hosttree';
   import { AddHost, UpdateHost } from '$wails/go/app/App';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
 
-  export let show = false;
   export let hostKey = '';
 
   const dispatch = createEventDispatcher();
@@ -13,14 +12,6 @@
   let error = '';
   $: valid = validate(form);
   $: host = $hostTree[hostKey];
-
-  $: if (show || !show) {
-    init();
-  }
-
-  function init() {
-    form = { ...(host || {}) };
-  }
 
   function validate(form) {
     return form.name && form.uri && true;
@@ -41,16 +32,20 @@
           hostKey = newHostKey;
         }
       }
-      show = false;
-      dispatch('reload');
+      dispatch('updated', form);
+      dispatch('close');
     }
     catch (e) {
       error = e;
     }
   }
+
+  onMount(() => {
+    form = { ...(host || {}) };
+  });
 </script>
 
-<Modal bind:show title={host ? `Edit ${host.name}` : 'Create a new host'}>
+<Modal title={host ? `Edit ${host.name}` : 'Create a new host'} on:close>
   <form on:submit|preventDefault={submit}>
     <label class="field">
       <span class="label">Label</span>

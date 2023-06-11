@@ -6,12 +6,8 @@
   import hostTree from '$lib/stores/hosttree';
   import applicationSettings from '$lib/stores/settings';
   import { OpenConnection, OpenDatabase, PerformDump } from '$wails/go/app/App';
-  import { writable } from 'svelte/store';
 
   export let info;
-
-  // @todo
-  const connections = writable({});
 
   $: if (info) {
     info.outdir = info.outdir || $applicationSettings.defaultExportDirectory;
@@ -27,10 +23,10 @@
       const progress = startProgress(`Opening connection to host "${hostKey}"`);
       const databases = await OpenConnection(hostKey);
 
-      if (databases && !$connections[hostKey]) {
-        $connections[hostKey] = { databases: {} };
+      if (databases && !$hostTree[hostKey]) {
+        $hostTree[hostKey] = { databases: {} };
         databases.sort().forEach(dbKey => {
-          $connections[hostKey].databases[dbKey] = $connections[hostKey].databases[dbKey] || { collections: {} };
+          $hostTree[hostKey].databases[dbKey] = $hostTree[hostKey].databases[dbKey] || { collections: {} };
         });
       }
 
@@ -47,7 +43,7 @@
       const collections = await OpenDatabase(info.hostKey, dbKey);
 
       for (const collKey of collections?.sort() || []) {
-        $connections[info.hostKey].databases[dbKey].collections[collKey] = {};
+        $hostTree[info.hostKey].databases[dbKey].collections[collKey] = {};
       }
 
       progress.end();
@@ -66,7 +62,7 @@
   }
 </script>
 
-<Modal bind:show={info} title="Perform dump">
+<Modal title="Perform dump" on:close>
   <form on:submit|preventDefault={performDump}>
     <label class="field">
       <span class="label">Output destination:</span>
@@ -101,7 +97,7 @@
           hideChildrenToggles
           items={[
             { id: undefined, name: '(all databases)' },
-            ...($connections[info.hostKey]?.databases ? Object.keys($connections[info.hostKey].databases).map(id => {
+            ...($hostTree[info.hostKey]?.databases ? Object.keys($hostTree[info.hostKey].databases).map(id => {
               return { id, name: id };
             }) : []
             ),
@@ -118,7 +114,7 @@
           hideChildrenToggles
           items={[
             { id: undefined, name: '(all collections)' },
-            ...($connections[info.hostKey]?.databases[info.dbKey]?.collections ? Object.keys($connections[info.hostKey].databases[info.dbKey].collections).map(id => {
+            ...($hostTree[info.hostKey]?.databases[info.dbKey]?.collections ? Object.keys($hostTree[info.hostKey].databases[info.dbKey].collections).map(id => {
               return { id, name: id };
             }) : []
             ),

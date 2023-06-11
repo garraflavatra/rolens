@@ -1,23 +1,21 @@
 <script>
   import BlankState from '$components/blankstate.svelte';
   import ContextMenu from '$components/contextmenu.svelte';
+  import dialogs from '$lib/dialogs';
   import contextMenu from '$lib/stores/contextmenu';
   import environment from '$lib/stores/environment';
   import hostTree from '$lib/stores/hosttree';
   import applicationInited from '$lib/stores/inited';
   import windowTitle from '$lib/stores/windowtitle';
-  import About from '$organisms/about.svelte';
+  import AboutDialog from './dialogs/about.svelte';
   import Connection from '$organisms/connection/index.svelte';
-  import Settings from '$organisms/settings/index.svelte';
+  import SettingsDialog from './dialogs/settings/index.svelte';
   import { EventsOn } from '$wails/runtime';
   import { tick } from 'svelte';
 
   const activeHostKey = '';
   let activeDbKey = '';
   let activeCollKey = '';
-  let settingsModalOpen = false;
-  let aboutModalOpen = false;
-  let connectionManager;
   let showWelcomeScreen = undefined;
 
   hostTree.subscribe(h => {
@@ -32,8 +30,16 @@
     hostTree.newHost();
   }
 
-  EventsOn('OpenPreferences', () => settingsModalOpen = true);
-  EventsOn('OpenAboutModal', () => aboutModalOpen = true);
+  function showAboutDialog() {
+    dialogs.new(AboutDialog);
+  }
+
+  function showSettings() {
+    dialogs.new(SettingsDialog);
+  }
+
+  EventsOn('OpenPreferences', showSettings);
+  EventsOn('OpenAboutModal', showAboutDialog);
 </script>
 
 <svelte:window on:contextmenu|preventDefault />
@@ -48,16 +54,13 @@
           <button class="btn" on:click={createFirstHost}>Add your first host</button>
         </BlankState>
       {:else}
-        <Connection {activeHostKey} bind:activeCollKey bind:activeDbKey bind:this={connectionManager} />
+        <Connection {activeHostKey} bind:activeCollKey bind:activeDbKey />
       {/if}
     </main>
 
     {#key $contextMenu}
       <ContextMenu {...$contextMenu} on:close={contextMenu.hide} />
     {/key}
-
-    <Settings bind:show={settingsModalOpen} />
-    <About bind:show={aboutModalOpen} />
   {/if}
 </div>
 

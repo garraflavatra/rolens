@@ -1,7 +1,4 @@
-import { get, writable } from "svelte/store";
-import applicationInited from "./inited";
-import { startProgress } from "$lib/progress";
-import windowTitle from "./windowtitle";
+import { startProgress } from '$lib/progress';
 import {
   DropCollection,
   DropDatabase,
@@ -12,8 +9,11 @@ import {
   RemoveHost,
   RenameCollection,
   TruncateCollection
-} from "$wails/go/app/App";
-import { EnterText } from "$wails/go/ui/UI";
+} from '$wails/go/app/App';
+import { EnterText } from '$wails/go/ui/UI';
+import { get, writable } from 'svelte/store';
+import applicationInited from './inited';
+import windowTitle from './windowtitle';
 
 const { set, subscribe } = writable({});
 const getValue = () => get({ subscribe });
@@ -62,7 +62,7 @@ async function refresh() {
               collection.stats = stats;
               await refresh();
               progress.end();
-            }
+            };
 
             collection.rename = async function() {
               const newCollKey = await EnterText('Rename collection', `Enter a new name for collection ${collKey}.`, collKey);
@@ -112,7 +112,7 @@ async function refresh() {
 
               progress.end();
             };
-          };
+          }
 
           await refresh();
           progress.end();

@@ -11,7 +11,7 @@
   const allOperators = Object.values(atomicUpdateOperators).map(Object.keys).flat();
   const form = { query: '{}', parameters: [ { type: '$set' } ] };
   let updatedCount;
-  $: code = buildCode(form);
+  // $: code = buildCode(form);
   $: invalid = !form.query || form.parameters?.some(param => {
     if (!param.value) {
       return true;
@@ -26,26 +26,28 @@
     }
   });
 
-  function buildCode(form) {
-    let operation = '{ ' + form.parameters.filter(p => p.type).map(p => `${p.type}: ${p.value || '{}'}`).join(', ') + ' }';
-    if (operation === '{  }') {
-      operation = '{}';
-    }
+  // function buildCode(form) {
+  //   let operation = '{ ' + form.parameters.filter(p => p.type).map(p => `${p.type}: ${p.value || '{}'}`).join(', ') + ' }';
+  //   if (operation === '{  }') {
+  //     operation = '{}';
+  //   }
 
-    let options = (form.upsert || form.many) ? ', { ' : '';
-    form.upsert && (options += 'upsert: true');
-    form.upsert && form.many && (options += ', ');
-    form.many && (options += 'multi: true');
-    (form.upsert || form.many) && (options += ' }');
+  //   let options = (form.upsert || form.many) ? ', { ' : '';
+  //   form.upsert && (options += 'upsert: true');
+  //   form.upsert && form.many && (options += ', ');
+  //   form.many && (options += 'multi: true');
+  //   (form.upsert || form.many) && (options += ' }');
 
-    const code = `db.${collection.key}.update(${form.query || '{}'}, ${operation}${options});`;
-    return code;
-  }
+  //   const code = `db.${collection.key}.update(${form.query || '{}'}, ${operation}${options});`;
+  //   return code;
+  // }
 
   async function submitQuery() {
     const f = deepClone(form);
     f.query = convertLooseJson(f.query);
-    f.parameters = f.parameters.map(param => ({ ...param, value: convertLooseJson(param.value) }));
+    f.parameters = f.parameters.map(param => {
+      return { ...param, value: convertLooseJson(param.value) };
+    });
     updatedCount = await UpdateItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(f));
   }
 
@@ -120,9 +122,9 @@
       <fieldset class="parameter">
         <label class="field">
           <select bind:value={param.type} class="type">
-            {#each Object.entries(atomicUpdateOperators) as [groupName, options]}
+            {#each Object.entries(atomicUpdateOperators) as [ groupName, options ]}
               <optgroup label={groupName}>
-                {#each Object.entries(options) as [key, label]}
+                {#each Object.entries(options) as [ key, label ]}
                   <option value={key} disabled={form.parameters.some(p => p.type === key) && (key !== param.type)}>
                     {label}
                   </option>

@@ -12,7 +12,7 @@
   export let canSelect = true;
   export let canRemoveItems = false;
   export let inputsValid = false;
-  // export let actions = [];
+// export let actions = [];
 </script>
 
 <div class="grid">

@@ -1,5 +1,5 @@
 <script>
-  import { jsonLooseParse, looseJsonIsValid } from '$lib/strings';
+  import { looseJsonIsValid } from '$lib/strings';
   import { createEventDispatcher, onDestroy } from 'svelte';
   import Icon from './icon.svelte';
   import Modal from './modal.svelte';

@@ -13,7 +13,9 @@
 
   $: tabs = Object.entries(views.forCollection(collection.hostKey, collection.dbKey, collection.key))
     .sort((a, b) => sortTabKeys(a[0], b[0]))
-    .map(([ key, v ]) => ({ key, title: v.name, closable: key !== 'list' }));
+    .map(([ key, v ]) => {
+      return { key, title: v.name, closable: key !== 'list' };
+    });
 
   function sortTabKeys(a, b) {
     if (a === 'list') {
@@ -70,11 +72,13 @@
       return;
     }
 
-    $views[activeViewKey].columns = Object.keys(firstItem).sort().map(key => ({
-      key,
-      showInTable: true,
-      inputType: 'none',
-    }));
+    $views[activeViewKey].columns = Object.keys(firstItem).sort().map(key => {
+      return {
+        key,
+        showInTable: true,
+        inputType: 'none',
+      };
+    });
   }
 
   function moveColumn(oldIndex, delta) {

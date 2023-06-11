@@ -1,7 +1,6 @@
 <script>
   import Icon from '$components/icon.svelte';
   import ObjectGrid from '$components/objectgrid.svelte';
-  import ObjectViewer from '$components/objectviewer.svelte';
   import { DropIndex, GetIndexes } from '$wails/go/app/App';
   import IndexDetail from './components/indexdetail.svelte';
 

@@ -1,7 +1,6 @@
 <script>
   import BlankState from '$components/blankstate.svelte';
   import ContextMenu from '$components/contextmenu.svelte';
-  import connections from '$lib/stores/connections';
   import contextMenu from '$lib/stores/contextmenu';
   import environment from '$lib/stores/environment';
   import hosts from '$lib/stores/hosts';
@@ -10,7 +9,7 @@
   import About from '$organisms/about.svelte';
   import Connection from '$organisms/connection/index.svelte';
   import Settings from '$organisms/settings/index.svelte';
-  import { EventsEmit, EventsOn } from '$wails/runtime';
+  import { EventsOn } from '$wails/runtime';
   import { tick } from 'svelte';
 
   const activeHostKey = '';
@@ -20,9 +19,6 @@
   let aboutModalOpen = false;
   let connectionManager;
   let showWelcomeScreen = undefined;
-
-  $: host = hosts[activeHostKey];
-  $: connection = $connections[activeHostKey];
 
   hosts.subscribe(h => {
     if (h && (showWelcomeScreen === undefined)) {

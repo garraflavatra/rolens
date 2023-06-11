@@ -38,7 +38,7 @@
 
 {#if item && view}
   {#each view?.columns?.filter(c => inputTypes.includes(c.inputType)) || [] as column, index}
-    <!-- svelte-ignore a11y-label-has-associated-control because FormInput contains one -->
+    <!-- svelte-ignore a11y-label-has-associated-control -->
     <label class="column">
       <div class="label">
         <Icon name={iconMap[column.inputType]} />

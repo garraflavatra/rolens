@@ -20,7 +20,7 @@
   <label for="collationLocale">Locale</label>
   <div class="field">
     <select id="collationLocale" bind:value={collation.locale}>
-      {#each Object.entries(locales) as [value, name]}
+      {#each Object.entries(locales) as [ value, name ]}
         <option {value}>({value}) {name}</option>
       {/each}
     </select>

@@ -14,7 +14,7 @@
         Rolens
         <span class="version">{$environment.version}</span>
       </div>
-      <div class="description">Intuitive MongoDB <br/> administration tool</div>
+      <div class="description">Intuitive MongoDB <br /> administration tool</div>
     </div>
   </div>
 

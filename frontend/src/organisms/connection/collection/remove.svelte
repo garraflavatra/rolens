@@ -11,7 +11,7 @@
   let many = true;
   let result = undefined;
   let editor;
-  $: code = `db.${collection.key}.remove(${json});`;
+  // $: code = `db.${collection.key}.remove(${json});`;
 
   async function removeItems() {
     result = await RemoveItems(

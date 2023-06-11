@@ -65,7 +65,6 @@
 
 <Modal bind:show={info} title="Perform dump">
   <form on:submit|preventDefault={performDump}>
-    <!-- svelte-ignore a11y-label-has-associated-control - input is in DirectoryChooser -->
     <label class="field">
       <span class="label">Output destination:</span>
       <DirectoryChooser bind:value={info.outdir} />
@@ -83,7 +82,9 @@
           hideChildrenToggles
           items={[
             { id: undefined, name: '(localhost)' },
-            ...Object.keys($hosts).map(id => ({ id, name: $hosts[id]?.name })),
+            ...Object.keys($hosts).map(id => {
+              return { id, name: $hosts[id]?.name };
+            }),
           ]}
           on:select={e => selectHost(e.detail?.itemKey)}
         />
@@ -97,9 +98,9 @@
           hideChildrenToggles
           items={[
             { id: undefined, name: '(all databases)' },
-            ...($connections[info.hostKey]?.databases
-              ? Object.keys($connections[info.hostKey].databases).map(id => ({ id, name: id }))
-              : []
+            ...($connections[info.hostKey]?.databases ? Object.keys($connections[info.hostKey].databases).map(id => {
+              return { id, name: id };
+            }) : []
             ),
           ]}
           on:select={e => selectDatabase(e.detail?.itemKey)}
@@ -114,9 +115,9 @@
           hideChildrenToggles
           items={[
             { id: undefined, name: '(all collections)' },
-            ...($connections[info.hostKey]?.databases[info.dbKey]?.collections
-              ? Object.keys($connections[info.hostKey].databases[info.dbKey].collections).map(id => ({ id, name: id }))
-              : []
+            ...($connections[info.hostKey]?.databases[info.dbKey]?.collections ? Object.keys($connections[info.hostKey].databases[info.dbKey].collections).map(id => {
+              return { id, name: id };
+            }) : []
             ),
           ]}
           on:select={e => selectCollection(e.detail?.itemKey)}

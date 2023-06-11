@@ -27,7 +27,7 @@
     </span>
 
     <label for="defaultExportDirectory">Default export directory</label>
-    <!-- svelte-ignore a11y-label-has-associated-control - input is in DirectoryChooser -->
+    <!-- svelte-ignore a11y-label-has-associated-control -->
     <label class="field">
       <DirectoryChooser id="defaultExportDirectory" bind:value={$settings.defaultExportDirectory} />
     </label>

@@ -1,10 +1,9 @@
 <script>
   import { startProgress } from '$lib/progress';
   import connections from '$lib/stores/connections';
-  import { Hosts, RenameCollection } from '$wails/go/app/App';
+  import { RenameCollection } from '$wails/go/app/App';
   import { EnterText } from '$wails/go/ui/UI';
   import { EventsOn } from '$wails/runtime/runtime';
-  import { onMount } from 'svelte';
   import HostView from './host/index.svelte';
   import DatabaseView from './database/index.svelte';
   import CollectionView from './collection/index.svelte';
@@ -135,7 +134,7 @@
 <HostDetail
   bind:show={showHostDetail}
   on:reload={hosts.update}
-  hostKey={activeHostKey}
+  hostKey={hostDetailKey}
 />
 
 <DumpInfo bind:info={exportInfo} />

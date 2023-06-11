@@ -2,10 +2,9 @@
   import Grid from '$components/grid.svelte';
   import { startProgress } from '$lib/progress';
   import connections from '$lib/stores/connections';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, tick } from 'svelte';
   import { DropCollection, DropDatabase, OpenCollection, OpenConnection, OpenDatabase, RemoveHost, TruncateCollection } from '../../../wailsjs/go/app/App';
   import hosts from '$lib/stores/hosts';
-  import { tick } from 'svelte';
   import windowTitle from '$lib/stores/windowtitle';
 
   export let activeHostKey = '';
@@ -17,10 +16,7 @@
   // $: activeGridPath[0] = activeHostKey || undefined;
   // $: activeGridPath[1] = activeDbKey || undefined;
   // $: activeGridPath[2] = activeCollKey || undefined;
-  $: host = $hosts[activeHostKey];
   $: connection = $connections[activeHostKey];
-  $: database = connection?.databases[activeDbKey];
-  $: collection = database?.collections?.[activeCollKey];
 
   export async function reload() {
     activeHostKey && await openConnection(activeHostKey);
@@ -79,7 +75,7 @@
 
     for (const collKey of collections || []) {
       $connections[activeHostKey].databases[dbKey].collections[collKey] =
-        $connections[activeHostKey].databases[dbKey].collections[collKey] ||{};
+        $connections[activeHostKey].databases[dbKey].collections[collKey] || {};
     }
 
     progress.end();
@@ -129,44 +125,50 @@
   striped={false}
   columns={[ { key: 'name' }, { key: 'count', right: true } ]}
   bind:activePath={activeGridPath}
-  items={Object.keys($hosts).map(hostKey => ({
-    id: hostKey,
-    name: $hosts[hostKey].name,
-    icon: 'server',
-    children: Object.keys(connection?.databases || {}).sort().map(dbKey => ({
-      id: dbKey,
-      name: dbKey,
-      icon: 'db',
-      count: Object.keys(connection.databases[dbKey].collections || {}).length || '',
-      children: Object.keys(connection.databases[dbKey].collections).sort().map(collKey => ({
-        id: collKey,
-        name: collKey,
-        icon: 'list',
-        menu: [
-          { label: 'Export collection (JSON, CSV)…', fn: () => dispatch('exportCollection', collKey) },
-          { label: 'Dump collection (BSON via mongodump)…', fn: () => dispatch('dumpCollection', collKey) },
-          { separator: true },
-          { label: 'Rename collection…', fn: () => dispatch('renameCollection', collKey) },
-          { label: 'Truncate collection…', fn: () => truncateCollection(dbKey, collKey) },
-          { label: 'Drop collection…', fn: () => dropCollection(dbKey, collKey) },
-          { separator: true },
-          { label: 'New collection…', fn: () => dispatch('newCollection') },
-        ],
-      })) || [],
+  items={Object.keys($hosts).map(hostKey => {
+    return {
+      id: hostKey,
+      name: $hosts[hostKey].name,
+      icon: 'server',
+      children: Object.keys(connection?.databases || {}).sort().map(dbKey => {
+        return {
+          id: dbKey,
+          name: dbKey,
+          icon: 'db',
+          count: Object.keys(connection.databases[dbKey].collections || {}).length || '',
+          children: Object.keys(connection.databases[dbKey].collections).sort().map(collKey => {
+            return {
+              id: collKey,
+              name: collKey,
+              icon: 'list',
+              menu: [
+                { label: 'Export collection (JSON, CSV)…', fn: () => dispatch('exportCollection', collKey) },
+                { label: 'Dump collection (BSON via mongodump)…', fn: () => dispatch('dumpCollection', collKey) },
+                { separator: true },
+                { label: 'Rename collection…', fn: () => dispatch('renameCollection', collKey) },
+                { label: 'Truncate collection…', fn: () => truncateCollection(dbKey, collKey) },
+                { label: 'Drop collection…', fn: () => dropCollection(dbKey, collKey) },
+                { separator: true },
+                { label: 'New collection…', fn: () => dispatch('newCollection') },
+              ],
+            };
+          }) || [],
+          menu: [
+            { label: 'Drop database…', fn: () => dropDatabase(dbKey) },
+            { separator: true },
+            { label: 'New database…', fn: () => dispatch('newDatabase') },
+            { label: 'New collection…', fn: () => dispatch('newCollection') },
+          ],
+        };
+      }),
       menu: [
-        { label: 'Drop database…', fn: () => dropDatabase(dbKey) },
-        { separator: true },
         { label: 'New database…', fn: () => dispatch('newDatabase') },
-        { label: 'New collection…', fn: () => dispatch('newCollection') },
+        { separator: true },
+        { label: `Edit host ${$hosts[hostKey].name}…`, fn: () => dispatch('editHost', hostKey) },
+        { label: 'Remove host…', fn: () => removeHost(hostKey) },
       ],
-    })),
-    menu: [
-      { label: 'New database…', fn: () => dispatch('newDatabase') },
-      { separator: true },
-      { label: `Edit host ${$hosts[hostKey].name}…`, fn: () => dispatch('editHost', hostKey) },
-      { label: `Remove host…`, fn: () => removeHost(hostKey) },
-    ],
-  }))}
+    };
+  })}
   on:select={e => {
     const key = e.detail.itemKey;
     switch (e.detail?.level) {

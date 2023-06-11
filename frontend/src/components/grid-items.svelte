@@ -50,7 +50,9 @@
       return obj;
     }
     else if ((typeof obj === 'object') && (obj !== null)) {
-      return Object.entries(obj).map(([ k, item ]) => ({ ...item, [key]: k }));
+      return Object.entries(obj).map(([ k, item ]) => {
+        return { ...item, [key]: k };
+      });
     }
     else {
       return obj;

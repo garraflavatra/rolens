@@ -10,7 +10,7 @@ const defer = listener => {
     listener();
   }
   else {
-    listeners.push(listener)
+    listeners.push(listener);
   }
 };
 

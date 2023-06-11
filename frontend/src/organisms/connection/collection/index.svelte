@@ -57,7 +57,8 @@
         { key: 'remove', icon: 'trash', title: 'Remove' },
         { key: 'indexes', icon: 'list', title: 'Indexes' },
         { key: 'aggregate', icon: 're', title: 'Aggregate' },
-      ]} bind:selectedKey={tab} />
+      ]}
+        bind:selectedKey={tab} />
 
       <div class="container">
         {#if tab === 'stats'} <Stats {collection} />

@@ -4,9 +4,9 @@
 
 <script>
   import { Beep } from '$wails/go/ui/UI';
+  import { createEventDispatcher } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import Icon from './icon.svelte';
-  import { createEventDispatcher } from 'svelte';
 
   export let show = true;
   export let title = undefined;

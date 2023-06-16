@@ -7,11 +7,11 @@
   import hostTree from '$lib/stores/hosttree';
   import applicationInited from '$lib/stores/inited';
   import windowTitle from '$lib/stores/windowtitle';
-  import AboutDialog from './dialogs/about.svelte';
   import Connection from '$organisms/connection/index.svelte';
-  import SettingsDialog from './dialogs/settings/index.svelte';
   import { EventsOn } from '$wails/runtime';
   import { tick } from 'svelte';
+  import AboutDialog from './dialogs/about.svelte';
+  import SettingsDialog from './dialogs/settings/index.svelte';
 
   let showWelcomeScreen = undefined;
 

@@ -2,9 +2,9 @@
   import Details from '$components/details.svelte';
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
-  import Collation from '$lib/mongo/collation.svelte';
   import ObjectEditor from '$components/objecteditor.svelte';
   import { aggregationStageDocumentationURL, aggregationStages } from '$lib/mongo';
+  import Collation from '$lib/mongo/collation.svelte';
   import { jsonLooseParse, looseJsonIsValid } from '$lib/strings';
   import { Aggregate } from '$wails/go/app/App';
   import { BrowserOpenURL } from '$wails/runtime/runtime';

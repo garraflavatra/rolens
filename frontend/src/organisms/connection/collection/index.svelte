@@ -4,7 +4,6 @@
   import { EventsOn } from '$wails/runtime/runtime';
   import { tick } from 'svelte';
   import Aggregate from './aggregate.svelte';
-  import ViewConfig from './dialogs/viewconfig.svelte';
   import Find from './find.svelte';
   import Indexes from './indexes.svelte';
   import Insert from './insert.svelte';

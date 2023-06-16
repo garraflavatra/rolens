@@ -2,6 +2,7 @@
   import Details from '$components/details.svelte';
   import Grid from '$components/grid.svelte';
   import Icon from '$components/icon.svelte';
+  import ObjectEditor from '$components/objecteditor.svelte';
   import ObjectViewer from '$components/objectviewer.svelte';
   import { randomString } from '$lib/math';
   import { inputTypes } from '$lib/mongo';
@@ -11,7 +12,6 @@
   import { EJSON } from 'bson';
   import { createEventDispatcher, onMount } from 'svelte';
   import Form from './components/form.svelte';
-  import ObjectEditor from '$components/objecteditor.svelte';
 
   export let collection;
 

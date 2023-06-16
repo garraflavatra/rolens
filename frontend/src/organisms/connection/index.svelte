@@ -1,11 +1,11 @@
 <script>
-  import HostView from './host/index.svelte';
-  import DatabaseView from './database/index.svelte';
-  import CollectionView from './collection/index.svelte';
-  import HostTree from './hosttree.svelte';
-  import sharedState from '$lib/stores/sharedstate';
   import Icon from '$components/icon.svelte';
   import hostTree from '$lib/stores/hosttree';
+  import sharedState from '$lib/stores/sharedstate';
+  import CollectionView from './collection/index.svelte';
+  import DatabaseView from './database/index.svelte';
+  import HostView from './host/index.svelte';
+  import HostTree from './hosttree.svelte';
 
   let path = [];
 

@@ -1,10 +1,10 @@
 <script>
   import { looseJsonIsValid } from '$lib/strings';
+  import { EJSON } from 'bson';
   import { createEventDispatcher, onDestroy } from 'svelte';
   import Icon from './icon.svelte';
   import Modal from './modal.svelte';
   import ObjectEditor from './objecteditor.svelte';
-  import { EJSON } from 'bson';
 
   export let data;
   export let saveable = false;

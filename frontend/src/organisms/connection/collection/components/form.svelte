@@ -1,9 +1,9 @@
 <script>
   import FormInput from '$components/forminput.svelte';
+  import Hint from '$components/hint.svelte';
   import Icon from '$components/icon.svelte';
   import { inputTypes } from '$lib/mongo';
   import { resolveKeypath, setValue } from '$lib/objects';
-  import Hint from '$components/hint.svelte';
 
   export let item = {};
   export let view = {};

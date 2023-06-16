@@ -31,11 +31,15 @@
   let objectViewerData;
   let querying = false;
   let objectViewerSuccessMessage = '';
+  let viewsForCollection = {};
 
   // $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
-  $: viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
   $: lastPage = (submittedForm.limit && result?.results?.length) ? Math.max(0, Math.ceil((result.total - submittedForm.limit) / submittedForm.limit)) : 0;
   $: activePage = (submittedForm.limit && submittedForm.skip && result?.results?.length) ? submittedForm.skip / submittedForm.limit : 0;
+
+  $: if ($views) {
+    viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
+  }
 
   async function submitQuery() {
     if (querying) {
@@ -121,6 +125,10 @@
   function openJson(index) {
     const item = result?.results?.[index];
     objectViewerData = item;
+  }
+
+  function openViewConfig() {
+    views.openConfig(collection, result.results?.[0] || {});
   }
 
   export function performQuery(q) {
@@ -252,7 +260,7 @@
               <option value={key}>{view.name}</option>
             {/each}
           </select>
-          <button class="btn" on:click={() => dispatch('openViewConfig', { firstItem: result.results?.[0] })} title="Configure view">
+          <button class="btn" on:click={openViewConfig} title="Configure view">
             <Icon name="cog" />
           </button>
         </label>

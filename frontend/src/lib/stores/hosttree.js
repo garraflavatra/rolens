@@ -1,8 +1,16 @@
 import dialogs from '$lib/dialogs';
 import { startProgress } from '$lib/progress';
+import { EnterText } from '$wails/go/ui/UI';
+import { get, writable } from 'svelte/store';
+import applicationInited from './inited';
+import queries from './queries';
+import windowTitle from './windowtitle';
+
+import ExportDialog from '$organisms/connection/collection/dialogs/export.svelte';
 import IndexDetailDialog from '$organisms/connection/collection/dialogs/indexdetail.svelte';
 import QueryChooserDialog from '$organisms/connection/collection/dialogs/querychooser.svelte';
 import HostDetailDialog from '$organisms/connection/host/dialogs/hostdetail.svelte';
+
 import {
   CreateIndex,
   DropCollection,
@@ -18,12 +26,6 @@ import {
   RenameCollection,
   TruncateCollection
 } from '$wails/go/app/App';
-import { EnterText } from '$wails/go/ui/UI';
-import { get, writable } from 'svelte/store';
-import applicationInited from './inited';
-import queries from './queries';
-import windowTitle from './windowtitle';
-import ExportDialog from '$organisms/connection/collection/dialogs/export.svelte';
 
 const { set, subscribe } = writable({});
 const getValue = () => get({ subscribe });

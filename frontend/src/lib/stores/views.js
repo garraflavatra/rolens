@@ -1,3 +1,5 @@
+import dialogs from '$lib/dialogs';
+import ViewConfigDialog from '$organisms/connection/collection/dialogs/viewconfig.svelte';
 import { UpdateViewStore, Views } from '$wails/go/app/App';
 import { get, writable } from 'svelte/store';
 
@@ -23,6 +25,11 @@ function forCollection(hostKey, dbKey, collKey)  {
   return Object.fromEntries(entries);
 }
 
+function openConfig(collection, firstItem = {}) {
+  const dialog = dialogs.new(ViewConfigDialog, { collection, firstItem });
+  return dialog;
+}
+
 reload();
 subscribe(newViewStore => {
   if (skipUpdate) {
@@ -32,5 +39,5 @@ subscribe(newViewStore => {
   UpdateViewStore(JSON.stringify(newViewStore));
 });
 
-const views = { reload, set, subscribe, forCollection };
+const views = { reload, set, subscribe, forCollection, openConfig };
 export default views;

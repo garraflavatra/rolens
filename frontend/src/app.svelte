@@ -13,15 +13,16 @@
   import { EventsOn } from '$wails/runtime';
   import { tick } from 'svelte';
 
-  const activeHostKey = '';
-  let activeDbKey = '';
-  let activeCollKey = '';
   let showWelcomeScreen = undefined;
 
-  hostTree.subscribe(h => {
-    if (h && (showWelcomeScreen === undefined)) {
-      showWelcomeScreen = !Object.keys(hostTree.get() || {}).length;
-    }
+  applicationInited.defer(() => {
+    hostTree.subscribe(hosts => {
+      console.log('subsc', hosts);
+      if (hostTree.hasBeenInited() && (showWelcomeScreen === undefined)) {
+        showWelcomeScreen = !Object.keys(hosts || {}).length;
+        console.log('showwelcome', showWelcomeScreen);
+      }
+    });
   });
 
   async function createFirstHost() {
@@ -54,7 +55,7 @@
           <button class="btn" on:click={createFirstHost}>Add your first host</button>
         </BlankState>
       {:else}
-        <Connection {activeHostKey} bind:activeCollKey bind:activeDbKey />
+        <Connection />
       {/if}
     </main>
 

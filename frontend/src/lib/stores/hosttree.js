@@ -23,6 +23,7 @@ import IndexDetailDialog from '$organisms/connection/collection/dialogs/indexdet
 
 const { set, subscribe } = writable({});
 const getValue = () => get({ subscribe });
+let hostTreeInited = false;
 
 async function refresh() {
   const hosts = await Hosts();
@@ -225,6 +226,7 @@ async function refresh() {
     };
   }
 
+  hostTreeInited = true;
   set(hostTree);
 }
 
@@ -239,5 +241,12 @@ function newHost() {
 
 applicationInited.defer(refresh);
 
-const hostTree = { refresh, subscribe, get: getValue, newHost };
+const hostTree = {
+  refresh,
+  subscribe,
+  get: getValue,
+  newHost,
+  hasBeenInited: () => hostTreeInited,
+};
+
 export default hostTree;

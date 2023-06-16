@@ -1,7 +1,10 @@
 import { startProgress } from '$lib/progress';
 import {
+  CreateIndex,
   DropCollection,
   DropDatabase,
+  DropIndex,
+  GetIndexes,
   Hosts,
   OpenCollection,
   OpenConnection,
@@ -16,6 +19,7 @@ import applicationInited from './inited';
 import windowTitle from './windowtitle';
 import dialogs from '$lib/dialogs';
 import HostDetailDialog from '$organisms/connection/host/dialogs/hostdetail.svelte';
+import IndexDetailDialog from '$organisms/connection/collection/dialogs/indexdetail.svelte';
 
 const { set, subscribe } = writable({});
 const getValue = () => get({ subscribe });
@@ -38,12 +42,17 @@ async function refresh() {
       host.systemInfo = systemInfo;
       host.databases = host.databases || {};
 
-      for (const dbKey of dbNames) {
+      if (!dbNames) {
+        return;
+      }
+
+      for (const dbKey of dbNames.sort((a, b) => b.localeCompare(a))) {
         host.databases[dbKey] = host.databases[dbKey] || {};
       }
 
       for (const [ dbKey, database ] of Object.entries(host.databases)) {
         database.key = dbKey;
+        database.hostKey = hostKey;
         database.collections = database.collections || {};
 
         database.open = async function() {
@@ -51,12 +60,19 @@ async function refresh() {
           const { collections: collNames, stats } = await OpenDatabase(hostKey, dbKey);
           database.stats = stats;
 
-          for (const collKey of collNames) {
+          if (!collNames) {
+            return;
+          }
+
+          for (const collKey of collNames.sort((a, b) => b.localeCompare(a))) {
             database.collections[collKey] = database.collections[collKey] || {};
           }
 
           for (const [ collKey, collection ] of Object.entries(database.collections)) {
             collection.key = collKey;
+            collection.dbKey = dbKey;
+            collection.hostKey = hostKey;
+            collection.indexes = collection.indexes || [];
 
             collection.open = async function() {
               const progress = startProgress(`Opening database "${dbKey}"…`);
@@ -113,6 +129,56 @@ async function refresh() {
               }
 
               progress.end();
+            };
+
+            collection.getIndexes = async function() {
+              const progress = startProgress(`Retrieving indexes of "${collKey}"…`);
+              collection.indexes = [];
+              const indexes = await GetIndexes(hostKey, dbKey, collKey);
+
+              for (const indexDetails of indexes) {
+                const index = {
+                  name: indexDetails.name,
+                  background: indexDetails.background || false,
+                  unique: indexDetails.unique || false,
+                  sparse: indexDetails.sparse || false,
+                  model: indexDetails.model,
+                };
+
+                index.drop = async function() {
+                  const progress = startProgress(`Dropping index ${index.name}…`);
+                  const hasBeenDropped = await DropIndex(hostKey, dbKey, collKey, index.name);
+                  progress.end();
+                  return hasBeenDropped;
+                };
+
+                collection.indexes.push(index);
+              }
+
+              progress.end();
+              return collection.indexes;
+            };
+
+            collection.getIndexByName = function(indesName) {
+              return collection.indexes.find(idx => idx.name = indesName);
+            };
+
+            collection.newIndex = function() {
+              const dialog = dialogs.new(IndexDetailDialog, { collection });
+
+              return new Promise(resolve => {
+                dialog.$on('create', async event => {
+                  const progress = startProgress('Creating index…');
+                  const newIndexName = await CreateIndex(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(event.detail.index));
+
+                  if (newIndexName) {
+                    dialog.$close();
+                  }
+
+                  progress.end();
+                  resolve(newIndexName);
+                });
+              });
             };
           }
 

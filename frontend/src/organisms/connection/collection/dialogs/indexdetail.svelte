@@ -2,7 +2,6 @@
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
   import input from '$lib/actions/input';
-  import { CreateIndex } from '$wails/go/app/App';
   import { createEventDispatcher } from 'svelte';
 
   export let collection;
@@ -20,15 +19,11 @@
   }
 
   async function create() {
-    const newIndexName = await CreateIndex(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(index));
-    if (newIndexName) {
-      dispatch('reload');
-      dispatch('close');
-    }
+    dispatch('create', { index });
   }
 </script>
 
-<Modal title="Create new index {collection ? `on collection ${collection.key}` : ''}">
+<Modal title="Create new index on {collection.key}" on:close>
   <form on:submit|preventDefault={create}>
     <label class="field name">
       <span class="label">Name</span>

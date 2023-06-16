@@ -17,10 +17,8 @@
 
   applicationInited.defer(() => {
     hostTree.subscribe(hosts => {
-      console.log('subsc', hosts);
       if (hostTree.hasBeenInited() && (showWelcomeScreen === undefined)) {
         showWelcomeScreen = !Object.keys(hosts || {}).length;
-        console.log('showwelcome', showWelcomeScreen);
       }
     });
   });

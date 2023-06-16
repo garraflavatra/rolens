@@ -6,14 +6,11 @@
   import input from '$lib/actions/input';
   import { deepClone } from '$lib/objects';
   import { startProgress } from '$lib/progress';
-  import queries from '$lib/stores/queries';
   import applicationSettings from '$lib/stores/settings';
   import views from '$lib/stores/views';
   import { FindItems, RemoveItemById, UpdateFoundDocument } from '$wails/go/app/App';
   import { EJSON } from 'bson';
   import { createEventDispatcher, onMount } from 'svelte';
-  import ExportInfo from './dialogs/export.svelte';
-  import QueryChooser from './dialogs/querychooser.svelte';
 
   export let collection;
 
@@ -32,9 +29,6 @@
   let queryField;
   let activePath = [];
   let objectViewerData;
-  let queryToSave;
-  let showQueryChooser = false;
-  let exportInfo;
   let querying = false;
   let objectViewerSuccessMessage = '';
 
@@ -70,22 +64,23 @@
     }
   }
 
-  function loadQuery() {
-    queryToSave = undefined;
-    showQueryChooser = true;
-  }
-
-  function saveQuery() {
-    queryToSave = form;
-    showQueryChooser = true;
-  }
-
-  function queryChosen(event) {
-    if ($queries[event?.detail]) {
-      form =   { ...$queries[event?.detail] };
+  async function loadQuery() {
+    const query = await collection.openQueryChooser();
+    if (query) {
+      form = { ...query };
       submitQuery();
     }
   }
+
+  async function saveQuery() {
+    const query = await collection.openQueryChooser(form);
+    if (query) {
+      form = { ...query };
+      submitQuery();
+    }
+  }
+
+  async function exportResults() {}
 
   function prev() {
     form.skip -= form.limit;
@@ -207,7 +202,7 @@
       <button type="submit" class="btn" title="Run query">
         <Icon name="play" /> Run
       </button>
-      <button class="btn secondary" type="button" on:click={() => exportInfo = {}}>
+      <button class="btn secondary" type="button" on:click={exportResults}>
         <Icon name="save" /> Export results…
       </button>
       <div class="field">

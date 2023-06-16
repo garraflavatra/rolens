@@ -20,6 +20,8 @@ import windowTitle from './windowtitle';
 import dialogs from '$lib/dialogs';
 import HostDetailDialog from '$organisms/connection/host/dialogs/hostdetail.svelte';
 import IndexDetailDialog from '$organisms/connection/collection/dialogs/indexdetail.svelte';
+import QueryChooserDialog from '$organisms/connection/collection/dialogs/querychooser.svelte';
+import queries from './queries';
 
 const { set, subscribe } = writable({});
 const getValue = () => get({ subscribe });
@@ -95,13 +97,7 @@ async function refresh() {
             };
 
             collection.export = async function() {
-              const exportInfo = {
-                type: 'export',
-                filetype: 'json',
-                hostKey,
-                dbKey,
-                collKeys: [ collKey ],
-              };
+              //...
             };
 
             collection.dump = async function() {
@@ -178,6 +174,25 @@ async function refresh() {
 
                   progress.end();
                   resolve(newIndexName);
+                });
+              });
+            };
+
+            collection.openQueryChooser = function(queryToSave = undefined) {
+              const dialog = dialogs.new(QueryChooserDialog, { collection, queryToSave });
+
+              return new Promise(resolve => {
+                dialog.$on('select', async event => {
+                  dialog.$close();
+                  resolve(event.detail.query);
+                });
+
+                dialog.$on('create', async event => {
+                  const ok = await queries.create(event.detail.query);
+                  if (ok) {
+                    dialog.$close();
+                    resolve(event.detail.query);
+                  }
                 });
               });
             };

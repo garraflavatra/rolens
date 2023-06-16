@@ -13,6 +13,7 @@ import {
   OpenCollection,
   OpenConnection,
   OpenDatabase,
+  PerformFindExport,
   RemoveHost,
   RenameCollection,
   TruncateCollection
@@ -22,6 +23,7 @@ import { get, writable } from 'svelte/store';
 import applicationInited from './inited';
 import queries from './queries';
 import windowTitle from './windowtitle';
+import ExportDialog from '$organisms/connection/collection/dialogs/export.svelte';
 
 const { set, subscribe } = writable({});
 const getValue = () => get({ subscribe });
@@ -96,8 +98,18 @@ async function refresh() {
               }
             };
 
-            collection.export = async function() {
-              //...
+            collection.export = function(query) {
+              const dialog = dialogs.new(ExportDialog, { collection, query });
+
+              return new Promise(resolve => {
+                dialog.$on('export', async event => {
+                  const success = await PerformFindExport(hostKey, dbKey, collKey, JSON.stringify(event.detail.exportInfo));
+                  if (success) {
+                    dialog.$close();
+                    resolve();
+                  }
+                });
+              });
             };
 
             collection.dump = async function() {

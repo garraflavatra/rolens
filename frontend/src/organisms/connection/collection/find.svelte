@@ -80,8 +80,6 @@
     }
   }
 
-  async function exportResults() {}
-
   function prev() {
     form.skip -= form.limit;
     if (form.skip < 0) {
@@ -202,7 +200,7 @@
       <button type="submit" class="btn" title="Run query">
         <Icon name="play" /> Run
       </button>
-      <button class="btn secondary" type="button" on:click={exportResults}>
+      <button class="btn secondary" type="button" on:click={() => collection.export(form)}>
         <Icon name="save" /> Export results…
       </button>
       <div class="field">

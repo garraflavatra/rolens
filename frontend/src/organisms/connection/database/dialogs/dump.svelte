@@ -5,9 +5,12 @@
   import { startProgress } from '$lib/progress';
   import hostTree from '$lib/stores/hosttree';
   import applicationSettings from '$lib/stores/settings';
-  import { OpenConnection, OpenDatabase, PerformDump } from '$wails/go/app/App';
+  import { OpenConnection, OpenDatabase } from '$wails/go/app/App';
+  import { createEventDispatcher } from 'svelte';
 
-  export let info;
+  export let info = {};
+
+  const dispatch = createEventDispatcher();
 
   $: if (info) {
     info.outdir = info.outdir || $applicationSettings.defaultExportDirectory;
@@ -50,15 +53,12 @@
     }
   }
 
-  async function performDump() {
-    const ok = await PerformDump(JSON.stringify(info));
-    if (ok) {
-      info = undefined;
-    }
-  }
-
   function selectCollection(collKey) {
     info.collKeys = [ collKey ];
+  }
+
+  function performDump() {
+    dispatch('dump', { info });
   }
 </script>
 

@@ -284,7 +284,6 @@
   </div>
 </div>
 
-
 {#if objectViewerData}
   <!-- @todo Implement save -->
   <ObjectViewer bind:data={objectViewerData} saveable on:save={saveDocument} bind:successMessage={objectViewerSuccessMessage} />

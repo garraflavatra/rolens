@@ -9,6 +9,7 @@ import windowTitle from './windowtitle';
 import ExportDialog from '$organisms/connection/collection/dialogs/export.svelte';
 import IndexDetailDialog from '$organisms/connection/collection/dialogs/indexdetail.svelte';
 import QueryChooserDialog from '$organisms/connection/collection/dialogs/querychooser.svelte';
+import DumpDialog from '$organisms/connection/database/dialogs/dump.svelte';
 import HostDetailDialog from '$organisms/connection/host/dialogs/hostdetail.svelte';
 
 import {
@@ -21,6 +22,7 @@ import {
   OpenCollection,
   OpenConnection,
   OpenDatabase,
+  PerformDump,
   PerformFindExport,
   RemoveHost,
   RenameCollection,
@@ -114,14 +116,22 @@ async function refresh() {
               });
             };
 
-            collection.dump = async function() {
-              const exportInfo = {
-                type: 'dump',
-                filetype: 'bson',
+            collection.dump = function() {
+              const dialog = dialogs.new(DumpDialog, { info: {
                 hostKey,
                 dbKey,
                 collKeys: [ collKey ],
-              };
+              } });
+
+              return new Promise(resolve => {
+                dialog.$on('dump', async event => {
+                  const success = await PerformDump(JSON.stringify(event.detail.info));
+                  if (success) {
+                    dialog.$close();
+                    resolve();
+                  }
+                });
+              });
             };
 
             collection.truncate = async function() {
@@ -215,6 +225,20 @@ async function refresh() {
           await refresh();
           progress.end();
           windowTitle.setSegments(dbKey, host.name, 'Rolens');
+        };
+
+        database.dump = function() {
+          const dialog = dialogs.new(DumpDialog, { info: { hostKey, dbKey } });
+
+          return new Promise(resolve => {
+            dialog.$on('dump', async event => {
+              const success = await PerformDump(JSON.stringify(event.detail.info));
+              if (success) {
+                dialog.$close();
+                resolve();
+              }
+            });
+          });
         };
 
         database.drop = async function() {

@@ -4,8 +4,8 @@
   import views from '$lib/stores/views';
   import { createEventDispatcher } from 'svelte';
 
-  export let query = {};
   export let collection;
+  export let query = undefined;
 
   const dispatch = createEventDispatcher();
   const exportInfo = { ...query, viewKey: collection.viewKey };
@@ -22,8 +22,8 @@
       <span class="label">Export</span>
       <select bind:value={exportInfo.contents}>
         <option value="all">all records</option>
-        <option value="query">all records matching query</option>
-        <option value="querylimitskip">all records matching query, considering limit and skip</option>
+        <option value="query" disabled={!query}>all records matching query</option>
+        <option value="querylimitskip" disabled={!query}>all records matching query, considering limit and skip</option>
       </select>
     </label>
 

@@ -29,7 +29,7 @@
                   name: collection.key,
                   icon: 'list',
                   menu: [
-                    { label: 'Export collection (JSON, CSV)…', fn: collection.export },
+                    { label: 'Export collection…', fn: collection.export },
                     { label: 'Dump collection (BSON via mongodump)…', fn: collection.dump },
                     { separator: true },
                     { label: 'Rename collection…', fn: collection.rename },
@@ -41,6 +41,7 @@
                 };
               }) || [],
             menu: [
+              { label: 'Dump database (BSON via mongodump)…', fn: database.dump },
               { label: 'Drop database…', fn: database.drop },
               { separator: true },
               { label: 'New database…', fn: host.newDatabase },

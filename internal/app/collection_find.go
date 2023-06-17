@@ -134,9 +134,9 @@ func (a *App) UpdateFoundDocument(hostKey, dbKey, collKey, idJson, newDocJson st
 	}
 	defer close()
 
-	if _, err := client.Database(dbKey).Collection(collKey).UpdateOne(ctx, id, bson.M{"$set": newDoc}); err != nil {
-		runtime.LogInfof(a.ctx, "Error while performing find/update: %s", err.Error())
-		zenity.Error(err.Error(), zenity.Title("Unable to perform update"), zenity.ErrorIcon)
+	if _, err := client.Database(dbKey).Collection(collKey).ReplaceOne(ctx, id, newDoc); err != nil {
+		runtime.LogInfof(a.ctx, "Error while replacing document: %s", err.Error())
+		zenity.Error(err.Error(), zenity.Title("Unable to replace document"), zenity.ErrorIcon)
 		return false
 	}
 

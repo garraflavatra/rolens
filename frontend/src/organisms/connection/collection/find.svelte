@@ -8,13 +8,13 @@
   import { startProgress } from '$lib/progress';
   import applicationSettings from '$lib/stores/settings';
   import views from '$lib/stores/views';
+  import { convertLooseJson } from '$lib/strings';
   import { FindItems, RemoveItemById, UpdateFoundDocument } from '$wails/go/app/App';
   import { EJSON } from 'bson';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { onMount } from 'svelte';
 
   export let collection;
 
-  const dispatch = createEventDispatcher();
   const defaults = {
     query: '{}',
     sort: $applicationSettings.defaultSort || '{ "_id": 1 }',
@@ -143,7 +143,7 @@
       collection.dbKey,
       collection.key,
       EJSON.stringify({ _id: event.detail.originalData._id }),
-      event.detail.text
+      convertLooseJson(event.detail.text)
     );
 
     if (success) {

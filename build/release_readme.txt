@@ -17,7 +17,6 @@ Questions and bugs
 Did you capture a bug? Please report it — thank you!
   https://github.com/garraflavatra/rolens/issues/new?assignees=garraflavatra&labels=bug&projects=&template=bug.yml
 
-
 Would you like to see a new feature? You can request it:
   https://github.com/garraflavatra/rolens/issues/new?assignees=garraflavatra&labels=enhancement&projects=&template=feature.yml
 

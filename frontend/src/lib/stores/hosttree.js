@@ -53,7 +53,7 @@ async function refresh() {
         return;
       }
 
-      for (const dbKey of dbNames.sort((a, b) => b.localeCompare(a))) {
+      for (const dbKey of dbNames.sort((a, b) => a.localeCompare(b))) {
         host.databases[dbKey] = host.databases[dbKey] || {};
       }
 
@@ -71,7 +71,7 @@ async function refresh() {
             return;
           }
 
-          for (const collKey of collNames.sort((a, b) => b.localeCompare(a))) {
+          for (const collKey of collNames.sort((a, b) => a.localeCompare(b))) {
             database.collections[collKey] = database.collections[collKey] || {};
           }
 

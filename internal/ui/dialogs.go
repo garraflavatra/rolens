@@ -15,16 +15,3 @@ func (u *UI) OpenDirectory(title string) string {
 
 	return dir
 }
-
-func (u *UI) EnterText(title, info, defaultEntry string) string {
-	input, err := zenity.Entry(info, zenity.Title(title), zenity.EntryText(defaultEntry), zenity.Modal())
-
-	if err == zenity.ErrCanceled {
-		return ""
-	} else if err != nil {
-		zenity.Error(err.Error(), zenity.Title("Encountered an error!"), zenity.ErrorIcon)
-		return ""
-	} else {
-		return input
-	}
-}

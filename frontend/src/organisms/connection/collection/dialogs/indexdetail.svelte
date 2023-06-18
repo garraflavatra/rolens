@@ -2,14 +2,12 @@
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
   import input from '$lib/actions/input';
-  import { CreateIndex } from '$wails/go/app/App';
   import { createEventDispatcher } from 'svelte';
 
-  export let collection = {};
-  export let creatingNewIndex = false;
+  export let collection;
 
   const dispatch = createEventDispatcher();
-  let index = { model: [] };
+  const index = { model: [] };
 
   function addRule() {
     index.model  = [ ...index.model, {} ];
@@ -21,16 +19,11 @@
   }
 
   async function create() {
-    const newIndexName = await CreateIndex(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(index));
-    if (newIndexName) {
-      creatingNewIndex = false;
-      index = { model: [] };
-      dispatch('reload');
-    }
+    dispatch('create', { index });
   }
 </script>
 
-<Modal title="Create new index {collection ? `on collection ${collection.key}` : ''}" bind:show={creatingNewIndex}>
+<Modal title="Create new index on {collection.key}" on:close>
   <form on:submit|preventDefault={create}>
     <label class="field name">
       <span class="label">Name</span>

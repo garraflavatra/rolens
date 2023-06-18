@@ -3,8 +3,8 @@
   import TabBar from '$components/tabbar.svelte';
   import { EventsOn } from '$wails/runtime/runtime';
   import { tick } from 'svelte';
+
   import Aggregate from './aggregate.svelte';
-  import ViewConfig from './components/viewconfig.svelte';
   import Find from './find.svelte';
   import Indexes from './indexes.svelte';
   import Insert from './insert.svelte';
@@ -19,8 +19,6 @@
 
   let tab = 'find';
   let find;
-  let viewConfigModalOpen = false;
-  let firstItem;
 
   $: if (collection) {
     collection.hostKey = hostKey;
@@ -38,11 +36,6 @@
     tab = 'find';
     await tick();
     find.performQuery(event.detail);
-  }
-
-  function openViewConfig(event) {
-    firstItem = event.detail?.firstItem;
-    viewConfigModalOpen = true;
   }
 </script>
 
@@ -62,8 +55,8 @@
 
       <div class="container">
         {#if tab === 'stats'} <Stats {collection} />
-        {:else if tab === 'find'} <Find {collection} bind:this={find} on:openViewConfig={openViewConfig} />
-        {:else if tab === 'insert'} <Insert {collection} on:performFind={catchQuery} on:openViewConfig={openViewConfig} />
+        {:else if tab === 'find'} <Find {collection} bind:this={find} />
+        {:else if tab === 'insert'} <Insert {collection} on:performFind={catchQuery} />
         {:else if tab === 'update'} <Update {collection} on:performFind={catchQuery} />
         {:else if tab === 'remove'} <Remove {collection} />
         {:else if tab === 'indexes'} <Indexes {collection} />
@@ -75,15 +68,6 @@
     <BlankState label="Select a collection to continue" />
   {/if}
 </div>
-
-{#if collection}
-  <ViewConfig
-    bind:show={viewConfigModalOpen}
-    bind:activeViewKey={collection.viewKey}
-    {firstItem}
-    {collection}
-  />
-{/if}
 
 <style>
   .view {

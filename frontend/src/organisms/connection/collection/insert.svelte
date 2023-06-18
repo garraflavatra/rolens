@@ -2,6 +2,7 @@
   import Details from '$components/details.svelte';
   import Grid from '$components/grid.svelte';
   import Icon from '$components/icon.svelte';
+  import ObjectEditor from '$components/objecteditor.svelte';
   import ObjectViewer from '$components/objectviewer.svelte';
   import { randomString } from '$lib/math';
   import { inputTypes } from '$lib/mongo';
@@ -11,7 +12,6 @@
   import { EJSON } from 'bson';
   import { createEventDispatcher, onMount } from 'svelte';
   import Form from './components/form.svelte';
-  import ObjectEditor from '$components/objecteditor.svelte';
 
   export let collection;
 
@@ -25,8 +25,8 @@
   let objectViewerData = '';
   let viewType = 'form';
   let allValid = false;
+  let viewsForCollection = {};
 
-  $: viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
   $: oppositeViewType = viewType === 'table' ? 'form' : 'table';
   $: allValid = Object.values(formValidity).every(v => v !== false);
 
@@ -44,6 +44,10 @@
 
   $: if ((viewType === 'form') && !newItems?.length)  {
     newItems = [ {} ];
+  }
+
+  $: if ($views) {
+    viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
   }
 
   async function insert() {
@@ -93,6 +97,10 @@
   function deleteRow(index) {
     newItems.splice(index, 1);
     newItems = newItems;
+  }
+
+  function openViewConfig() {
+    views.openConfig(collection);
   }
 
   onMount(() => {
@@ -190,7 +198,7 @@
             <option value={key}>{key === 'list' ? 'Raw JSON' : view.name}</option>
           {/each}
         </select>
-        <button class="btn" type="button" on:click={() => dispatch('openViewConfig')} title="Configure view">
+        <button class="btn" type="button" on:click={openViewConfig} title="Configure view">
           <Icon name="cog" />
         </button>
       </label>

@@ -6,18 +6,15 @@
   import input from '$lib/actions/input';
   import { deepClone } from '$lib/objects';
   import { startProgress } from '$lib/progress';
-  import queries from '$lib/stores/queries';
   import applicationSettings from '$lib/stores/settings';
   import views from '$lib/stores/views';
+  import { convertLooseJson } from '$lib/strings';
   import { FindItems, RemoveItemById, UpdateFoundDocument } from '$wails/go/app/App';
   import { EJSON } from 'bson';
-  import { createEventDispatcher, onMount } from 'svelte';
-  import ExportInfo from './components/export.svelte';
-  import QueryChooser from './components/querychooser.svelte';
+  import { onMount } from 'svelte';
 
   export let collection;
 
-  const dispatch = createEventDispatcher();
   const defaults = {
     query: '{}',
     sort: $applicationSettings.defaultSort || '{ "_id": 1 }',
@@ -32,16 +29,17 @@
   let queryField;
   let activePath = [];
   let objectViewerData;
-  let queryToSave;
-  let showQueryChooser = false;
-  let exportInfo;
   let querying = false;
   let objectViewerSuccessMessage = '';
+  let viewsForCollection = {};
 
   // $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
-  $: viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
   $: lastPage = (submittedForm.limit && result?.results?.length) ? Math.max(0, Math.ceil((result.total - submittedForm.limit) / submittedForm.limit)) : 0;
   $: activePage = (submittedForm.limit && submittedForm.skip && result?.results?.length) ? submittedForm.skip / submittedForm.limit : 0;
+
+  $: if ($views) {
+    viewsForCollection = views.forCollection(collection.hostKey, collection.dbKey, collection.key);
+  }
 
   async function submitQuery() {
     if (querying) {
@@ -70,19 +68,18 @@
     }
   }
 
-  function loadQuery() {
-    queryToSave = undefined;
-    showQueryChooser = true;
+  async function loadQuery() {
+    const query = await collection.openQueryChooser();
+    if (query) {
+      form = { ...query };
+      submitQuery();
+    }
   }
 
-  function saveQuery() {
-    queryToSave = form;
-    showQueryChooser = true;
-  }
-
-  function queryChosen(event) {
-    if ($queries[event?.detail]) {
-      form =   { ...$queries[event?.detail] };
+  async function saveQuery() {
+    const query = await collection.openQueryChooser(form);
+    if (query) {
+      form = { ...query };
       submitQuery();
     }
   }
@@ -130,6 +127,10 @@
     objectViewerData = item;
   }
 
+  function openViewConfig() {
+    views.openConfig(collection, result.results?.[0] || {});
+  }
+
   export function performQuery(q) {
     form = { ...defaults, ...q };
     submitQuery();
@@ -142,7 +143,7 @@
       collection.dbKey,
       collection.key,
       EJSON.stringify({ _id: event.detail.originalData._id }),
-      event.detail.text
+      convertLooseJson(event.detail.text)
     );
 
     if (success) {
@@ -207,7 +208,7 @@
       <button type="submit" class="btn" title="Run query">
         <Icon name="play" /> Run
       </button>
-      <button class="btn secondary" type="button" on:click={() => exportInfo = {}}>
+      <button class="btn secondary" type="button" on:click={() => collection.export(form)}>
         <Icon name="save" /> Export results…
       </button>
       <div class="field">
@@ -259,7 +260,7 @@
               <option value={key}>{view.name}</option>
             {/each}
           </select>
-          <button class="btn" on:click={() => dispatch('openViewConfig', { firstItem: result.results?.[0] })} title="Configure view">
+          <button class="btn" on:click={openViewConfig} title="Configure view">
             <Icon name="cog" />
           </button>
         </label>
@@ -282,15 +283,6 @@
     </div>
   </div>
 </div>
-
-<QueryChooser
-  bind:queryToSave
-  bind:show={showQueryChooser}
-  on:select={queryChosen}
-  {collection}
-/>
-
-<ExportInfo on:openViewConfig bind:collection bind:info={exportInfo} />
 
 {#if objectViewerData}
   <!-- @todo Implement save -->

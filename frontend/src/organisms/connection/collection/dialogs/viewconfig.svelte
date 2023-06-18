@@ -7,15 +7,18 @@
   import views from '$lib/stores/views';
 
   export let collection;
-  export let show = false;
-  export let activeViewKey = 'list';
   export let firstItem = {};
 
-  $: tabs = Object.entries(views.forCollection(collection.hostKey, collection.dbKey, collection.key))
-    .sort((a, b) => sortTabKeys(a[0], b[0]))
-    .map(([ key, v ]) => {
-      return { key, title: v.name, closable: key !== 'list' };
-    });
+  let tabs = [];
+  $: $views && refresh();
+
+  function refresh() {
+    tabs = Object.entries(views.forCollection(collection.hostKey, collection.dbKey, collection.key))
+      .sort((a, b) => sortTabKeys(a[0], b[0]))
+      .map(([ key, v ]) => {
+        return { key, title: v.name, closable: key !== 'list' };
+      });
+  }
 
   function sortTabKeys(a, b) {
     if (a === 'list') {
@@ -39,29 +42,29 @@
       type: 'table',
       columns: [ { key: '_id', showInTable: true, inputType: 'objectid', mandatory: true } ],
     };
-    activeViewKey = newViewKey;
+    collection.viewKey = newViewKey;
   }
 
   function removeView(viewKey) {
     const keys = Object.keys($views).sort(sortTabKeys);
     const oldIndex = keys.indexOf(viewKey);
     const newKey = keys[oldIndex - 1];
-    activeViewKey = newKey;
+    collection.viewKey = newKey;
     delete $views[viewKey];
     $views = $views;
   }
 
   function addColumn(before) {
     if (typeof before === 'number') {
-      $views[activeViewKey].columns = [
-        ...$views[activeViewKey].columns.slice(0, before),
+      $views[collection.viewKey].columns = [
+        ...$views[collection.viewKey].columns.slice(0, before),
         { showInTable: true, inputType: 'none' },
-        ...$views[activeViewKey].columns.slice(before),
+        ...$views[collection.viewKey].columns.slice(before),
       ];
     }
     else {
-      $views[activeViewKey].columns = [
-        ...$views[activeViewKey].columns,
+      $views[collection.viewKey].columns = [
+        ...$views[collection.viewKey].columns,
         { showInTable: true, inputType: 'none' },
       ];
     }
@@ -72,7 +75,7 @@
       return;
     }
 
-    $views[activeViewKey].columns = Object.keys(firstItem).sort().map(key => {
+    $views[collection.viewKey].columns = Object.keys(firstItem).sort().map(key => {
       return {
         key,
         showInTable: true,
@@ -82,57 +85,57 @@
   }
 
   function moveColumn(oldIndex, delta) {
-    const column = $views[activeViewKey].columns[oldIndex];
+    const column = $views[collection.viewKey].columns[oldIndex];
     const newIndex = oldIndex + delta;
 
-    $views[activeViewKey].columns.splice(oldIndex, 1);
-    $views[activeViewKey].columns.splice(newIndex, 0, column);
-    $views[activeViewKey].columns = $views[activeViewKey].columns;
+    $views[collection.viewKey].columns.splice(oldIndex, 1);
+    $views[collection.viewKey].columns.splice(newIndex, 0, column);
+    $views[collection.viewKey].columns = $views[collection.viewKey].columns;
   }
 
   function removeColumn(index) {
-    $views[activeViewKey].columns.splice(index, 1);
-    $views[activeViewKey].columns = $views[activeViewKey].columns;
+    $views[collection.viewKey].columns.splice(index, 1);
+    $views[collection.viewKey].columns = $views[collection.viewKey].columns;
   }
 </script>
 
-<Modal title="View configuration" bind:show contentPadding={false}>
+<Modal title="View configuration" contentPadding={false} on:close>
   <TabBar
     {tabs}
     canAddTab={true}
     on:addTab={createView}
     on:closeTab={e => removeView(e.detail)}
-    bind:selectedKey={activeViewKey}
+    bind:selectedKey={collection.viewKey}
   />
 
   <div class="options">
-    {#if $views[activeViewKey]}
+    {#if $views[collection.viewKey]}
       <div class="meta">
-        {#key activeViewKey}
+        {#key collection.viewKey}
           <label class="field">
             <span class="label">View name</span>
-            <input type="text" use:input={{ autofocus: true }} bind:value={$views[activeViewKey].name} disabled={activeViewKey === 'list'} />
+            <input type="text" use:input={{ autofocus: true }} bind:value={$views[collection.viewKey].name} disabled={collection.viewKey === 'list'} />
           </label>
         {/key}
         <label class="field">
           <span class="label">View type</span>
-          <select bind:value={$views[activeViewKey].type} disabled>
+          <select bind:value={$views[collection.viewKey].type} disabled>
             <option value="list">List view</option>
             <option value="table">Table view</option>
           </select>
         </label>
       </div>
 
-      {#if $views[activeViewKey].type === 'list'}
+      {#if $views[collection.viewKey].type === 'list'}
         <div class="flex">
-          <input type="checkbox" id="hideObjectIndicators" bind:checked={$views[activeViewKey].hideObjectIndicators} />
+          <input type="checkbox" id="hideObjectIndicators" bind:checked={$views[collection.viewKey].hideObjectIndicators} />
           <label for="hideObjectIndicators">
             Hide object indicators ({'{...}'} and [...]) in list view and show nothing instead
           </label>
         </div>
-      {:else if $views[activeViewKey].type === 'table'}
+      {:else if $views[collection.viewKey].type === 'table'}
         <div class="columns">
-          {#each $views[activeViewKey].columns as column, columnIndex}
+          {#each $views[collection.viewKey].columns as column, columnIndex}
             <div class="column">
               <label class="field">
                 <input type="text" use:input bind:value={column.key} placeholder="Column keypath" />
@@ -188,7 +191,7 @@
               <button class="btn" type="button" on:click={() => moveColumn(columnIndex, -1)} disabled={columnIndex === 0} title="Move column one position up">
                 <Icon name="chev-u" />
               </button>
-              <button class="btn" type="button" on:click={() => moveColumn(columnIndex, 1)} disabled={columnIndex === $views[activeViewKey].columns.length - 1} title="Move column one position down">
+              <button class="btn" type="button" on:click={() => moveColumn(columnIndex, 1)} disabled={columnIndex === $views[collection.viewKey].columns.length - 1} title="Move column one position down">
                 <Icon name="chev-d" />
               </button>
               <button class="btn danger" type="button" on:click={() => removeColumn(columnIndex)} title="Remove this column">

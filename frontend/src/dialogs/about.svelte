@@ -2,11 +2,9 @@
   import Modal from '$components/modal.svelte';
   import alink from '$lib/actions/alink';
   import environment from '$lib/stores/environment';
-
-  export let show = true;
 </script>
 
-<Modal bind:show width="400px" title=" ">
+<Modal width="400px" title=" " on:close>
   <div class="brand">
     <img src="/logo.png" alt="Rolens logo" />
     <div>

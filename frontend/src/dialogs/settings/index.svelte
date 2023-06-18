@@ -3,11 +3,9 @@
   import Modal from '$components/modal.svelte';
   import input from '$lib/actions/input';
   import settings from '$lib/stores/settings';
-
-  export let show = false;
 </script>
 
-<Modal title="Preferences" bind:show>
+<Modal title="Preferences" on:close>
   <div class="prefs">
     <label for="defaultLimit">Initial number of items to retrieve using one query (limit):</label>
     <label class="field">

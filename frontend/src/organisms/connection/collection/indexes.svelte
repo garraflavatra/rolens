@@ -1,64 +1,71 @@
 <script>
   import Icon from '$components/icon.svelte';
   import ObjectGrid from '$components/objectgrid.svelte';
-  import { DropIndex, GetIndexes } from '$wails/go/app/App';
-  import IndexDetail from './components/indexdetail.svelte';
+  import { onMount } from 'svelte';
 
   export let collection;
 
-  let indexes = [];
   let activePath = [];
-  let creatingNewIndex = false;
+  let _indexes = [];
 
-  $: collection && getIndexes();
+  async function refresh() {
+    await collection.getIndexes();
+    _indexes = collection.indexes.map(idx => {
+      return {
+        name: idx.name,
+        background: idx.background || false,
+        unique: idx.unique || false,
+        sparse: idx.sparse || false,
+        model: idx.model,
+      };
+    });
+  }
 
-  async function getIndexes() {
-    const result = await GetIndexes(collection.hostKey, collection.dbKey, collection.key);
-    if (result) {
-      indexes = result;
+  async function createIndex() {
+    const newIndexName = await collection.newIndex();
+    if (newIndexName) {
+      await refresh();
     }
   }
 
-  function createIndex() {
-    creatingNewIndex = true;
-  }
-
-  async function drop(key) {
-    if (typeof key !== 'string') {
-      key = activePath[0];
+  async function dropIndex(indexName) {
+    if (typeof indexName !== 'string') {
+      indexName = activePath[0];
     }
-    const success = await DropIndex(collection.hostKey, collection.dbKey, collection.key, key);
+
+    const success = await collection.getIndexByName(indexName).drop();
+
     if (success) {
-      await getIndexes();
       activePath[0] = '';
+      await refresh();
     }
   }
+
+  onMount(refresh);
 </script>
 
 <div class="indexes">
   <div class="grid">
     <ObjectGrid
       key="name"
-      data={indexes}
-      getRootMenu={(_, idx) => [ { label: 'Drop this index', fn: () => drop(idx.name) } ]}
+      data={_indexes}
+      getRootMenu={(_, idx) => [ { label: 'Drop this index', fn: () => dropIndex(idx.name) } ]}
       bind:activePath
     />
   </div>
 
   <div class="actions">
-    <button class="btn" on:click={getIndexes}>
+    <button class="btn" on:click={refresh}>
       <Icon name="reload" /> Reload
     </button>
     <button class="btn" on:click={createIndex}>
       <Icon name="+" /> Create index…
     </button>
-    <button class="btn danger" on:click={drop} disabled={!indexes?.length || !activePath[0]}>
+    <button class="btn danger" on:click={dropIndex} disabled={!_indexes.length || !activePath[0]}>
       <Icon name="x" /> Drop selected
     </button>
   </div>
 </div>
-
-<IndexDetail bind:creatingNewIndex {collection} on:reload={getIndexes} />
 
 <style>
   .indexes {

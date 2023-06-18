@@ -1,39 +1,44 @@
 <script>
   import BlankState from '$components/blankstate.svelte';
   import ContextMenu from '$components/contextmenu.svelte';
+  import dialogs from '$lib/dialogs';
   import contextMenu from '$lib/stores/contextmenu';
   import environment from '$lib/stores/environment';
-  import hosts from '$lib/stores/hosts';
+  import hostTree from '$lib/stores/hosttree';
   import applicationInited from '$lib/stores/inited';
   import windowTitle from '$lib/stores/windowtitle';
-  import About from '$organisms/about.svelte';
   import Connection from '$organisms/connection/index.svelte';
-  import Settings from '$organisms/settings/index.svelte';
   import { EventsOn } from '$wails/runtime';
   import { tick } from 'svelte';
+  import AboutDialog from './dialogs/about.svelte';
+  import SettingsDialog from './dialogs/settings/index.svelte';
 
-  const activeHostKey = '';
-  let activeDbKey = '';
-  let activeCollKey = '';
-  let settingsModalOpen = false;
-  let aboutModalOpen = false;
-  let connectionManager;
   let showWelcomeScreen = undefined;
 
-  hosts.subscribe(h => {
-    if (h && (showWelcomeScreen === undefined)) {
-      showWelcomeScreen = !Object.keys($hosts || {}).length;
-    }
+  applicationInited.defer(() => {
+    hostTree.subscribe(hosts => {
+      if (hostTree.hasBeenInited() && (showWelcomeScreen === undefined)) {
+        showWelcomeScreen = !Object.keys(hosts || {}).length;
+      }
+    });
   });
 
   async function createFirstHost() {
     showWelcomeScreen = false;
     await tick();
-    connectionManager.createHost();
+    hostTree.newHost();
   }
 
-  EventsOn('OpenPreferences', () => settingsModalOpen = true);
-  EventsOn('OpenAboutModal', () => aboutModalOpen = true);
+  function showAboutDialog() {
+    dialogs.new(AboutDialog);
+  }
+
+  function showSettings() {
+    dialogs.new(SettingsDialog);
+  }
+
+  EventsOn('OpenPreferences', showSettings);
+  EventsOn('OpenAboutModal', showAboutDialog);
 </script>
 
 <svelte:window on:contextmenu|preventDefault />
@@ -41,23 +46,20 @@
 <div id="root" class="platform-{$environment?.platform}">
   <div class="titlebar">{$windowTitle}</div>
 
-  {#if $applicationInited && $hosts && (showWelcomeScreen !== undefined)}
+  {#if $applicationInited && (showWelcomeScreen !== undefined)}
     <main class:empty={showWelcomeScreen}>
       {#if showWelcomeScreen}
         <BlankState label="Welcome to Rolens!" image="/logo.png" pale={false} big={true}>
           <button class="btn" on:click={createFirstHost}>Add your first host</button>
         </BlankState>
       {:else}
-        <Connection {activeHostKey} bind:activeCollKey bind:activeDbKey bind:this={connectionManager} />
+        <Connection />
       {/if}
     </main>
 
     {#key $contextMenu}
       <ContextMenu {...$contextMenu} on:close={contextMenu.hide} />
     {/key}
-
-    <Settings bind:show={settingsModalOpen} />
-    <About bind:show={aboutModalOpen} />
   {/if}
 </div>
 

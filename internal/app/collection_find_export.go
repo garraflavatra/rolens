@@ -246,7 +246,7 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 						continue
 					}
 
-					csvItem = append(csvItem, string(v.(string)))
+					csvItem = append(csvItem, fmt.Sprintf("%v", v))
 				}
 
 			default:

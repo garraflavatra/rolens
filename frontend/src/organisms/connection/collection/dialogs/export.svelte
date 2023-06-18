@@ -2,43 +2,34 @@
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
   import views from '$lib/stores/views';
-  import { PerformFindExport } from '$wails/go/app/App';
   import { createEventDispatcher } from 'svelte';
 
-  export let info;
   export let collection;
+  export let query = undefined;
 
   const dispatch = createEventDispatcher();
-  let viewKey = collection.viewKey;
-  $: viewKey = collection.viewKey;
-  $: if (info) {
-    info.viewKey = viewKey;
-  }
+  const exportInfo = { ...query, viewKey: collection.viewKey };
 
-  async function performExport() {
-    info.view = $views[viewKey];
-    const success = await PerformFindExport(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(info));
-
-    if (success) {
-      info = undefined;
-    }
+  function submit() {
+    exportInfo.view = $views[exportInfo.viewKey];
+    dispatch('export', { exportInfo });
   }
 </script>
 
-<Modal bind:show={info} title="Export results" width="450px">
-  <form on:submit|preventDefault={performExport}>
+<Modal title="Export results" width="450px" on:close>
+  <form on:submit|preventDefault={submit}>
     <label class="field">
       <span class="label">Export</span>
-      <select bind:value={info.contents}>
+      <select bind:value={exportInfo.contents}>
         <option value="all">all records</option>
-        <option value="query">all records matching query</option>
-        <option value="querylimitskip">all records matching query, considering limit and skip</option>
+        <option value="query" disabled={!query}>all records matching query</option>
+        <option value="querylimitskip" disabled={!query}>all records matching query, considering limit and skip</option>
       </select>
     </label>
 
     <label class="field">
       <span class="label">Format</span>
-      <select bind:value={info.format}>
+      <select bind:value={exportInfo.format}>
         <option value="jsonarray">JSON array</option>
         <option value="ndjson">Newline delimited JSON</option>
         <option value="csv">CSV</option>
@@ -47,7 +38,7 @@
 
     <label class="field">
       <span class="label">View to use</span>
-      <select bind:value={viewKey}>
+      <select bind:value={exportInfo.viewKey}>
         {#each Object.entries(views.forCollection(collection.hostKey, collection.dbKey, collection.key)) as [ key, { name } ]}
           <option value={key}>{name}</option>
         {/each}
@@ -59,7 +50,7 @@
   </form>
 
   <svelte:fragment slot="footer">
-    <button class="btn" on:click={performExport}>
+    <button class="btn" on:click={submit}>
       <Icon name="play" /> Start export
     </button>
   </svelte:fragment>

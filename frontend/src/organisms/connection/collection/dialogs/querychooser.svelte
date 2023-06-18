@@ -4,13 +4,12 @@
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
   import input from '$lib/actions/input';
-  import hosts from '$lib/stores/hosts';
+  import hostTree from '$lib/stores/hosttree';
   import queries from '$lib/stores/queries';
   import { createEventDispatcher } from 'svelte';
 
   export let queryToSave = undefined;
   export let collection = {};
-  export let show = false;
 
   const dispatch = createEventDispatcher();
   let gridSelectedPath = [];
@@ -22,23 +21,16 @@
       queryToSave.dbKey = collection.dbKey;
       queryToSave.collKey = collection.key;
 
-      const newId = queries.create(queryToSave);
-
-      if (newId) {
-        dispatch('created', newId);
-        queryToSave = undefined;
-        selectedKey = newId;
-        select();
-      }
+      dispatch('create', { query: queryToSave });
+      selectedKey = queryToSave.name;
     }
     else {
-      select();
+      selectActive();
     }
   }
 
-  function select() {
-    dispatch('select', selectedKey);
-    show = false;
+  function selectActive() {
+    dispatch('select', { query: $queries[selectedKey] });
   }
 
   function gridSelect(event) {
@@ -53,7 +45,7 @@
 
   function gridTrigger(event) {
     gridSelect(event);
-    select();
+    selectActive();
   }
 
   async function gridRemove(event) {
@@ -71,7 +63,7 @@
   }
 </script>
 
-<Modal bind:show title={queryToSave ? 'Save query' : 'Load query'} width="500px">
+<Modal title={queryToSave ? 'Save query' : 'Load query'} width="500px" on:close>
   <form on:submit|preventDefault={submit}>
     {#if queryToSave}
       <label class="field queryname">
@@ -88,7 +80,11 @@
         columns={[ { key: 'n', title: 'Query name' }, { key: 'h', title: 'Host' }, { key: 'ns', title: 'Namespace' } ]}
         key="n"
         items={Object.entries($queries).reduce((object, [ name, query ]) => {
-          object[query.name] = { n: name, h: $hosts[query.hostKey]?.name || '?', ns: `${query.dbKey}.${query.collKey}` };
+          object[query.name] = {
+            n: name,
+            h: $hostTree[query.hostKey]?.name || '?',
+            ns: `${query.dbKey}.${query.collKey}`,
+          };
           return object;
         }, {})}
         showHeaders={true}

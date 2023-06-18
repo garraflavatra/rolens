@@ -1,6 +1,5 @@
 import dialogs from '$lib/dialogs';
 import { startProgress } from '$lib/progress';
-import { EnterText } from '$wails/go/ui/UI';
 import { get, writable } from 'svelte/store';
 import applicationInited from './inited';
 import queries from './queries';
@@ -60,6 +59,10 @@ async function refresh() {
       }
 
       for (const [ dbKey, database ] of Object.entries(host.databases)) {
+        if (!dbNames.includes(dbKey)) {
+          delete host.databases[dbKey];
+        }
+
         database.key = dbKey;
         database.hostKey = hostKey;
         database.collections = database.collections || {};
@@ -78,6 +81,10 @@ async function refresh() {
           }
 
           for (const [ collKey, collection ] of Object.entries(database.collections)) {
+            if (!collNames.includes(collKey)) {
+              delete database.collections[collKey];
+            }
+
             collection.key = collKey;
             collection.dbKey = dbKey;
             collection.hostKey = hostKey;
@@ -92,11 +99,11 @@ async function refresh() {
             };
 
             collection.rename = async function() {
-              const newCollKey = await EnterText('Rename collection', `Enter a new name for collection ${collKey}.`, collKey);
+              const newCollKey = await dialogs.enterText('Rename collection', `Enter a new name for collection ${collKey}.`, collKey);
               if (newCollKey && (newCollKey !== collKey)) {
                 const progress = startProgress(`Renaming collection "${collKey}" to "${newCollKey}"…`);
                 const ok = await RenameCollection(hostKey, dbKey, collKey, newCollKey);
-                await refresh();
+                await database.open();
                 progress.end();
                 return ok;
               }
@@ -253,7 +260,7 @@ async function refresh() {
         };
 
         database.newCollection = async function() {
-          const name = await EnterText('Create a collection', 'Note: collections in MongoDB do not exist until they have at least one item. Your new collection will not persist on the server; fill it to have it created.', '');
+          const name = await dialogs.enterText('Create a collection', 'Note: collections in MongoDB do not exist until they have at least one item. Your new collection will not persist on the server; fill it to have it created.', '');
           if (name) {
             database.collections[name] = {};
             await refresh();
@@ -262,7 +269,7 @@ async function refresh() {
       }
 
       host.newDatabase = async function() {
-        const name = await EnterText('Create a database', 'Enter the database name. Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.', '');
+        const name = await dialogs.enterText('Create a database', 'Enter the database name. Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.', '');
         if (name) {
           host.databases[name] = {};
           await refresh();

@@ -1,2 +1,5 @@
+# Let GitHub Linguist ignore documentation and Wails generated files
+# https://github.com/github-linguist/linguist/blob/master/docs/overrides.md
 /frontend/src/components/icon.svelte linguist-vendored
 /frontend/wailsjs/**/* linguist-generated
+/website/**/* linguist-documentation

@@ -84,9 +84,7 @@ jobs:
         path: artifacts
 
     - name: Place all tarballs in the same directory
-      run: |
-        mkdir bundle
-        mv artifacts/*/* bundle
+      run: ls
 
     - name: Upload the bundle as an artifact
       uses: actions/upload-artifact@v3

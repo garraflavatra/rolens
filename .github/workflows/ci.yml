@@ -74,8 +74,9 @@ jobs:
 
   bundle:
     name: Bundle artifacts
-    needs: build
     runs-on: ubuntu-22.04
+    needs: build
+    if: ${{ always() }}
 
     steps:
     - name: Download artifacts

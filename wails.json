@@ -18,6 +18,6 @@
     "copyright": "© Romein van Buren 2023 (GNU GPL 3.0)."
   },
   "preBuildHooks": {
-    "*/*": "node ../version2file.js"
+    "*/*": "node ../version_to_file.js"
   }
 }

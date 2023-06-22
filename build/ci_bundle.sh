@@ -27,7 +27,7 @@
 # - rolens-windows-2022-arm64.zip
 #
 
-node ./build/version2file.js
+node ./build/version_to_file.js
 version=$(<./build/version.txt)
 
 mkdir bundle

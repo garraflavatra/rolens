@@ -2,7 +2,9 @@
 
 Robust, blazing-fast, comprehensive, yet simple [MongoDB](https://www.mongodb.com/) administration tool for Windows, macOS and Linux.
 
-<a href="https://github.com/garraflavatra/rolens/actions/workflows/ci.yml" target="_blank"><img src="https://github.com/garraflavatra/rolens/actions/workflows/ci.yml/badge.svg" alt="CI" /></a> <a target="_blank" href="https://garraflavatra.github.io/rolens"><img src="./.github/docs-badge.svg" alt="Documentation" /></a> <a href="https://fosstodon.org/@rolens" target="_blank" rel="me"><img src="./.github/fosstodon-badge.svg" alt="Fosstodon" /></a>
+<a href="https://github.com/garraflavatra/rolens/actions/workflows/ci.yml" target="_blank"><img src="https://github.com/garraflavatra/rolens/actions/workflows/ci.yml/badge.svg" alt="CI" /></a> <a target="_blank" href="https://garraflavatra.github.io/rolens"><img src="./.github/docs-badge.svg" alt="Documentation" /></a>
+
+<!-- <a href="https://fosstodon.org/@rolens" target="_blank" rel="me"><img src="./.github/fosstodon-badge.svg" alt="Fosstodon" /></a> -->
 
 ## Why another MongoDB client?
 

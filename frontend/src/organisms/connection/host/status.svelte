@@ -18,11 +18,16 @@
   <!-- <CodeExample code="db.stats()" /> -->
 
   <div class="grid">
-    <ObjectGrid data={host.status} />
+    <ObjectGrid
+      data={host.status || {}}
+      errorTitle={host.statusError ? 'Error fetching server status' : ''}
+      errorDescription={host.statusError}
+      busy={!host.status && !host.statusError && 'Fetching server status…'}
+    />
   </div>
 
   <div class="buttons">
-    <button class="btn secondary" on:click={copy}>
+    <button class="btn secondary" on:click={copy} disabled={!host.status}>
       <Icon name={copySucceeded ? 'check' : 'clipboard'} />
       Copy JSON
     </button>

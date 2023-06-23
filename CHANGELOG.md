@@ -5,6 +5,7 @@
 * Added meaningful window titles, and actually show these in the title bar (macOS).
 * Corrected link to documentation in the about box (#30).
 * Fixed host/database selection bug in grid (#31, #32), involving a frontend refactoring.
+* Replaced (some) harsh loading dialogs with smooth spinners, and replaced (some) capricious error dialogs with friendly error messages.
 
 ## [v0.2.0]
 

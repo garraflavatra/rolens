@@ -14,9 +14,19 @@
     width: auto;
     vertical-align: bottom;
   }
+
+  @keyframes spinning {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  svg.spinning {
+    animation: spinning 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
 </style>
 
-<svg xmlns="http://www.w3.org/2000/svg"
+<svg
+  xmlns="http://www.w3.org/2000/svg"
   width="24"
   height="24"
   viewBox="0 0 24 24"
@@ -24,7 +34,9 @@
   stroke="currentColor"
   stroke-width="2"
   stroke-linecap="round"
-  stroke-linejoin="round">
+  stroke-linejoin="round"
+  class:spinning={name === 'loading'}
+>
   {#if name === 'radio'}
     <circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path>
   {:else if name === 'chev-l'}
@@ -126,5 +138,9 @@
     <path d="M18 20V10M12 20V4M6 20v-6" />
   {:else if name === '?'}
     <circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line>
+  {:else if name === '!'}
+    <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01" />
+  {:else if name === 'loading'}
+    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
   {/if}
 </svg>

@@ -6,35 +6,34 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-type DatabaseInfo struct {
+type OpenDatabaseResult struct {
 	Collections []string `json:"collections"`
 	Stats       bson.M   `json:"stats"`
+	StatsError  string   `json:"statsError"`
 }
 
-func (a *App) OpenDatabase(hostKey, dbKey string) (info DatabaseInfo) {
+func (a *App) OpenDatabase(hostKey, dbKey string) (result OpenDatabaseResult) {
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
 		return
 	}
+	defer close()
 
 	command := bson.M{"dbStats": 1}
-	err = client.Database(dbKey).RunCommand(ctx, command).Decode(&info.Stats)
+	err = client.Database(dbKey).RunCommand(ctx, command).Decode(&result.Stats)
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not retrieve database stats for "+dbKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Could not get stats"), zenity.ErrorIcon)
-		return
+		result.StatsError = err.Error()
 	}
 
-	info.Collections, err = client.Database(dbKey).ListCollectionNames(ctx, bson.D{})
+	result.Collections, err = client.Database(dbKey).ListCollectionNames(ctx, bson.D{})
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not retrieve collection list for db "+dbKey)
 		runtime.LogWarning(a.ctx, err.Error())
 		zenity.Error(err.Error(), zenity.Title("Error while getting collections"), zenity.ErrorIcon)
-		return
 	}
 
-	defer close()
 	return
 }
 
@@ -48,6 +47,7 @@ func (a *App) DropDatabase(hostKey, dbKey string) bool {
 	if err != nil {
 		return false
 	}
+	defer close()
 
 	err = client.Database(dbKey).Drop(ctx)
 	if err != nil {
@@ -57,6 +57,5 @@ func (a *App) DropDatabase(hostKey, dbKey string) bool {
 		return false
 	}
 
-	defer close()
 	return true
 }

@@ -1,4 +1,5 @@
 <script>
+  import BlankState from './blankstate.svelte';
   import GridItems from './grid-items.svelte';
 
   export let columns = [];
@@ -12,7 +13,9 @@
   export let canSelect = true;
   export let canRemoveItems = false;
   export let inputsValid = false;
-// export let actions = [];
+  export let errorTitle = '';
+  export let errorDescription = '';
+  export let busy = false;
 </script>
 
 <div class="grid">
@@ -27,45 +30,51 @@
     </div>
   {/if} -->
 
-  <table>
-    {#if showHeaders && columns.some(col => col.title)}
-      <thead>
-        <tr>
-          {#if !hideChildrenToggles}
-            <th class="has-toggle"></th>
-          {/if}
+  {#if busy}
+    <BlankState label={(busy === true) ? 'Loading…' : busy} icon="loading" />
+  {:else if errorTitle || errorDescription}
+    <BlankState title={errorTitle} label={errorDescription} icon="!" />
+  {:else}
+    <table>
+      {#if showHeaders && columns.some(col => col.title)}
+        <thead>
+          <tr>
+            {#if !hideChildrenToggles}
+              <th class="has-toggle"></th>
+            {/if}
 
-          <th class="has-icon"></th>
+            <th class="has-icon"></th>
 
-          {#each columns as column}
-            <th scope="col">{column.title || ''}</th>
-          {/each}
+            {#each columns as column}
+              <th scope="col">{column.title || ''}</th>
+            {/each}
 
-          {#if canRemoveItems}
-            <th class="has-button"></th>
-          {/if}
-        </tr>
-      </thead>
-    {/if}
+            {#if canRemoveItems}
+              <th class="has-button"></th>
+            {/if}
+          </tr>
+        </thead>
+      {/if}
 
-    <tbody>
-      <GridItems
-        {items}
-        {columns}
-        {key}
-        {striped}
-        {canSelect}
-        {canRemoveItems}
-        {hideObjectIndicators}
-        {hideChildrenToggles}
-        bind:activePath
-        bind:inputsValid
-        on:select
-        on:trigger
-        on:removeItem
-      />
-    </tbody>
-  </table>
+      <tbody>
+        <GridItems
+          {items}
+          {columns}
+          {key}
+          {striped}
+          {canSelect}
+          {canRemoveItems}
+          {hideObjectIndicators}
+          {hideChildrenToggles}
+          bind:activePath
+          bind:inputsValid
+          on:select
+          on:trigger
+          on:removeItem
+        />
+      </tbody>
+    </table>
+  {/if}
 </div>
 
 <style>
@@ -74,15 +83,6 @@
     height: 100%;
     background-color: #fff;
   }
-
-  /* .actions {
-    margin-bottom: 0.5rem;
-    padding: 0.5rem;
-    border-bottom: 1px solid #ccc;
-  }
-  .actions button {
-    margin-right: 0.2rem;
-  } */
 
   table {
     border-collapse: collapse;
@@ -99,7 +99,20 @@
     padding: 2px;
   }
 
+  .grid :global(.blankstate) {
+    height: 100%;
+    padding: 1rem;
+  }
+
   /* tfoot button {
     margin-top: 0.5rem;
+  }
+  .actions {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ccc;
+  }
+  .actions button {
+    margin-right: 0.2rem;
   } */
 </style>

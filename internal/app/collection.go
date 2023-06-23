@@ -8,23 +8,27 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (a *App) OpenCollection(hostKey, dbKey, collKey string) (result bson.M) {
+type OpenCollectionResult struct {
+	Stats      bson.M `json:"stats"`
+	StatsError string `json:"statsError"`
+}
+
+func (a *App) OpenCollection(hostKey, dbKey, collKey string) (result OpenCollectionResult) {
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		return nil
+		return
 	}
+	defer close()
 
 	command := bson.M{"collStats": collKey}
-	err = client.Database(dbKey).RunCommand(ctx, command).Decode(&result)
+	err = client.Database(dbKey).RunCommand(ctx, command).Decode(&result.Stats)
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Could not retrieve collection stats for "+collKey)
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Could not get stats"), zenity.ErrorIcon)
-		return nil
+		result.StatsError = err.Error()
 	}
 
-	defer close()
-	return result
+	return
 }
 
 func (a *App) RenameCollection(hostKey, dbKey, collKey, newCollKey string) bool {
@@ -32,6 +36,7 @@ func (a *App) RenameCollection(hostKey, dbKey, collKey, newCollKey string) bool 
 	if err != nil {
 		return false
 	}
+	defer close()
 
 	var result bson.M
 	command := bson.D{
@@ -46,7 +51,6 @@ func (a *App) RenameCollection(hostKey, dbKey, collKey, newCollKey string) bool 
 		return false
 	}
 
-	defer close()
 	return true
 }
 
@@ -60,6 +64,7 @@ func (a *App) TruncateCollection(hostKey, dbKey, collKey string) bool {
 	if err != nil {
 		return false
 	}
+	defer close()
 
 	_, err = client.Database(dbKey).Collection(collKey).DeleteMany(ctx, bson.D{})
 	if err != nil {
@@ -69,7 +74,6 @@ func (a *App) TruncateCollection(hostKey, dbKey, collKey string) bool {
 		return false
 	}
 
-	defer close()
 	return true
 }
 
@@ -83,6 +87,7 @@ func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
 	if err != nil {
 		return false
 	}
+	defer close()
 
 	err = client.Database(dbKey).Collection(collKey).Drop(ctx)
 	if err != nil {
@@ -92,6 +97,5 @@ func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
 		return false
 	}
 
-	defer close()
 	return true
 }

@@ -17,13 +17,14 @@ type Query struct {
 	Sort   string `json:"sort"`
 }
 
-type QueryResult struct {
-	Total   int64    `json:"total"`
-	Results []string `json:"results"`
+type FindItemsResult struct {
+	Total            int64    `json:"total"`
+	Results          []string `json:"results"`
+	ErrorTitle       string   `json:"errorTitle"`
+	ErrorDescription string   `json:"errorDescription"`
 }
 
-func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
-	var out QueryResult
+func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) (result FindItemsResult) {
 	var form Query
 
 	err := json.Unmarshal([]byte(formJson), &form)
@@ -31,15 +32,15 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 		runtime.LogError(a.ctx, "Could not parse find form:")
 		runtime.LogError(a.ctx, err.Error())
 		zenity.Error(err.Error(), zenity.Title("Could not parse form"), zenity.ErrorIcon)
-		return out
+		return
 	}
 
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		return out
+		return
 	}
-
 	defer close()
+
 	var query bson.M
 	var projection bson.M
 	var sort bson.M
@@ -47,22 +48,25 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 	err = bson.UnmarshalExtJSON([]byte(form.Query), true, &query)
 	if err != nil {
 		runtime.LogInfof(a.ctx, "Invalid find query: %s", err.Error())
-		zenity.Error(err.Error(), zenity.Title("Invalid query"), zenity.ErrorIcon)
-		return out
+		result.ErrorTitle = "Invalid query"
+		result.ErrorDescription = err.Error()
+		return
 	}
 
 	err = json.Unmarshal([]byte(form.Fields), &projection)
 	if err != nil {
 		runtime.LogInfof(a.ctx, "Invalid find projection: %s", err.Error())
-		zenity.Error(err.Error(), zenity.Title("Invalid projection"), zenity.ErrorIcon)
-		return out
+		result.ErrorTitle = "Invalid projection"
+		result.ErrorDescription = err.Error()
+		return
 	}
 
 	err = json.Unmarshal([]byte(form.Sort), &sort)
 	if err != nil {
 		runtime.LogInfof(a.ctx, "Invalid find sort: %s", err.Error())
-		zenity.Error(err.Error(), zenity.Title("Invalid sort"), zenity.ErrorIcon)
-		return out
+		result.ErrorTitle = "Invalid sort"
+		result.ErrorDescription = err.Error()
+		return
 	}
 
 	opt := mongoOptions.FindOptions{
@@ -75,15 +79,17 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 	total, err := client.Database(dbKey).Collection(collKey).CountDocuments(ctx, query, nil)
 	if err != nil {
 		runtime.LogWarningf(a.ctx, "Encountered an error while counting documents: %s", err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while counting docs"), zenity.ErrorIcon)
-		return out
+		result.ErrorTitle = "Error while counting documents"
+		result.ErrorDescription = err.Error()
+		return
 	}
 
 	cur, err := client.Database(dbKey).Collection(collKey).Find(ctx, query, &opt)
 	if err != nil {
 		runtime.LogWarningf(a.ctx, "Encountered an error while performing query: %s", err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while querying"), zenity.ErrorIcon)
-		return out
+		result.ErrorTitle = "Error while querying"
+		result.ErrorDescription = err.Error()
+		return
 	}
 
 	defer cur.Close(ctx)
@@ -92,25 +98,27 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) QueryResult {
 
 	if err != nil {
 		runtime.LogWarningf(a.ctx, "Encountered an error while performing query: %s", err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while querying"), zenity.ErrorIcon)
-		return out
+		result.ErrorTitle = "Error while querying"
+		result.ErrorDescription = err.Error()
+		return
 	}
 
-	out.Total = total
-	out.Results = make([]string, 0)
+	result.Total = total
+	result.Results = make([]string, 0)
 
 	for _, r := range results {
 		marshalled, err := bson.MarshalExtJSON(r, true, true)
 		if err != nil {
 			runtime.LogError(a.ctx, "Failed to marshal find BSON:")
 			runtime.LogError(a.ctx, err.Error())
-			zenity.Error(err.Error(), zenity.Title("Failed to marshal JSON"), zenity.ErrorIcon)
-			return out
+			result.ErrorTitle = "Failed to marshal JSON"
+			result.ErrorDescription = err.Error()
+			return
 		}
-		out.Results = append(out.Results, string(marshalled))
+		result.Results = append(result.Results, string(marshalled))
 	}
 
-	return out
+	return
 }
 
 func (a *App) UpdateFoundDocument(hostKey, dbKey, collKey, idJson, newDocJson string) bool {

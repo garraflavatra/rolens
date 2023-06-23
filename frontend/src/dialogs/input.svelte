@@ -36,3 +36,9 @@
     <button on:click={close} class="btn secondary">Cancel</button>
   </svelte:fragment>
 </Modal>
+
+<style>
+  p {
+    line-height: 1.25;
+  }
+</style>

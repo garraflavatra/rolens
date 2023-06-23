@@ -7,18 +7,21 @@
 
   let activePath = [];
   let _indexes = [];
+  let error = '';
 
   async function refresh() {
-    await collection.getIndexes();
-    _indexes = collection.indexes.map(idx => {
-      return {
-        name: idx.name,
-        background: idx.background || false,
-        unique: idx.unique || false,
-        sparse: idx.sparse || false,
-        model: idx.model,
-      };
-    });
+    error = await collection.getIndexes();
+    if (!error) {
+      _indexes = collection.indexes.map(idx => {
+        return {
+          name: idx.name,
+          background: idx.background || false,
+          unique: idx.unique || false,
+          sparse: idx.sparse || false,
+          model: idx.model,
+        };
+      });
+    }
   }
 
   async function createIndex() {
@@ -50,6 +53,8 @@
       key="name"
       data={_indexes}
       getRootMenu={(_, idx) => [ { label: 'Drop this index', fn: () => dropIndex(idx.name) } ]}
+      errorTitle={error ? 'Error while getting indexes' : ''}
+      errorDescription={error}
       bind:activePath
     />
   </div>

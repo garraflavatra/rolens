@@ -8,6 +8,9 @@
   export let activePath = [];
   export let hideObjectIndicators = false;
   export let getRootMenu = () => undefined;
+  export let errorTitle = '';
+  export let errorDescription = '';
+  export let busy = false;
 
   const columns = [
     { key: 'key', label: 'Key' },
@@ -116,4 +119,7 @@
   {columns}
   {items}
   {hideObjectIndicators}
+  {errorTitle}
+  {errorDescription}
+  {busy}
 />

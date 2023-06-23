@@ -46,8 +46,7 @@
       return;
     }
 
-    querying = true;
-    const progress = startProgress('Performing query…');
+    querying = `Querying ${collection.key}…`;
     activePath = [];
     const newResult = await FindItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
 
@@ -57,7 +56,6 @@
       submittedForm = deepClone(form);
     }
 
-    progress.end();
     resetFocus();
     querying = false;
   }
@@ -231,6 +229,9 @@
             hideObjectIndicators={$views[collection.viewKey]?.hideObjectIndicators}
             bind:activePath
             on:trigger={e => openJson(e.detail?.index)}
+            errorTitle={result.errorTitle}
+            errorDescription={result.errorDescription}
+            busy={querying}
           />
         {:else}
           <Grid
@@ -242,6 +243,9 @@
             items={result.results ? result.results.map(r => EJSON.deserialize(r)) : []}
             bind:activePath
             on:trigger={e => openJson(e.detail?.index)}
+            errorTitle={result.errorTitle}
+            errorDescription={result.errorDescription}
+            busy={querying}
           />
         {/if}
       {/key}

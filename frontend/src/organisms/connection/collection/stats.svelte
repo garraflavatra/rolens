@@ -18,11 +18,16 @@
   <!-- <CodeExample code="db.stats()" /> -->
 
   <div class="grid">
-    <ObjectGrid data={collection.stats} />
+    <ObjectGrid
+      data={collection.stats}
+      errorTitle={collection.statsError ? 'Error fetching collection stats' : ''}
+      errorDescription={collection.statsError}
+      busy={!collection.stats && !collection.statsError && `Fetching stats for ${collection.key}…`}
+    />
   </div>
 
   <div class="buttons">
-    <button class="btn secondary" on:click={copy}>
+    <button class="btn secondary" on:click={copy} disabled={!collection.stats}>
       <Icon name={copySucceeded ? 'check' : 'clipboard'} />
       Copy JSON
     </button>

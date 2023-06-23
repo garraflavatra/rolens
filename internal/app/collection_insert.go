@@ -28,8 +28,8 @@ func (a *App) InsertItems(hostKey, dbKey, collKey, jsonData string) interface{} 
 	if err != nil {
 		return nil
 	}
-
 	defer close()
+
 	res, err := client.Database(dbKey).Collection(collKey).InsertMany(ctx, data)
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Encountered an error while performing insert:")

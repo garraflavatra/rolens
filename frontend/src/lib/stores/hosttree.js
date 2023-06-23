@@ -44,10 +44,11 @@ async function refresh() {
     host.uri = hostDetails.uri;
 
     host.open = async function() {
-      const progress = startProgress(`Connecting to "${hostKey}"…`);
-      const { databases: dbNames, status, systemInfo } = await OpenConnection(hostKey);
+      const { databases: dbNames, status, statusError, systemInfo, systemInfoError } = await OpenConnection(hostKey);
       host.status = status;
+      host.statusError = statusError;
       host.systemInfo = systemInfo;
+      host.systemInfoError = systemInfoError;
       host.databases = host.databases || {};
 
       if (!dbNames) {
@@ -71,9 +72,9 @@ async function refresh() {
         delete database.new;
 
         database.open = async function() {
-          const progress = startProgress(`Opening database "${dbKey}"…`);
-          const { collections: collNames, stats } = await OpenDatabase(hostKey, dbKey);
+          const { collections: collNames, stats, statsError } = await OpenDatabase(hostKey, dbKey);
           database.stats = stats;
+          database.statsError = statsError;
 
           if (!collNames) {
             return;
@@ -97,11 +98,12 @@ async function refresh() {
             delete collection.new;
 
             collection.open = async function() {
-              const progress = startProgress(`Opening database "${dbKey}"…`);
-              const stats = await OpenCollection(hostKey, dbKey, collKey);
+              const { stats, statsError } = await OpenCollection(hostKey, dbKey, collKey);
+
               collection.stats = stats;
+              collection.statsError = statsError;
+
               await refresh();
-              progress.end();
             };
 
             collection.rename = async function() {
@@ -168,7 +170,12 @@ async function refresh() {
             collection.getIndexes = async function() {
               const progress = startProgress(`Retrieving indexes of "${collKey}"…`);
               collection.indexes = [];
-              const indexes = await GetIndexes(hostKey, dbKey, collKey);
+              const { indexes, error } = await GetIndexes(hostKey, dbKey, collKey);
+
+              if (error) {
+                progress.end();
+                return error;
+              }
 
               for (const indexDetails of indexes) {
                 const index = {
@@ -190,7 +197,6 @@ async function refresh() {
               }
 
               progress.end();
-              return collection.indexes;
             };
 
             collection.getIndexByName = function(indesName) {
@@ -236,7 +242,6 @@ async function refresh() {
           }
 
           await refresh();
-          progress.end();
           windowTitle.setSegments(dbKey, host.name, 'Rolens');
         };
 
@@ -283,7 +288,6 @@ async function refresh() {
       };
 
       await refresh();
-      progress.end();
     };
 
     host.remove = async function() {

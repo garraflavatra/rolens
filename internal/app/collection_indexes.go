@@ -11,10 +11,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func (a *App) GetIndexes(hostKey, dbKey, collKey string) []bson.M {
+type GetIndexesResult struct {
+	Indexes []bson.M `json:"indexes"`
+	Error   string   `json:"error"`
+}
+
+func (a *App) GetIndexes(hostKey, dbKey, collKey string) (result GetIndexesResult) {
 	client, ctx, close, err := a.connectToHost(hostKey)
 	if err != nil {
-		return nil
+		return
 	}
 	defer close()
 
@@ -22,20 +27,18 @@ func (a *App) GetIndexes(hostKey, dbKey, collKey string) []bson.M {
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Encountered an error while creating index cursor:")
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while creating cursor"), zenity.ErrorIcon)
-		return nil
+		result.Error = err.Error()
+		return
 	}
 
-	var results []bson.M
-	err = cur.All(ctx, &results)
+	err = cur.All(ctx, &result.Indexes)
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Encountered an error while executing index cursor:")
 		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while running cursor"), zenity.ErrorIcon)
-		return nil
+		result.Error = err.Error()
 	}
 
-	return results
+	return
 }
 
 func (a *App) CreateIndex(hostKey, dbKey, collKey, jsonData string) string {

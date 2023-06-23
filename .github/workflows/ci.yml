@@ -41,7 +41,7 @@ jobs:
 
     - name: Install build dependencies for macOS
       if: contains(matrix.platform, 'macos')
-      run: brew install create-dmg
+      run: npm install --global appdmg
 
     - name: Install build dependencies for Linux
       if: contains(matrix.platform, 'ubuntu')

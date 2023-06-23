@@ -3,6 +3,9 @@
 /build/version.txt
 /build/bin/
 /build/windows/installer/tmp/
+/build/darwin/dmg_settings.json
+
+/releases
 
 /frontend/node_modules/
 /frontend/dist/

@@ -85,7 +85,7 @@ jobs:
         path: artifacts
 
     - name: Place all tarballs in the same directory
-      run: ls
+      run: build/ci_bundle.sh
 
     - name: Upload the bundle as an artifact
       uses: actions/upload-artifact@v3

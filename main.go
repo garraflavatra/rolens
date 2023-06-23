@@ -7,7 +7,6 @@ import (
 	"github.com/garraflavatra/rolens/internal"
 	"github.com/garraflavatra/rolens/internal/app"
 	uictrl "github.com/garraflavatra/rolens/internal/ui"
-	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -48,7 +47,11 @@ func main() {
 			defer func() {
 				if p := recover(); p != nil {
 					runtime.LogFatalf(ctx, "Application panicked: %v", p)
-					zenity.Error("A fatal error occured.")
+					runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
+						Type:    runtime.ErrorDialog,
+						Title:   "A fatal error occured!",
+						Message: "Please try to restart the application, or consult the logs for more details.",
+					})
 				}
 			}()
 

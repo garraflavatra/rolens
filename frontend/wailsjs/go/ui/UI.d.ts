@@ -4,8 +4,6 @@ import {context} from '../models';
 
 export function Beep():Promise<void>;
 
-export function EnterText(arg1:string,arg2:string,arg3:string):Promise<string>;
-
 export function OpenDirectory(arg1:string):Promise<string>;
 
 export function Reveal(arg1:string):Promise<void>;

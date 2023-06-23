@@ -6,10 +6,6 @@ export function Beep() {
   return window['go']['ui']['UI']['Beep']();
 }
 
-export function EnterText(arg1, arg2, arg3) {
-  return window['go']['ui']['UI']['EnterText'](arg1, arg2, arg3);
-}
-
 export function OpenDirectory(arg1) {
   return window['go']['ui']['UI']['OpenDirectory'](arg1);
 }

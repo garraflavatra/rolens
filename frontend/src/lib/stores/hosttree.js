@@ -59,13 +59,16 @@ async function refresh() {
       }
 
       for (const [ dbKey, database ] of Object.entries(host.databases)) {
-        if (!dbNames.includes(dbKey)) {
+        if (!database.new && !dbNames.includes(dbKey)) {
           delete host.databases[dbKey];
+          continue;
         }
 
         database.key = dbKey;
         database.hostKey = hostKey;
         database.collections = database.collections || {};
+
+        delete database.new;
 
         database.open = async function() {
           const progress = startProgress(`Opening database "${dbKey}"…`);
@@ -81,14 +84,17 @@ async function refresh() {
           }
 
           for (const [ collKey, collection ] of Object.entries(database.collections)) {
-            if (!collNames.includes(collKey)) {
+            if (!collection.new && !collNames.includes(collKey)) {
               delete database.collections[collKey];
+              continue;
             }
 
             collection.key = collKey;
             collection.dbKey = dbKey;
             collection.hostKey = hostKey;
             collection.indexes = collection.indexes || [];
+
+            delete collection.new;
 
             collection.open = async function() {
               const progress = startProgress(`Opening database "${dbKey}"…`);
@@ -262,8 +268,8 @@ async function refresh() {
         database.newCollection = async function() {
           const name = await dialogs.enterText('Create a collection', 'Note: collections in MongoDB do not exist until they have at least one item. Your new collection will not persist on the server; fill it to have it created.', '');
           if (name) {
-            database.collections[name] = {};
-            await refresh();
+            database.collections[name] = { key: name, new: true };
+            await database.open();
           }
         };
       }
@@ -271,8 +277,8 @@ async function refresh() {
       host.newDatabase = async function() {
         const name = await dialogs.enterText('Create a database', 'Enter the database name. Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.', '');
         if (name) {
-          host.databases[name] = {};
-          await refresh();
+          host.databases[name] = { key: name, new: true };
+          await host.open();
         }
       };
 

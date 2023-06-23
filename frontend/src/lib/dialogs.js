@@ -25,6 +25,7 @@ function enterText(title = '', description = '', value = '') {
       instance.$close();
       resolve(event.detail.value);
     });
+    instance.$on('close', () => resolve(undefined));
   });
 }
 

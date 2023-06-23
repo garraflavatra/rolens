@@ -1,6 +1,8 @@
 <script>
+  import { onDestroy } from 'svelte';
   import BlankState from './blankstate.svelte';
   import GridItems from './grid-items.svelte';
+  import Icon from './icon.svelte';
 
   export let columns = [];
   export let items = [];
@@ -16,6 +18,17 @@
   export let errorTitle = '';
   export let errorDescription = '';
   export let busy = false;
+
+  let copySucceeded = false;
+  let timeout;
+
+  async function copyErrorDescription() {
+    await navigator.clipboard.writeText(errorDescription);
+    copySucceeded = true;
+    timeout = setTimeout(() => copySucceeded = false, 1500);
+  }
+
+  onDestroy(() => clearTimeout(timeout));
 </script>
 
 <div class="grid">
@@ -33,7 +46,11 @@
   {#if busy}
     <BlankState label={(busy === true) ? 'Loading…' : busy} icon="loading" />
   {:else if errorTitle || errorDescription}
-    <BlankState title={errorTitle} label={errorDescription} icon="!" />
+    <BlankState title={errorTitle} label={errorDescription} icon="!">
+      <button class="button-small" on:click={copyErrorDescription}>
+        <Icon name={copySucceeded ? 'check' : 'clipboard'} /> Copy error message
+      </button>
+    </BlankState>
   {:else}
     <table>
       {#if showHeaders && columns.some(col => col.title)}

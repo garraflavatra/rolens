@@ -18,7 +18,7 @@
     {/if}
 
     <p class="title">{title}</p>
-    <p>{label}</p>
+    <p class="label">{label}</p>
 
     <slot />
   </div>
@@ -38,7 +38,7 @@
     height: 150px;
     width: auto;
   }
-  .content :global(svg) {
+  .content > :global(svg) {
     height: 40px;
     width: auto;
   }

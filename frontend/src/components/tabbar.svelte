@@ -61,7 +61,7 @@
   }
   li {
     display: inline-block;
-    flex-grow: 1;
+    flex: 1;
     position: relative;
   }
 
@@ -101,6 +101,7 @@
     border-color: #00008b;
     cursor: not-allowed;
   }
+
   nav.tabs.multiline button.tab .label {
     display: block;
     margin-top: 4px;

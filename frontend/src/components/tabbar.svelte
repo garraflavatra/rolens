@@ -1,26 +1,39 @@
 <script>
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import Icon from './icon.svelte';
 
   export let tabs = [];
   export let selectedKey = {};
   export let canAddTab = false;
+  export let multiline = false;
 
   const dispatch = createEventDispatcher();
+  const maxPixelsPerMultilineTab = 120;
+  let navEl;
+  let pixelsPerTab = 0;
+  $: tabs && navEl && updateMeasurements();
+
+  function updateMeasurements() {
+    pixelsPerTab = (navEl.offsetWidth ?? 0) / tabs.length;
+  }
 
   function select(tabKey) {
     selectedKey = tabKey;
     dispatch('select', tabKey);
   }
+
+  onMount(() => {
+    window.addEventListener('resize', updateMeasurements);
+  });
 </script>
 
-<nav class="tabs">
+<nav class="tabs" class:multiline={multiline || (pixelsPerTab < maxPixelsPerMultilineTab)} bind:this={navEl}>
   <ul>
     {#each tabs as tab (tab.key)}
       <li class:active={tab.key === selectedKey}>
         <button class="tab" on:click={() => select(tab.key)}>
           {#if tab.icon} <Icon name={tab.icon} /> {/if}
-          {tab.title}
+          <span class="label">{tab.title}</span>
         </button>
         {#if tab.closable}
           <button class="button-small" on:click={() => dispatch('closeTab', tab.key)}>
@@ -87,6 +100,10 @@
     background-color: #00008b;
     border-color: #00008b;
     cursor: not-allowed;
+  }
+  nav.tabs.multiline button.tab .label {
+    display: block;
+    margin-top: 4px;
   }
 
   .button-small {

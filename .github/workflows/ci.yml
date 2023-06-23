@@ -85,7 +85,19 @@ jobs:
         path: artifacts
 
     - name: Place all tarballs in the same directory
-      run: build/ci_bundle.sh
+      run: |
+        node ./build/version_to_file.js
+        version=$(<./build/version.txt)
+
+        mkdir bundle
+
+        # macOS binaries
+        mv artifacts/*/rolens-macos-11-amd64.tar.gz bundle/rolens-$version-macos-amd64.tar.gz
+        mv artifacts/*/rolens-macos-11-arm64.tar.gz bundle/rolens-$version-macos-arm64.tar.gz
+
+        # Windows binaries
+        mv artifacts/*/rolens-windows-2019-amd64.zip bundle/rolens-$version-windows-amd64.zip
+        mv artifacts/*/rolens-windows-2019-arm64.zip bundle/rolens-$version-windows-arm64.zip
 
     - name: Upload the bundle as an artifact
       uses: actions/upload-artifact@v3

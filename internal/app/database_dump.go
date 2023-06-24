@@ -43,6 +43,7 @@ func (a *App) PerformDump(jsonData string) bool {
 
 	args := make([]string, 0)
 	args = append(args, fmt.Sprintf(`--uri="%v"`, host.URI))
+	fname := path.Join(info.OutDir, info.Filename)
 
 	if info.DbKey != "" {
 		args = append(args, fmt.Sprintf(`--db="%v"`, info.DbKey))
@@ -52,7 +53,7 @@ func (a *App) PerformDump(jsonData string) bool {
 		}
 	}
 
-	args = append(args, fmt.Sprintf(`--out="%v"`, path.Join(info.OutDir, info.Filename)))
+	args = append(args, fmt.Sprintf(`--out="%v"`, fname))
 	cmd := exec.Command("mongodump", args...)
 	var stdout strings.Builder
 	var stderr strings.Builder
@@ -63,9 +64,14 @@ func (a *App) PerformDump(jsonData string) bool {
 	runtime.LogInfo(a.ctx, "Performing dump, executing command: mongodump "+strings.Join(args, " "))
 	runtime.LogInfo(a.ctx, "mongodump stdout: "+stdout.String())
 	runtime.LogInfo(a.ctx, "mongodump sterr: "+stderr.String())
+
 	if err != nil {
 		runtime.LogWarning(a.ctx, "Error while executing mongodump: "+err.Error())
+		return false
 	}
 
-	return err == nil
+	println(fname)
+
+	a.ui.Reveal(fname)
+	return true
 }

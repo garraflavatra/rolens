@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 * Open dump in Explorer/Finder when finished (#43).
+* Made it possible (again) to input loose JSON into find view inputs, i.e. `{ key: 'val' }` or `{ 'num': 2 }` besides `{ "strict": "json" }`.
 
 ## [v0.2.1]
 

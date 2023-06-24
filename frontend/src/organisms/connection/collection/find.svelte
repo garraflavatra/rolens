@@ -48,7 +48,13 @@
 
     querying = `Querying ${collection.key}…`;
     activePath = [];
-    const newResult = await FindItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(form));
+    const newResult = await FindItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify({
+      fields: convertLooseJson(form.fields || defaults.fields),
+      limit: form.limit ?? defaults.limit,
+      query: convertLooseJson(form.query) || defaults.query,
+      skip: form.skip ?? defaults.skip,
+      sort: convertLooseJson(form.sort) || defaults.sort,
+    }));
 
     if (newResult) {
       newResult.results = newResult.results?.map(s => EJSON.parse(s, { relaxed: false }));

@@ -290,6 +290,15 @@ async function refresh() {
       await refresh();
     };
 
+    host.edit = async function() {
+      const dialog = dialogs.new(HostDetailDialog, { hostKey });
+      return new Promise(resolve => {
+        dialog.$on('close', () => {
+          refresh().then(resolve);
+        });
+      });
+    };
+
     host.remove = async function() {
       await RemoveHost(hostKey);
       await refresh();

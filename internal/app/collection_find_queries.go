@@ -6,7 +6,6 @@ import (
 	"os"
 	"path"
 
-	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -37,8 +36,7 @@ func (a *App) SavedQueries() map[string]SavedQuery {
 	if err != nil {
 		// It's ok if the file cannot be opened, for example if it is not accessible.
 		// Therefore no error is returned.
-		runtime.LogInfo(a.ctx, "Could not open queries.json")
-		runtime.LogInfo(a.ctx, err.Error())
+		runtime.LogInfof(a.ctx, "Could not open queries.json: %s", err.Error())
 		return make(map[string]SavedQuery, 0)
 	}
 
@@ -49,8 +47,7 @@ func (a *App) SavedQueries() map[string]SavedQuery {
 		err = json.Unmarshal(jsonData, &queries)
 
 		if err != nil {
-			runtime.LogInfo(a.ctx, "queries.json file contains malformatted JSON data")
-			runtime.LogInfo(a.ctx, err.Error())
+			runtime.LogInfof(a.ctx, "queries.json file contains malformatted JSON data: %s", err.Error())
 			return nil
 		}
 
@@ -62,9 +59,12 @@ func (a *App) SaveQuery(jsonData string) string {
 	var query SavedQuery
 	err := json.Unmarshal([]byte(jsonData), &query)
 	if err != nil {
-		runtime.LogError(a.ctx, "Add query: malformed form")
-		runtime.LogError(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Malformed JSON"), zenity.ErrorIcon)
+		runtime.LogErrorf(a.ctx, "Add query: malformed form: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Malformed JSON",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return ""
 	}
 
@@ -72,7 +72,11 @@ func (a *App) SaveQuery(jsonData string) string {
 	queries[query.Name] = query
 	err = updateQueryFile(a, queries)
 	if err != nil {
-		zenity.Error(err.Error(), zenity.Title("Could not update query list"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Could not update query list",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return ""
 	}
 
@@ -83,7 +87,11 @@ func (a *App) RemoveQuery(queryName string) {
 	queries := a.SavedQueries()
 	delete(queries, queryName)
 	if err := updateQueryFile(a, queries); err != nil {
-		zenity.Error(err.Error(), zenity.Title("Could not update query list"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Could not update query list",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 	}
 }
 
@@ -91,15 +99,22 @@ func (a *App) UpdateQueries(jsonData string) bool {
 	var queries map[string]SavedQuery
 	err := json.Unmarshal([]byte(jsonData), &queries)
 	if err != nil {
-		runtime.LogError(a.ctx, "Update queries: malformed form")
-		runtime.LogError(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Malformed JSON"), zenity.ErrorIcon)
+		runtime.LogErrorf(a.ctx, "Update queries: malformed form: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Malformed JSON",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 
 	err = updateQueryFile(a, queries)
 	if err != nil {
-		zenity.Error(err.Error(), zenity.Title("Could not save queries"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Could not save queries",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 

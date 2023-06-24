@@ -5,7 +5,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -24,14 +23,22 @@ func (a *App) connectToHost(hostKey string) (*mongo.Client, context.Context, fun
 	hosts, err := a.Hosts()
 	if err != nil {
 		runtime.LogInfof(a.ctx, "Error while getting hosts: %s", err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while getting hosts"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error getting hosts",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return nil, nil, nil, errors.New("could not retrieve hosts")
 	}
 
 	h := hosts[hostKey]
 	if len(h.URI) == 0 {
 		runtime.LogInfof(a.ctx, "Invalid URI (len == 0) for host %s", hostKey)
-		zenity.Warning("You haven't specified a valid uri for the selected host.", zenity.Title("Invalid query"), zenity.WarningIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Invalid host information",
+			Message: "You haven't specified a valid uri for the selected host.",
+			Type:    runtime.ErrorDialog,
+		})
 		return nil, nil, nil, errors.New("invalid uri")
 	}
 
@@ -39,7 +46,11 @@ func (a *App) connectToHost(hostKey string) (*mongo.Client, context.Context, fun
 
 	if err != nil {
 		runtime.LogWarningf(a.ctx, "Could not connect to host %s: %s", hostKey, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while connecting to "+h.Name), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error while connecting to " + h.Name,
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return nil, nil, nil, errors.New("could not establish a connection with " + h.Name)
 	}
 
@@ -60,24 +71,25 @@ func (a *App) OpenConnection(hostKey string) (result OpenConnectionResult) {
 
 	result.Databases, err = client.ListDatabaseNames(ctx, bson.M{})
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Could not retrieve database names for host "+hostKey)
-		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while getting databases"), zenity.ErrorIcon)
+		runtime.LogWarningf(a.ctx, "Could not retrieve database names for host %s: %s", hostKey, err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error getting database list",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 	}
 
 	command := bson.M{"serverStatus": 1}
 	err = client.Database("admin").RunCommand(ctx, command).Decode(&result.Status)
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Could not retrieve server status")
-		runtime.LogWarning(a.ctx, err.Error())
+		runtime.LogWarningf(a.ctx, "Could not retrieve server status: %s", err.Error())
 		result.StatusError = err.Error()
 	}
 
 	command = bson.M{"hostInfo": 1}
 	err = client.Database("admin").RunCommand(ctx, command).Decode(&result.SystemInfo)
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Could not retrieve system info")
-		runtime.LogWarning(a.ctx, err.Error())
+		runtime.LogWarningf(a.ctx, "Could not retrieve system info: %s", err.Error())
 		result.SystemInfoError = err.Error()
 	}
 

@@ -3,7 +3,6 @@ package app
 import (
 	"strings"
 
-	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -18,9 +17,12 @@ func (a *App) InsertItems(hostKey, dbKey, collKey, jsonData string) interface{} 
 
 	err := bson.UnmarshalExtJSON([]byte(jsonData), true, &data)
 	if err != nil {
-		runtime.LogError(a.ctx, "Could not parse insert JSON:")
-		runtime.LogError(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
+		runtime.LogErrorf(a.ctx, "Could not parse insert JSON: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Malformed JSON",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return nil
 	}
 
@@ -32,9 +34,12 @@ func (a *App) InsertItems(hostKey, dbKey, collKey, jsonData string) interface{} 
 
 	res, err := client.Database(dbKey).Collection(collKey).InsertMany(ctx, data)
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Encountered an error while performing insert:")
-		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while performing insert"), zenity.ErrorIcon)
+		runtime.LogWarningf(a.ctx, "Encountered an error while performing insert: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error performing insert",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return nil
 	}
 

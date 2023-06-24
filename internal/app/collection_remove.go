@@ -3,7 +3,6 @@ package app
 import (
 	"strings"
 
-	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,16 +14,25 @@ func (a *App) RemoveItems(hostKey, dbKey, collKey, jsonData string, many bool) i
 	jsonData = strings.TrimSpace(jsonData)
 
 	if len(jsonData) == 0 {
-		err := zenity.Question("Are you sure you want to drop all items in "+collKey+"?", zenity.Title("Confirm"), zenity.WarningIcon)
-		if err == zenity.ErrCanceled {
+		choice, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:         "Confirm",
+			Message:       "Are you sure you want to drop all items in " + collKey + "?",
+			Buttons:       []string{"Yes", "Cancel"},
+			DefaultButton: "Yes",
+			CancelButton:  "Cancel",
+		})
+		if choice != "Yes" {
 			return 0
 		}
 	} else {
 		err = bson.UnmarshalExtJSON([]byte(jsonData), true, &filter)
 		if err != nil {
-			runtime.LogError(a.ctx, "Could not parse remove query:")
-			runtime.LogError(a.ctx, err.Error())
-			zenity.Error(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
+			runtime.LogErrorf(a.ctx, "Could not parse remove query: %s", err.Error())
+			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+				Title:   "Malformed JSON",
+				Message: err.Error(),
+				Type:    runtime.ErrorDialog,
+			})
 			return 0
 		}
 	}
@@ -45,9 +53,12 @@ func (a *App) RemoveItems(hostKey, dbKey, collKey, jsonData string, many bool) i
 	}
 
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Encountered an error while performing remove:")
-		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while performing remove"), zenity.ErrorIcon)
+		runtime.LogWarningf(a.ctx, "Encountered an error while performing remove: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error performing remove query",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return 0
 	}
 
@@ -66,10 +77,12 @@ func (a *App) RemoveItemById(hostKey, dbKey, collKey, itemId string) bool {
 	err = client.Database(dbKey).Collection(collKey).FindOneAndDelete(ctx, filter).Err()
 
 	if err != nil && err != mongo.ErrNoDocuments {
-		runtime.LogWarning(a.ctx, "Encountered an error while performing remove by id:")
-		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while performing remove"), zenity.ErrorIcon)
-
+		runtime.LogWarningf(a.ctx, "Encountered an error while performing remove by id: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error performing remove query",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 

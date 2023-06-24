@@ -13,7 +13,6 @@ import (
 	"strings"
 
 	"github.com/garraflavatra/rolens/internal/ui"
-	"github.com/ncruces/zenity"
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 	"golang.org/x/sync/syncmap"
 )
@@ -107,16 +106,30 @@ func (a *App) Environment() EnvironmentInfo {
 }
 
 func (a *App) PurgeLogDirectory() {
-	err := zenity.Question("Are you sure you want to remove all logfiles?", zenity.Title("Confirm"), zenity.WarningIcon)
-	if err == zenity.ErrCanceled {
+	choice, _ := wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
+		Title:         "Confirm",
+		Message:       "Are you sure you want to remove all logfiles?",
+		Buttons:       []string{"Yes", "Cancel"},
+		DefaultButton: "Yes",
+		CancelButton:  "Cancel",
+	})
+	if choice != "Yes" {
 		return
 	}
 
-	err = os.RemoveAll(a.Env.LogDirectory)
+	err := os.RemoveAll(a.Env.LogDirectory)
 	if err == nil {
-		zenity.Info("Successfully purged log directory.", zenity.InfoIcon)
+		wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
+			Title:   "Success",
+			Message: "Successfully purged log directory",
+			Type:    wailsRuntime.InfoDialog,
+		})
 	} else {
-		zenity.Error(err.Error(), zenity.Title("Encountered an error while purging log directory."), zenity.WarningIcon)
+		wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
+			Title:   "Error while purging log directory",
+			Message: err.Error(),
+			Type:    wailsRuntime.ErrorDialog,
+		})
 	}
 }
 

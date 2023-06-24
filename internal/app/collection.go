@@ -3,7 +3,6 @@ package app
 import (
 	"fmt"
 
-	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -23,8 +22,7 @@ func (a *App) OpenCollection(hostKey, dbKey, collKey string) (result OpenCollect
 	command := bson.M{"collStats": collKey}
 	err = client.Database(dbKey).RunCommand(ctx, command).Decode(&result.Stats)
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Could not retrieve collection stats for "+collKey)
-		runtime.LogWarning(a.ctx, err.Error())
+		runtime.LogWarningf(a.ctx, "Could not retrieve collection stats for %s: %s", collKey, err.Error())
 		result.StatsError = err.Error()
 	}
 
@@ -45,9 +43,12 @@ func (a *App) RenameCollection(hostKey, dbKey, collKey, newCollKey string) bool 
 	}
 	err = client.Database("admin").RunCommand(ctx, command).Decode(&result)
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Could not rename collection "+collKey)
-		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while renaming collection"), zenity.ErrorIcon)
+		runtime.LogWarningf(a.ctx, "Could not rename collection %s: %s", collKey, err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error renaming collection",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 
@@ -55,8 +56,14 @@ func (a *App) RenameCollection(hostKey, dbKey, collKey, newCollKey string) bool 
 }
 
 func (a *App) TruncateCollection(hostKey, dbKey, collKey string) bool {
-	err := zenity.Question("Are you sure you want to remove all items from "+collKey+"?", zenity.Title("Confirm"), zenity.WarningIcon)
-	if err == zenity.ErrCanceled {
+	choice, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+		Title:         "Confirm",
+		Message:       "Are you sure you want to remove all items in " + collKey + "?",
+		Buttons:       []string{"Yes", "Cancel"},
+		DefaultButton: "Yes",
+		CancelButton:  "Cancel",
+	})
+	if choice != "Yes" {
 		return false
 	}
 
@@ -68,9 +75,12 @@ func (a *App) TruncateCollection(hostKey, dbKey, collKey string) bool {
 
 	_, err = client.Database(dbKey).Collection(collKey).DeleteMany(ctx, bson.D{})
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Could not truncate collection "+collKey)
-		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while truncating collection"), zenity.ErrorIcon)
+		runtime.LogWarningf(a.ctx, "Could not truncate collection %s: %s", collKey, err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error truncating collection",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 
@@ -78,8 +88,14 @@ func (a *App) TruncateCollection(hostKey, dbKey, collKey string) bool {
 }
 
 func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
-	err := zenity.Question("Are you sure you want to drop "+collKey+"?", zenity.Title("Confirm"), zenity.WarningIcon)
-	if err == zenity.ErrCanceled {
+	choice, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+		Title:         "Confirm",
+		Message:       "Are you sure you want to drop " + collKey + "?",
+		Buttons:       []string{"Yes", "Cancel"},
+		DefaultButton: "Yes",
+		CancelButton:  "Cancel",
+	})
+	if choice != "Yes" {
 		return false
 	}
 
@@ -91,9 +107,12 @@ func (a *App) DropCollection(hostKey, dbKey, collKey string) bool {
 
 	err = client.Database(dbKey).Collection(collKey).Drop(ctx)
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Could not drop collection "+collKey)
-		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while dropping collection"), zenity.ErrorIcon)
+		runtime.LogWarningf(a.ctx, "Could not drop collection %s: %s", collKey, err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error dropping collection",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 

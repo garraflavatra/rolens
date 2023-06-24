@@ -3,7 +3,6 @@ package app
 import (
 	"encoding/json"
 
-	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
 	mongoOptions "go.mongodb.org/mongo-driver/mongo/options"
@@ -29,9 +28,9 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) (result FindIt
 
 	err := json.Unmarshal([]byte(formJson), &form)
 	if err != nil {
-		runtime.LogError(a.ctx, "Could not parse find form:")
-		runtime.LogError(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Could not parse form"), zenity.ErrorIcon)
+		runtime.LogErrorf(a.ctx, "Could not parse find form: %s", err.Error())
+		result.ErrorTitle = "Could not parse form"
+		result.ErrorDescription = err.Error()
 		return
 	}
 
@@ -109,8 +108,7 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) (result FindIt
 	for _, r := range results {
 		marshalled, err := bson.MarshalExtJSON(r, true, true)
 		if err != nil {
-			runtime.LogError(a.ctx, "Failed to marshal find BSON:")
-			runtime.LogError(a.ctx, err.Error())
+			runtime.LogErrorf(a.ctx, "Failed to marshal find BSON: %s", err.Error())
 			result.ErrorTitle = "Failed to marshal JSON"
 			result.ErrorDescription = err.Error()
 			return
@@ -125,14 +123,22 @@ func (a *App) UpdateFoundDocument(hostKey, dbKey, collKey, idJson, newDocJson st
 	var id bson.M
 	if err := bson.UnmarshalExtJSON([]byte(idJson), true, &id); err != nil {
 		runtime.LogWarningf(a.ctx, "Could not parse find/update query: %s", err.Error())
-		zenity.Error(err.Error(), zenity.Title("Couldn't parse update query"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error parsing update query",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 
 	var newDoc bson.M
 	if err := bson.UnmarshalExtJSON([]byte(newDocJson), true, &newDoc); err != nil {
 		runtime.LogWarningf(a.ctx, "Could not parse new find/update document: %s", err.Error())
-		zenity.Error(err.Error(), zenity.Title("Couldn't parse document"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error parsing document",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 
@@ -144,7 +150,11 @@ func (a *App) UpdateFoundDocument(hostKey, dbKey, collKey, idJson, newDocJson st
 
 	if _, err := client.Database(dbKey).Collection(collKey).ReplaceOne(ctx, id, newDoc); err != nil {
 		runtime.LogInfof(a.ctx, "Error while replacing document: %s", err.Error())
-		zenity.Error(err.Error(), zenity.Title("Unable to replace document"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error replacing document",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 

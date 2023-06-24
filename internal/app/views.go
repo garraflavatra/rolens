@@ -7,7 +7,6 @@ import (
 	"os"
 	"path"
 
-	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -77,16 +76,14 @@ func (a *App) Views() (ViewStore, error) {
 	if err != nil {
 		// It's ok if the file cannot be opened, for example if it is not accessible.
 		// Therefore no error is returned.
-		runtime.LogInfo(a.ctx, "views.json file cannot be opened")
-		runtime.LogInfo(a.ctx, err.Error())
+		runtime.LogInfof(a.ctx, "views.json file cannot be opened: %s", err.Error())
 		return views, nil
 	}
 
 	if len(jsonData) > 0 {
 		err = json.Unmarshal(jsonData, &views)
 		if err != nil {
-			runtime.LogInfo(a.ctx, "views.json file contains malformatted JSON data")
-			runtime.LogInfo(a.ctx, err.Error())
+			runtime.LogInfof(a.ctx, "views.json file contains malformatted JSON data: %s", err.Error())
 			return views, errors.New("views.json file contains malformatted JSON data")
 		}
 	}
@@ -101,13 +98,21 @@ func (a *App) UpdateViewStore(jsonData string) error {
 	var viewStore ViewStore
 	err := json.Unmarshal([]byte(jsonData), &viewStore)
 	if err != nil {
-		zenity.Error(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Malformed JSON",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return errors.New("invalid JSON")
 	}
 
 	err = updateViewStore(a, viewStore)
 	if err != nil {
-		zenity.Error(err.Error(), zenity.Title("Error while updating view store"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error updating view store",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return errors.New("could not update view store")
 	}
 
@@ -117,12 +122,22 @@ func (a *App) UpdateViewStore(jsonData string) error {
 func (a *App) RemoveView(viewKey string) error {
 	views, err := a.Views()
 	if err != nil {
-		zenity.Error(err.Error(), zenity.Title("Error while getting views"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error getting views",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return errors.New("could not retrieve existing view store")
 	}
 
-	err = zenity.Question("Are you sure you want to remove "+views[viewKey].Name+"?", zenity.Title("Confirm"), zenity.WarningIcon)
-	if err == zenity.ErrCanceled {
+	choice, _ := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+		Title:         "Confirm",
+		Message:       "Are you sure you want to remove " + views[viewKey].Name + "?",
+		Buttons:       []string{"Yes", "Cancel"},
+		DefaultButton: "Yes",
+		CancelButton:  "Cancel",
+	})
+	if choice != "Yes" {
 		return errors.New("operation aborted")
 	}
 
@@ -130,7 +145,11 @@ func (a *App) RemoveView(viewKey string) error {
 	err = updateViewStore(a, views)
 
 	if err != nil {
-		zenity.Error(err.Error(), zenity.Title("Error while updating view store"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error updating view store",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return errors.New("could not update view store")
 	}
 	return nil

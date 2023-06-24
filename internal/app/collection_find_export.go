@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/bsontype"
@@ -46,7 +45,11 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 	var settings ExportSettings
 	if err := json.Unmarshal([]byte(settingsJson), &settings); err != nil {
 		runtime.LogWarningf(a.ctx, "Could not parse export settings: %s", err.Error())
-		zenity.Error(err.Error(), zenity.Title("Couldn't parse export settings!"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Couldn't parse export settings!",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 
@@ -69,8 +72,11 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 
 	view, found := views[settings.ViewKey]
 	if !found {
-		zenity.Error(fmt.Sprintf("View %s is not known", settings.ViewKey), zenity.ErrorIcon)
 		runtime.LogDebugf(a.ctx, "Export: unknown view %s", settings.ViewKey)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Message: fmt.Sprintf("View %s is not known", settings.ViewKey),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 
@@ -106,19 +112,29 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 		Filters:              []runtime.FileFilter{fileFilter},
 	})
 	if err != nil {
-		zenity.Error("An error occured while choosing the export destination", zenity.ErrorIcon)
 		runtime.LogWarningf(a.ctx, "Export: error while choosing export destination: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error while choosing export destination",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 	if settings.OutFile == "" {
-		zenity.Error("You must specify an export destination.", zenity.ErrorIcon)
 		runtime.LogDebug(a.ctx, "Export: no destination specified")
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Message: "Please specify ab export destination.",
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 
 	if _, err := os.Stat(settings.OutFile); err == nil {
-		zenity.Error(fmt.Sprintf("File %s already exists, export aborted.", settings.OutFile), zenity.ErrorIcon)
 		runtime.LogDebugf(a.ctx, "Export: destination %s already exists", settings.OutFile)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Message: fmt.Sprintf("File %s already exists, export aborted.", settings.OutFile),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 
@@ -126,7 +142,11 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 	if settings.Contents != ExportContentsAll {
 		if err = bson.UnmarshalExtJSON([]byte(settings.QueryJson), true, &query); err != nil {
 			runtime.LogDebugf(a.ctx, "Invalid find query (exporting): %s", settings.QueryJson)
-			zenity.Error(err.Error(), zenity.Title("Invalid query"), zenity.ErrorIcon)
+			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+				Title:   "Invalid query",
+				Message: err.Error(),
+				Type:    runtime.ErrorDialog,
+			})
 			return false
 		}
 	}
@@ -136,8 +156,6 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 		return false
 	}
 	defer close()
-
-	pgr, _ := zenity.Progress(zenity.Title("Performing export…"))
 
 	projection := bson.M{}
 	if settings.ViewKey != "list" {
@@ -163,14 +181,22 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 	})
 	if err != nil {
 		runtime.LogInfof(a.ctx, "Export: unable to get cursor while exporting: %s", err.Error())
-		zenity.Error(err.Error(), zenity.Title("Unable to get cursor"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Couldn't get cursor",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 
 	file, err := os.OpenFile(settings.OutFile, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		zenity.Error(fmt.Sprintf(err.Error(), zenity.Title("Error while opening file"), settings.OutFile), zenity.ErrorIcon)
 		runtime.LogDebugf(a.ctx, "Export: unable to open file %s", settings.OutFile)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error opening file",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 	defer file.Close()
@@ -192,7 +218,11 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 		case ExportFormatCsv:
 			els, err := cur.Current.Elements()
 			if err != nil {
-				zenity.Error(err.Error(), zenity.Title("BSON invalid"), zenity.ErrorIcon)
+				runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+					Title:   "BSON is invalid",
+					Message: err.Error(),
+					Type:    runtime.ErrorDialog,
+				})
 			}
 
 			csvItem := make([]string, 0)
@@ -228,7 +258,11 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 
 					if err := csvWriter.Write(csvColumnKeys); err != nil {
 						runtime.LogInfof(a.ctx, "Unable to write item %d to CSV while exporting: %s", index, err.Error())
-						zenity.Error(err.Error(), zenity.Title("Unable to write item %d to CSV"), zenity.ErrorIcon)
+						runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+							Title:   fmt.Sprintf("Unable to write item %d to CSV", index),
+							Message: err.Error(),
+							Type:    runtime.ErrorDialog,
+						})
 					}
 				}
 
@@ -241,7 +275,11 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 
 					var v any
 					if err := r.Unmarshal(&v); err != nil {
-						zenity.Error(err.Error(), zenity.Title(fmt.Sprintf("Unable to unmarshal field %s", k)), zenity.ErrorIcon)
+						runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+							Title:   fmt.Sprintf("Unable to unmarshal field %s", k),
+							Message: err.Error(),
+							Type:    runtime.ErrorDialog,
+						})
 						csvItem = append(csvItem, "")
 						continue
 					}
@@ -254,8 +292,12 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 			}
 
 			if err := csvWriter.Write(csvItem); err != nil {
-				runtime.LogInfof(a.ctx, "Unable to write item %d to CSV while exporting: %s", index, err.Error())
-				zenity.Error(err.Error(), zenity.Title("Unable to write item %d to CSV"), zenity.ErrorIcon)
+				runtime.LogInfof(a.ctx, "Export: Unable to write item %d to CSV while exporting: %s", index, err.Error())
+				runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+					Title:   fmt.Sprintf("Unable to write item %d to CSV", index),
+					Message: err.Error(),
+					Type:    runtime.ErrorDialog,
+				})
 			}
 
 			csvWriter.Flush()
@@ -263,8 +305,12 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 		case ExportFormatJsonArray, ExportFormatNdJson:
 			itemJson, err := bson.MarshalExtJSON(cur.Current, true, false)
 			if err != nil {
-				runtime.LogInfof(a.ctx, "Unable to marshal item %d to JSON while exporting: %s", index, err.Error())
-				zenity.Error(err.Error(), zenity.Title("Unable to marshal item %d to JSON"), zenity.ErrorIcon)
+				runtime.LogInfof(a.ctx, "Export: Unable to marshal item %d to JSON while exporting: %s", index, err.Error())
+				runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+					Title:   fmt.Sprintf("Unable to write item %d to CSV", index),
+					Message: err.Error(),
+					Type:    runtime.ErrorDialog,
+				})
 			}
 
 			if (settings.Format == ExportFormatJsonArray) && (index != 0) {
@@ -280,22 +326,13 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 
 		index++
 
-		if count != 0 && pgr != nil {
-			p := (float32(index) / float32(count)) * 100.0
-			pgr.Value(int(p))
-		}
 	}
 
 	if settings.Format == ExportFormatJsonArray {
 		file.WriteString("]\n")
 	}
 
-	if pgr != nil {
-		pgr.Complete()
-		pgr.Close()
-	}
-
 	a.ui.Reveal(settings.OutFile)
-	runtime.LogInfo(a.ctx, "Export succeeded")
+	runtime.LogInfof(a.ctx, "Export succeeded: %d items", count)
 	return true
 }

@@ -30,7 +30,7 @@ func (a *App) Menu() *menu.Menu {
 	aboutMenu.AddSeparator()
 	aboutMenu.AddText("Open data directory…", nil, func(cd *menu.CallbackData) { a.ui.Reveal(a.Env.DataDirectory) })
 	aboutMenu.AddText("Open log directory…", nil, func(cd *menu.CallbackData) { a.ui.Reveal(a.Env.LogDirectory) })
-	aboutMenu.AddText("Purge logs", nil, func(cd *menu.CallbackData) { a.PurgeLogDirectory() })
+	aboutMenu.AddText("Purge logs…", nil, func(cd *menu.CallbackData) { a.PurgeLogDirectory() })
 	aboutMenu.AddSeparator()
 	aboutMenu.AddText("Quit Rolens", keys.CmdOrCtrl("q"), func(cd *menu.CallbackData) { wailsRuntime.Quit(a.ctx) })
 

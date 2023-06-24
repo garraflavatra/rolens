@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"math"
 
-	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -25,16 +24,14 @@ func (a *App) GetIndexes(hostKey, dbKey, collKey string) (result GetIndexesResul
 
 	cur, err := client.Database(dbKey).Collection(collKey).Indexes().List(ctx)
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Encountered an error while creating index cursor:")
-		runtime.LogWarning(a.ctx, err.Error())
+		runtime.LogWarningf(a.ctx, "Encountered an error while creating index cursor: %s", err.Error())
 		result.Error = err.Error()
 		return
 	}
 
 	err = cur.All(ctx, &result.Indexes)
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Encountered an error while executing index cursor:")
-		runtime.LogWarning(a.ctx, err.Error())
+		runtime.LogWarningf(a.ctx, "Encountered an error while executing index cursor: %s", err.Error())
 		result.Error = err.Error()
 	}
 
@@ -64,9 +61,12 @@ func (a *App) CreateIndex(hostKey, dbKey, collKey, jsonData string) string {
 
 	err = json.Unmarshal([]byte(jsonData), &form)
 	if err != nil {
-		runtime.LogError(a.ctx, "Could not parse index JSON:")
-		runtime.LogError(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
+		runtime.LogErrorf(a.ctx, "Could not parse index JSON: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Malformed JSON",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return ""
 	}
 
@@ -94,9 +94,12 @@ func (a *App) CreateIndex(hostKey, dbKey, collKey, jsonData string) string {
 
 	name, err := client.Database(dbKey).Collection(collKey).Indexes().CreateOne(ctx, indexModel)
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Encountered an error while creating index:")
-		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while creating index"), zenity.ErrorIcon)
+		runtime.LogWarningf(a.ctx, "Encountered an error while creating index: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error creating index",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return ""
 	}
 
@@ -112,9 +115,12 @@ func (a *App) DropIndex(hostKey, dbKey, collKey, indexName string) bool {
 
 	_, err = client.Database(dbKey).Collection(collKey).Indexes().DropOne(ctx, indexName, &options.DropIndexesOptions{})
 	if err != nil {
-		runtime.LogError(a.ctx, "Encountered an error while creating index drop cursor:")
-		runtime.LogError(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while creating drop cursor"), zenity.ErrorIcon)
+		runtime.LogErrorf(a.ctx, "Encountered an error while creating index drop cursor: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error creating drop cursor",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 

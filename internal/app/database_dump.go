@@ -7,7 +7,6 @@ import (
 	"path"
 	"strings"
 
-	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -23,21 +22,32 @@ func (a *App) PerformDump(jsonData string) bool {
 	var info DumpInfo
 	err := json.Unmarshal([]byte(jsonData), &info)
 	if err != nil {
-		runtime.LogError(a.ctx, "Could not unmarshal dump form")
-		runtime.LogError(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Could not parse JSON"), zenity.ErrorIcon)
+		runtime.LogErrorf(a.ctx, "Could not unmarshal dump form: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Malformed JSON",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 
 	hosts, err := a.Hosts()
 	if err != nil {
-		zenity.Error(err.Error(), zenity.Title("Error while getting hosts"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error getting hosts",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 	host := hosts[info.HostKey]
 
 	if !a.Env.HasMongoDump {
-		zenity.Error("You need to install mongodump to perform a dump.", zenity.Title("Additional tooling required"), zenity.ErrorIcon)
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Additional tooling required",
+			Message: "You need to install mongodump to perform a dump.",
+			Type:    runtime.ErrorDialog,
+		})
 		return false
 	}
 

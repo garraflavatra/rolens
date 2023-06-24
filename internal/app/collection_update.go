@@ -3,7 +3,6 @@ package app
 import (
 	"encoding/json"
 
-	"github.com/ncruces/zenity"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -24,9 +23,12 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 
 	err := json.Unmarshal([]byte(formJson), &form)
 	if err != nil {
-		runtime.LogError(a.ctx, "Could not parse update form:")
-		runtime.LogError(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Could not parse form"), zenity.ErrorIcon)
+		runtime.LogErrorf(a.ctx, "Could not parse update form: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Malformed JSON",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return 0
 	}
 
@@ -41,10 +43,12 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 
 	err = bson.UnmarshalExtJSON([]byte(form.Query), true, &query)
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Invalid update query:")
-		runtime.LogWarning(a.ctx, form.Query)
-		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Invalid update query"), zenity.ErrorIcon)
+		runtime.LogWarningf(a.ctx, "Invalid update query %v: %s", form.Query, err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Invalid update query",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return 0
 	}
 
@@ -54,10 +58,12 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 		if err == nil {
 			update[param.Type] = unmarshalled
 		} else {
-			runtime.LogWarning(a.ctx, "Invalid update parameter value:")
-			runtime.LogWarning(a.ctx, param.Value)
-			runtime.LogWarning(a.ctx, err.Error())
-			zenity.Error(err.Error(), zenity.Title("Invalid update query"), zenity.ErrorIcon)
+			runtime.LogWarningf(a.ctx, "Invalid update parameter value %v: %s", param.Value, err.Error())
+			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+				Title:   "Invalid update query",
+				Message: err.Error(),
+				Type:    runtime.ErrorDialog,
+			})
 			return 0
 		}
 	}
@@ -72,9 +78,12 @@ func (a *App) UpdateItems(hostKey, dbKey, collKey string, formJson string) int64
 	}
 
 	if err != nil {
-		runtime.LogWarning(a.ctx, "Encountered an error while performing update:")
-		runtime.LogWarning(a.ctx, err.Error())
-		zenity.Error(err.Error(), zenity.Title("Error while performing update"), zenity.ErrorIcon)
+		runtime.LogWarningf(a.ctx, "Encountered an error while performing update: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title:   "Error performing update query",
+			Message: err.Error(),
+			Type:    runtime.ErrorDialog,
+		})
 		return 0
 	}
 

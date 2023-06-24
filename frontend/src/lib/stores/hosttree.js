@@ -16,6 +16,7 @@ import {
   DropCollection,
   DropDatabase,
   DropIndex,
+  ExecuteShellScript,
   GetIndexes,
   Hosts,
   OpenCollection,
@@ -238,6 +239,11 @@ async function refresh() {
                   }
                 });
               });
+            };
+
+            collection.executeShellScript = async function(script) {
+              const result = await ExecuteShellScript(hostKey, dbKey, collKey, script);
+              return result;
             };
           }
 

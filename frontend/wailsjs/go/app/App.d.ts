@@ -20,6 +20,8 @@ export function DropIndex(arg1:string,arg2:string,arg3:string,arg4:string):Promi
 
 export function Environment():Promise<app.EnvironmentInfo>;
 
+export function ExecuteShellScript(arg1:string,arg2:string,arg3:string,arg4:string):Promise<app.ExecuteShellScriptResult>;
+
 export function FindItems(arg1:string,arg2:string,arg3:string,arg4:string):Promise<app.FindItemsResult>;
 
 export function GetIndexes(arg1:string,arg2:string,arg3:string):Promise<app.GetIndexesResult>;

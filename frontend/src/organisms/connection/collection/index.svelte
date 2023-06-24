@@ -9,6 +9,7 @@
   import Indexes from './indexes.svelte';
   import Insert from './insert.svelte';
   import Remove from './remove.svelte';
+  import Shell from './shell.svelte';
   import Stats from './stats.svelte';
   import Update from './update.svelte';
 
@@ -50,6 +51,7 @@
         { key: 'remove', icon: 'trash', title: 'Remove' },
         { key: 'indexes', icon: 'list', title: 'Indexes' },
         { key: 'aggregate', icon: 're', title: 'Aggregate' },
+        { key: 'shell', icon: 'shell', title: 'Shell' },
       ]}
         bind:selectedKey={tab} />
 
@@ -61,6 +63,7 @@
         {:else if tab === 'remove'} <Remove {collection} />
         {:else if tab === 'indexes'} <Indexes {collection} />
         {:else if tab === 'aggregate'} <Aggregate {collection} />
+        {:else if tab === 'shell'} <Shell {collection} />
         {/if}
       </div>
     {/key}

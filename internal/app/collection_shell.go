@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -55,7 +56,13 @@ func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result
 		return
 	}
 
-	script = fmt.Sprintf("db = connect('%s');\n\n%s", host.URI, script)
+	connstr := host.URI
+	if !strings.HasSuffix(connstr, "/") {
+		connstr = connstr + "/"
+	}
+
+	connstr = connstr + dbKey
+	script = fmt.Sprintf("db = connect('%s');\ncoll = db.getCollection('%s');\n\n%s", connstr, collKey, script)
 
 	if err := os.WriteFile(fname, []byte(script), os.ModePerm); err != nil {
 		runtime.LogWarningf(a.ctx, "Shell: failed to write script to %s", err.Error())
@@ -64,7 +71,7 @@ func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result
 		return
 	}
 
-	cmd := exec.Command("mongosh", "--file", fname)
+	cmd := exec.Command("mongosh", "--file", fname, connstr)
 	stdout, err := cmd.Output()
 
 	if exiterr, ok := err.(*exec.ExitError); ok {

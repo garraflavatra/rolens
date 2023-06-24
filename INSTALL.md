@@ -40,3 +40,5 @@ To obtain a copy of the source code, do either of the following:
 * `wails build -nsis` to generate an [NSIS installer](https://nsis.sourceforge.io/Main_Page) for Windows. This requires that you have NSIS installed on your machine.
 
 The generated binary will live in `build/bin`. You may want to run the installer (Windows) or move the app to the Applications folder (Mac).
+
+If Wails complains that there are too many open files, you can try to increase the maximum number of open files using [`ulimit -f 1024`](https://www.man7.org/linux/man-pages/man1/ulimit.1p.html) (or whichever value) on *nix systems.

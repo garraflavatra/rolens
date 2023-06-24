@@ -47,6 +47,10 @@ func (a *App) Menu() *menu.Menu {
 
 	if runtime.GOOS == "darwin" {
 		appMenu.Append(menu.EditMenu())
+
+		windowMenu := appMenu.AddSubmenu("Window")
+		windowMenu.AddText("Minimize", keys.CmdOrCtrl("M"), func(cd *menu.CallbackData) { wailsRuntime.WindowMinimise(a.ctx) })
+		windowMenu.AddText("Hide", keys.CmdOrCtrl("H"), func(cd *menu.CallbackData) { wailsRuntime.WindowMinimise(a.ctx) })
 	}
 
 	helpMenu := appMenu.AddSubmenu("Help")

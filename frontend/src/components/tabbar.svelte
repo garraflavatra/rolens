@@ -55,7 +55,7 @@
 
 <style>
   ul {
-    overflow-x: scroll;
+    overflow-x: auto;
     display: flex;
     list-style: none;
   }

@@ -2,10 +2,10 @@ package app
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"os/exec"
 	"path"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -56,12 +56,16 @@ func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result
 		return
 	}
 
-	connstr := host.URI
-	if !strings.HasSuffix(connstr, "/") {
-		connstr = connstr + "/"
+	url, err := url.Parse(host.URI)
+	if err != nil {
+		runtime.LogWarningf(a.ctx, "Shell: failed to parse host URI %s: %s", host.URI, err.Error())
+		result.ErrorTitle = "Could parse host URI"
+		result.ErrorDescription = err.Error()
+		return
 	}
 
-	connstr = connstr + dbKey
+	url.Path = "/" + dbKey
+	connstr := url.String()
 	script = fmt.Sprintf("db = connect('%s');\ncoll = db.getCollection('%s');\n\n%s", connstr, collKey, script)
 
 	if err := os.WriteFile(fname, []byte(script), os.ModePerm); err != nil {

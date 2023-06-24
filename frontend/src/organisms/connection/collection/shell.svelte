@@ -12,9 +12,12 @@
   let result = {};
   let copySucceeded = false;
   let timeout;
+  let busy = false;
 
   async function run() {
+    busy = true;
     result = await collection.executeShellScript(script);
+    busy = false;
   }
 
   async function copyErrorDescription() {
@@ -34,7 +37,9 @@
     </label>
 
     <div class="output">
-      {#if result.errorTitle || result.errorDescription}
+      {#if busy}
+        <BlankState icon="loading" label="Executing…" />
+      {:else if result.errorTitle || result.errorDescription}
         <BlankState title={result.errorTitle} label={result.errorDescription} icon="!">
           <button class="button-small" on:click={copyErrorDescription}>
             <Icon name={copySucceeded ? 'check' : 'clipboard'} /> Copy error message

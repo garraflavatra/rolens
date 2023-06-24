@@ -30,25 +30,25 @@
 </script>
 
 <div class="shell">
-  <div class="panels">
+  <div class="overflow">
     <!-- svelte-ignore a11y-label-has-associated-control -->
     <label class="field">
       <CodeEditor bind:text={script} {extensions} />
     </label>
+  </div>
 
-    <div class="output">
-      {#if busy}
-        <BlankState icon="loading" label="Executing…" />
-      {:else if result.errorTitle || result.errorDescription}
-        <BlankState title={result.errorTitle} label={result.errorDescription} icon="!">
-          <button class="button-small" on:click={copyErrorDescription}>
-            <Icon name={copySucceeded ? 'check' : 'clipboard'} /> Copy error message
-          </button>
-        </BlankState>
-      {:else}
-        <pre>{result.output || ''}</pre>
-      {/if}
-    </div>
+  <div class="output">
+    {#if busy}
+      <BlankState icon="loading" label="Executing…" />
+    {:else if result.errorTitle || result.errorDescription}
+      <BlankState title={result.errorTitle} label={result.errorDescription} icon="!">
+        <button class="button-small" on:click={copyErrorDescription}>
+          <Icon name={copySucceeded ? 'check' : 'clipboard'} /> Copy error message
+        </button>
+      </BlankState>
+    {:else}
+      <pre>{result.output || ''}</pre>
+    {/if}
   </div>
 
   <div class="controls">
@@ -69,18 +69,16 @@
 <style>
   .shell {
     display: grid;
-    grid-template: 1fr auto / 1fr;
+    grid-template: 1fr auto / 1fr 1fr;
   }
 
-  .panels {
-    display: flex;
+  .overflow {
+    overflow: auto;
+  }
+
+  .field {
     height: 100%;
   }
-  .panels > * {
-    flex: 1 1 0;
-    width: 100%;
-  }
-
   .field :global(.editor) {
     border-radius: 0;
   }
@@ -97,6 +95,9 @@
   .output pre {
     font-family: monospace;
     padding: 0.5rem;
+    user-select: text;
+    -webkit-user-select: text;
+    cursor: text;
   }
   .output :global(.blankstate) {
     margin: auto;
@@ -107,6 +108,7 @@
     margin-top: 0.5rem;
     display: flex;
     align-items: center;
+    grid-column: 1 / 3;
   }
   .controls .status {
     margin-right: auto;

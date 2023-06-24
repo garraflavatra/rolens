@@ -43,17 +43,19 @@
 <div class="view" class:empty={!collection}>
   {#if collection}
     {#key collection}
-      <TabBar tabs={[
-        { key: 'stats', icon: 'chart', title: 'Stats' },
-        { key: 'find', icon: 'db', title: 'Find' },
-        { key: 'insert', icon: '+', title: 'Insert' },
-        { key: 'update', icon: 'edit', title: 'Update' },
-        { key: 'remove', icon: 'trash', title: 'Remove' },
-        { key: 'indexes', icon: 'list', title: 'Indexes' },
-        { key: 'aggregate', icon: 're', title: 'Aggregate' },
-        { key: 'shell', icon: 'shell', title: 'Shell' },
-      ]}
-        bind:selectedKey={tab} />
+      <TabBar
+        tabs={[
+          { key: 'stats', icon: 'chart', title: 'Stats' },
+          { key: 'find', icon: 'db', title: 'Find' },
+          { key: 'insert', icon: '+', title: 'Insert' },
+          { key: 'update', icon: 'edit', title: 'Update' },
+          { key: 'remove', icon: 'trash', title: 'Remove' },
+          { key: 'indexes', icon: 'list', title: 'Indexes' },
+          { key: 'aggregate', icon: 're', title: 'Aggregate' },
+          { key: 'shell', icon: 'shell', title: 'Shell' },
+        ]}
+        bind:selectedKey={tab}
+      />
 
       <div class="container">
         {#if tab === 'stats'} <Stats {collection} />

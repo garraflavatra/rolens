@@ -4,6 +4,7 @@
 * Made it possible (again) to input loose JSON into find view inputs, i.e. `{ key: 'val' }` or `{ 'num': 2 }` besides `{ "strict": "json" }`.
 * Improved error logging and dialogs.
 * Fixed host editing bug.
+* Made table headers stick to the top.
 
 ## [v0.2.1]
 

@@ -107,13 +107,15 @@
     background-color: #fff;
   }
 
-  table thead {
-    border-bottom: 2px solid #ccc;
-  }
-  th {
+  thead th {
     font-weight: 600;
     text-align: left;
     padding: 2px;
+    /* border-bottom: 2px solid #ccc; */
+    box-shadow: 0 2px #ccc;
+    background-color: #fff;
+    position: sticky;
+    top: 0;
   }
 
   .grid :global(.blankstate) {

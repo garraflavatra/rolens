@@ -2,6 +2,8 @@
   import BlankState from '$components/blankstate.svelte';
   import TabBar from '$components/tabbar.svelte';
   import { EventsOn } from '$wails/runtime/runtime';
+
+  import Shell from '../shell.svelte';
   import Stats from './stats.svelte';
 
   export let database;
@@ -25,9 +27,15 @@
 <div class="view" class:empty={!database}>
   {#if database}
     {#key database}
-      <TabBar tabs={[ { key: 'stats', icon: 'chart', title: 'Database stats' } ]} bind:selectedKey={tab} />
+      <TabBar
+        tabs={[
+          { key: 'stats', icon: 'chart', title: 'Database stats' },
+          { key: 'shell', icon: 'shell', title: 'Shell' },
+        ]}
+        bind:selectedKey={tab} />
       <div class="container">
         {#if tab === 'stats'} <Stats {database} />
+        {:else if tab === 'shell'} <Shell {database} />
         {/if}
       </div>
     {/key}

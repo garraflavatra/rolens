@@ -9,7 +9,7 @@
   import Indexes from './indexes.svelte';
   import Insert from './insert.svelte';
   import Remove from './remove.svelte';
-  import Shell from './shell.svelte';
+  import Shell from '../shell.svelte';
   import Stats from './stats.svelte';
   import Update from './update.svelte';
 

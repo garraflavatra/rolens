@@ -56,17 +56,27 @@ func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result
 		return
 	}
 
-	url, err := url.Parse(host.URI)
-	if err != nil {
-		runtime.LogWarningf(a.ctx, "Shell: failed to parse host URI %s: %s", host.URI, err.Error())
-		result.ErrorTitle = "Could parse host URI"
-		result.ErrorDescription = err.Error()
-		return
+	scriptHeader := fmt.Sprintf("// Namespace: %s.%s\n", dbKey, collKey)
+
+	if dbKey != "" {
+		url, err := url.Parse(host.URI)
+		if err != nil {
+			runtime.LogWarningf(a.ctx, "Shell: failed to parse host URI %s: %s", host.URI, err.Error())
+			result.ErrorTitle = "Could parse host URI"
+			result.ErrorDescription = err.Error()
+			return
+		}
+
+		url.Path = "/" + dbKey
+		scriptHeader = scriptHeader + fmt.Sprintf("db = connect('%s');\n", url.String())
 	}
 
-	url.Path = "/" + dbKey
-	connstr := url.String()
-	script = fmt.Sprintf("db = connect('%s');\ncoll = db.getCollection('%s');\n\n%s", connstr, collKey, script)
+	if collKey != "" {
+		scriptHeader = scriptHeader + fmt.Sprintf("coll = db.getCollection('%s');\n", collKey)
+	}
+
+	scriptHeader = scriptHeader + "\n// Start of user script\n"
+	script = scriptHeader + script
 
 	if err := os.WriteFile(fname, []byte(script), os.ModePerm); err != nil {
 		runtime.LogWarningf(a.ctx, "Shell: failed to write script to %s", err.Error())
@@ -75,7 +85,7 @@ func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result
 		return
 	}
 
-	cmd := exec.Command("mongosh", "--file", fname, connstr)
+	cmd := exec.Command("mongosh", "--file", fname, host.URI)
 	stdout, err := cmd.Output()
 
 	if exiterr, ok := err.(*exec.ExitError); ok {

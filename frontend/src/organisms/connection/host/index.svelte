@@ -2,6 +2,8 @@
   import BlankState from '$components/blankstate.svelte';
   import TabBar from '$components/tabbar.svelte';
   import { EventsOn } from '$wails/runtime/runtime';
+
+  import Shell from '../shell.svelte';
   import Status from './status.svelte';
   import SystemInfo from './systeminfo.svelte';
 
@@ -24,15 +26,19 @@
 <div class="view" class:empty={!host}>
   {#if host}
     {#key host}
-      <TabBar tabs={[
-        { key: 'status', icon: 'chart', title: 'Host status' },
-        { key: 'systemInfo', icon: 'server', title: 'System info' },
-      ]}
-        bind:selectedKey={tab} />
+      <TabBar
+        tabs={[
+          { key: 'status', icon: 'chart', title: 'Host status' },
+          { key: 'systemInfo', icon: 'server', title: 'System info' },
+          { key: 'shell', icon: 'shell', title: 'Shell' },
+        ]}
+        bind:selectedKey={tab}
+      />
 
       <div class="container">
         {#if tab === 'status'} <Status {host} />
         {:else if tab === 'systemInfo'} <SystemInfo {host} />
+        {:else if tab === 'shell'} <Shell {host} />
         {/if}
       </div>
     {/key}

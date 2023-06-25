@@ -283,7 +283,17 @@ async function refresh() {
             await database.open();
           }
         };
+
+        database.executeShellScript = async function(script) {
+          const result = await ExecuteShellScript(hostKey, dbKey, '', script);
+          return result;
+        };
       }
+
+      host.executeShellScript = async function(script) {
+        const result = await ExecuteShellScript(hostKey, '', '', script);
+        return result;
+      };
 
       host.newDatabase = async function() {
         const name = await dialogs.enterText('Create a database', 'Enter the database name. Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.', '');

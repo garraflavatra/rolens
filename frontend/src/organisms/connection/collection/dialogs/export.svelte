@@ -30,9 +30,10 @@
     <label class="field">
       <span class="label">Format</span>
       <select bind:value={exportInfo.format}>
-        <option value="jsonarray">JSON array</option>
-        <option value="ndjson">Newline delimited JSON</option>
-        <option value="csv">CSV</option>
+        <option value="jsonarray">JSON array (*.json)</option>
+        <option value="ndjson">Newline delimited JSON (*.ndjson)</option>
+        <option value="csv">CSV (*.csv)</option>
+        <option value="excel">Excel (*.xlsx)</option>
       </select>
     </label>
 

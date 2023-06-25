@@ -99,6 +99,7 @@ func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result
 		result.Status = 0
 	}
 
+	os.Remove(fname)
 	result.Output = string(stdout)
 	return
 }

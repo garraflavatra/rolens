@@ -70,7 +70,7 @@
 <div class="forminput {type}">
   <div class="field">
     {#if type === 'string'}
-      <input type="text" bind:value use:input={{ type, onValid, onInvalid, mandatory, autofocus }} />
+      <input type="text" bind:value use:input={{ type, onValid, onInvalid, mandatory, autofocus }} autocomplete="off" spellcheck="false" />
     {:else if type === 'objectid'}
       <input
         type="text"

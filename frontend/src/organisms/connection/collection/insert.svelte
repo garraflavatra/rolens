@@ -73,12 +73,7 @@
   }
 
   function showJson() {
-    if (viewType === 'form') {
-      objectViewerData = { ...(newItems[0] || {}) };
-    }
-    else if (viewType === 'table') {
-      objectViewerData = [ ...newItems ];
-    }
+    objectViewerData = [ ...newItems ];
   }
 
   function addRow(beforeIndex = -1) {
@@ -151,7 +146,6 @@
       <div class="table">
         <Grid
           key="id"
-          items={newItems}
           columns={$views[collection.viewKey]?.columns
             ?.filter(c => inputTypes.includes(c.inputType))
             .map(c => {
@@ -162,7 +156,9 @@
           canRemoveItems={true}
           hideChildrenToggles={true}
           on:addRow={addRow}
+          on:removeItem={() => deleteRow()}
           bind:inputsValid={allValid}
+          bind:items={newItems}
         />
       </div>
     {/if}
@@ -209,7 +205,9 @@
   </div>
 </form>
 
-<ObjectViewer data={objectViewerData} />
+{#if objectViewerData}
+  <ObjectViewer bind:data={objectViewerData} />
+{/if}
 
 <style>
   form {

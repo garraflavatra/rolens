@@ -169,22 +169,41 @@
         <span class="label">Query or id</span>
         <input type="text"
           class="code"
+          placeholder={defaults.query}
+          autocomplete="off"
+          spellcheck="false"
+          use:input={{ type: 'json', autofocus: true }}
           bind:this={queryField}
           bind:value={form.query}
-          use:input={{ type: 'json', autofocus: true }}
-          placeholder={defaults.query} />
+        />
       </label>
 
       <label class="field">
         <span class="label">Sort</span>
-        <input type="text" class="code" bind:value={form.sort} use:input={{ type: 'json' }} placeholder={defaults.sort} />
+        <input
+          type="text"
+          class="code"
+          placeholder={defaults.sort}
+          autocomplete="off"
+          spellcheck="false"
+          bind:value={form.sort}
+          use:input={{ type: 'json' }}
+        />
       </label>
     </div>
 
     <div class="form-row two">
       <label class="field">
         <span class="label">Fields</span>
-        <input type="text" class="code" bind:value={form.fields} use:input={{ type: 'json' }} placeholder={defaults.fields} />
+        <input
+          type="text"
+          class="code"
+          placeholder={defaults.fields}
+          autocomplete="off"
+          spellcheck="false"
+          bind:value={form.fields}
+          use:input={{ type: 'json' }}
+        />
       </label>
 
       <label class="field">
@@ -194,7 +213,8 @@
           bind:value={form.skip}
           use:input
           placeholder={defaults.skip}
-          list="skipstops" />
+          list="skipstops"
+        />
       </label>
 
       <label class="field">
@@ -204,7 +224,8 @@
           bind:value={form.limit}
           use:input
           placeholder={defaults.limit}
-          list="limits" />
+          list="limits"
+        />
       </label>
     </div>
 
@@ -242,9 +263,11 @@
         {:else}
           <Grid
             key="_id"
-            columns={$views[collection.viewKey]?.columns?.map(c => {
-              return { key: c.key, title: c.key };
-            }) || []}
+            columns={$views[collection.viewKey]?.columns
+              ?.filter(c => c.showInTable)
+              .map(c => {
+                return { key: c.key, title: c.key };
+              }) || []}
             showHeaders={true}
             items={result.results ? result.results.map(r => EJSON.deserialize(r)) : []}
             bind:activePath
@@ -295,7 +318,6 @@
 </div>
 
 {#if objectViewerData}
-  <!-- @todo Implement save -->
   <ObjectViewer bind:data={objectViewerData} saveable on:save={saveDocument} bind:successMessage={objectViewerSuccessMessage} />
 {/if}
 

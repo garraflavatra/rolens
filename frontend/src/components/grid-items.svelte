@@ -30,7 +30,9 @@
 
   function refresh(hideObjectIndicators, items) {
     _items = objectToArray(items).map(item => {
-      item.children = objectToArray(item.children);
+      if (item.children) {
+        item.children = objectToArray(item.children);
+      }
       return item;
     });
 

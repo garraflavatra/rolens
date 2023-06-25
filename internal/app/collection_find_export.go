@@ -6,7 +6,6 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"strings"
 
@@ -43,6 +42,12 @@ var (
 	excelThemeXml string
 	//go:embed collection_find_export_excel/contenttypes.xml
 	excelContentTypesXml string
+	//go:embed collection_find_export_excel/metadata.xml
+	excelMetadataXml string
+	//go:embed collection_find_export_excel/workbook.xml
+	excelWorkbookXml string
+	//go:embed collection_find_export_excel/dotrels.xml
+	excelDotRelsXml string
 
 	alphabet = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 )
@@ -260,8 +265,7 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 	var csvWriter *csv.Writer
 
 	var excelZipWriter *zip.Writer
-	var excelSheetWriter io.Writer
-	var excelStrings = make([]string, 0)
+	var excelSheetWriter strings.Builder
 
 	switch settings.Format {
 	case ExportFormatJsonArray:
@@ -274,12 +278,15 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 		excelZipWriter = zip.NewWriter(file)
 
 		files := map[string]string{
-			"docProps/app.xml":          excelAppXml,
-			"docProps/core.xml":         strings.Replace(excelCoreXml, "{TITLE}", fmt.Sprintf("%s.%s", dbKey, collKey), 1),
-			"xl/theme/theme1.xml":       excelThemeXml,
-			"xl/rels/workbook.xml.rels": excelRelsXml,
-			"xl/styles.xml":             excelStylesXml,
-			"[Content-Types].xml":       excelContentTypesXml,
+			"_rels/.rels":                excelDotRelsXml,
+			"docProps/app.xml":           excelAppXml,
+			"docProps/core.xml":          strings.Replace(excelCoreXml, "{TITLE}", fmt.Sprintf("%s.%s", dbKey, collKey), 1),
+			"xl/_rels/workbook.xml.rels": excelRelsXml,
+			"xl/theme/theme1.xml":        excelThemeXml,
+			"xl/metadata.xml":            excelMetadataXml,
+			"xl/styles.xml":              excelStylesXml,
+			"xl/workbook.xml":            excelWorkbookXml,
+			"[Content_Types].xml":        excelContentTypesXml,
 		}
 
 		for fname, body := range files {
@@ -306,36 +313,7 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 			}
 		}
 
-		excelZipWriter.Create("_rels/")
-
-		excelSheetWriter, err = excelZipWriter.Create("xl/worksheets/sheet1.xml")
-		if err != nil {
-			runtime.LogErrorf(a.ctx, "Export: Excel ZIP error creating worksheet: %s", err.Error())
-			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-				Title:   "ZIP error!",
-				Message: err.Error(),
-				Type:    runtime.ErrorDialog,
-			})
-			return false
-		}
-
-		excelSheetWriter.Write([]byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<worksheet
-    xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
-    xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac xr xr2 xr3"
-    xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac"
-    xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision"
-    xmlns:xr2="http://schemas.microsoft.com/office/spreadsheetml/2015/revision2"
-    xmlns:xr3="http://schemas.microsoft.com/office/spreadsheetml/2016/revision3" xr:uid="{17671867-E8D5-A14C-B382-03A6AA54A004}">
-    <dimension ref="A1:C5"/>
-    <sheetViews>
-        <sheetView tabSelected="1" workbookViewId="0">
-            <selection activeCell="A1" sqref="A1"/>
-        </sheetView>
-    </sheetViews>
-    <sheetFormatPr baseColWidth="10" defaultRowHeight="16" x14ac:dyDescent="0.2"/>
-    <sheetData>`))
+		excelSheetWriter = strings.Builder{}
 	}
 
 	for cur.Next(ctx) {
@@ -388,9 +366,7 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 			case ExportFormatExcel:
 				excelSheetWriter.Write([]byte(fmt.Sprintf(`<row r="1" spans="1:%d" s="1" customFormat="1" x14ac:dyDescent="0.2">`, len(columnKeys))))
 				for idx, key := range columnKeys {
-					// excelStringsWriter.Write([]byte(fmt.Sprintf("<si><t>%s</t></si>", key)))
-					excelStrings = append(excelStrings, key)
-					excelSheetWriter.Write([]byte(fmt.Sprintf(`<c r="%s1" s="1" t="s"><v>%d</v></c>`, excelColIndex(idx+1), len(excelStrings))))
+					excelSheetWriter.Write([]byte(fmt.Sprintf(`<c r="%s1" s="1" t="str"><v>%s</v></c>`, excelColIndex(idx+1), key)))
 				}
 				excelSheetWriter.Write([]byte("</row>"))
 			}
@@ -485,9 +461,7 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 
 			excelSheetWriter.Write([]byte(fmt.Sprintf(`<row r="%d" spans="1:%d" s="1" x14ac:dyDescent="0.2">`, index+2, len(columnKeys))))
 			for idx, val := range excelRow {
-				// excelStringsWriter.Write([]byte(fmt.Sprintf("<si><t>%s</t></si>", val)))
-				excelStrings = append(excelStrings, val)
-				excelSheetWriter.Write([]byte(fmt.Sprintf(`<c r="%s%d" t="s"><v>%d</v></c>`, excelColIndex(idx+1), index+2, len(excelStrings))))
+				excelSheetWriter.Write([]byte(fmt.Sprintf(`<c r="%s%d" t="str"><v>%s</v></c>`, excelColIndex(idx+1), index+2, val)))
 			}
 			excelSheetWriter.Write([]byte("</row>"))
 		}
@@ -500,11 +474,9 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 		file.WriteString("]\n")
 
 	case ExportFormatExcel:
-		excelSheetWriter.Write([]byte(`</sheetData><pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/></worksheet>`))
-
-		excelStringsWriter, err := excelZipWriter.Create("xl/sharedStrings.xml")
+		sw, err := excelZipWriter.Create("xl/worksheets/sheet1.xml")
 		if err != nil {
-			runtime.LogErrorf(a.ctx, "Export: Excel ZIP error creating shared strings: %s", err.Error())
+			runtime.LogErrorf(a.ctx, "Export: Excel ZIP error creating worksheet: %s", err.Error())
 			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 				Title:   "ZIP error!",
 				Message: err.Error(),
@@ -513,13 +485,26 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 			return false
 		}
 
-		excelStringsWriter.Write([]byte(fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="%d" uniqueCount="%d">%s`, len(excelStrings), len(excelStrings), "\r\n")))
-		for _, str := range excelStrings {
-			excelStringsWriter.Write([]byte(fmt.Sprintf("<si><t>%s</t></si>\r\n", str)))
-		}
-		excelStringsWriter.Write([]byte("</sst>"))
+		sw.Write([]byte(strings.ReplaceAll(fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet
+	xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+	xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac xr xr2 xr3"
+	xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac"
+	xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision"
+	xmlns:xr2="http://schemas.microsoft.com/office/spreadsheetml/2015/revision2"
+	xmlns:xr3="http://schemas.microsoft.com/office/spreadsheetml/2016/revision3" xr:uid="{17671867-E8D5-A14C-B382-03A6AA54A004}">
+	<dimension ref="A1:%s%d"/>
+	<sheetViews>
+		<sheetView workbookViewId="0"/>
+	</sheetViews>
+	<sheetFormatPr baseColWidth="25" defaultRowHeight="16" x14ac:dyDescent="0.2"/>
+	<sheetData>`, excelColIndex(len(columnKeys)), index+1), "\n", "\r\n")))
+		sw.Write([]byte(excelSheetWriter.String()))
+		sw.Write([]byte(`</sheetData><pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/></worksheet>`))
 
-		if err := excelZipWriter.Close(); err != nil {
+		err = excelZipWriter.Close()
+		if err != nil {
 			runtime.LogErrorf(a.ctx, "Export: Excel ZIP error while closing: %s", err.Error())
 			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 				Title:   "ZIP error!",

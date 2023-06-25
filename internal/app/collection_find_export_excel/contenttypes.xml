@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-	<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+<Types
+	xmlns="http://schemas.openxmlformats.org/package/2006/content-types"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
 	<Default Extension="xml" ContentType="application/xml"/>
+	<Default Extension="bin" ContentType="application/vnd.ms-excel.sheet.binary.macroEnabled.main"/>
+	<Default Extension="vml" ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing"/>
+	<Default Extension="data" ContentType="application/vnd.openxmlformats-officedocument.model+data"/>
+	<Default Extension="bmp" ContentType="image/bmp"/>
+	<Default Extension="png" ContentType="image/png"/>
+	<Default Extension="gif" ContentType="image/gif"/>
+	<Default Extension="emf" ContentType="image/x-emf"/>
+	<Default Extension="wmf" ContentType="image/x-wmf"/>
+	<Default Extension="jpg" ContentType="image/jpeg"/>
+	<Default Extension="jpeg" ContentType="image/jpeg"/>
+	<Default Extension="tif" ContentType="image/tiff"/>
+	<Default Extension="tiff" ContentType="image/tiff"/>
+	<Default Extension="pdf" ContentType="application/pdf"/>
+	<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
 	<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
 	<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
 	<Override PartName="/xl/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>
 	<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
-	<Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>
 	<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
 	<Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
+	<Override PartName="/xl/metadata.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheetMetadata+xml"/>
 </Types>

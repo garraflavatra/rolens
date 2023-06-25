@@ -47,7 +47,7 @@ func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result
 	}
 
 	dirname := path.Join(a.Env.DataDirectory, "Shell Scripts")
-	fname := path.Join(dirname, fmt.Sprintf("%s.js", id.String()))
+	fname := path.Join(dirname, fmt.Sprintf("%s.mongosh.js", id.String()))
 
 	if err := os.MkdirAll(dirname, os.ModePerm); err != nil {
 		runtime.LogWarningf(a.ctx, "Shell: failed to mkdir %s", err.Error())

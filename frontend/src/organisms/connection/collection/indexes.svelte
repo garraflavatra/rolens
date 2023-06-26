@@ -8,9 +8,12 @@
   let activePath = [];
   let _indexes = [];
   let error = '';
+  let busy = false;
 
   async function refresh() {
+    busy = 'Fetching indexes…';
     error = await collection.getIndexes();
+
     if (!error) {
       _indexes = collection.indexes.map(idx => {
         return {
@@ -22,6 +25,8 @@
         };
       });
     }
+
+    busy = false;
   }
 
   async function createIndex() {
@@ -56,12 +61,13 @@
       errorTitle={error ? 'Error while getting indexes' : ''}
       errorDescription={error}
       bind:activePath
+      {busy}
     />
   </div>
 
   <div class="actions">
     <button class="btn" on:click={refresh}>
-      <Icon name="reload" /> Reload
+      <Icon name="reload" spin={busy} /> Reload
     </button>
     <button class="btn" on:click={createIndex}>
       <Icon name="+" /> Create index…

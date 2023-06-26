@@ -162,12 +162,10 @@ async function refresh() {
             };
 
             collection.getIndexes = async function() {
-              const progress = startProgress(`Retrieving indexes of "${collKey}"…`);
               collection.indexes = [];
               const { indexes, error } = await GetIndexes(hostKey, dbKey, collKey);
 
               if (error) {
-                progress.end();
                 return error;
               }
 
@@ -187,8 +185,6 @@ async function refresh() {
 
                 collection.indexes.push(index);
               }
-
-              progress.end();
             };
 
             collection.getIndexByName = function(indesName) {

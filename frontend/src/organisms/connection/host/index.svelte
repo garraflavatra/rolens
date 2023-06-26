@@ -7,8 +7,7 @@
 
   export let host;
   export let hostKey;
-
-  let tab = 'status';
+  export let tab = 'status';
 
   $: if (host) {
     host.hostKey = hostKey;

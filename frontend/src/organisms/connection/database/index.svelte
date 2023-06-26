@@ -7,8 +7,7 @@
   export let database;
   export let hostKey;
   export let dbKey;
-
-  let tab = 'stats';
+  export let tab = 'stats';
 
   $: if (database) {
     database.hostKey = hostKey;

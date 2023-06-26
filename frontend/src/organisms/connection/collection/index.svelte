@@ -16,8 +16,8 @@
   export let hostKey;
   export let dbKey;
   export let collKey;
+  export let tab = 'find';
 
-  let tab = 'find';
   let find;
 
   $: if (collection) {

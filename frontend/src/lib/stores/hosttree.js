@@ -150,21 +150,15 @@ async function refresh() {
             };
 
             collection.truncate = async function() {
-              const progress = startProgress(`Truncating collection "${collKey}"…`);
               await TruncateCollection(hostKey, dbKey, collKey);
               await refresh();
-              progress.end();
             };
 
             collection.drop = async function() {
-              const progress = startProgress(`Dropping collection "${collKey}"…`);
               const success = await DropCollection(hostKey, dbKey, collKey);
-
               if (success) {
                 await refresh();
               }
-
-              progress.end();
             };
 
             collection.getIndexes = async function() {
@@ -187,9 +181,7 @@ async function refresh() {
                 };
 
                 index.drop = async function() {
-                  const progress = startProgress(`Dropping index ${index.name}…`);
                   const hasBeenDropped = await DropIndex(hostKey, dbKey, collKey, index.name);
-                  progress.end();
                   return hasBeenDropped;
                 };
 
@@ -208,14 +200,10 @@ async function refresh() {
 
               return new Promise(resolve => {
                 dialog.$on('create', async event => {
-                  const progress = startProgress('Creating index…');
                   const newIndexName = await CreateIndex(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(event.detail.index));
-
                   if (newIndexName) {
                     dialog.$close();
                   }
-
-                  progress.end();
                   resolve(newIndexName);
                 });
               });

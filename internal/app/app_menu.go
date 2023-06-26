@@ -14,7 +14,7 @@ func menuCallbackEmit(a *App, eventName string, data ...interface{}) func(cd *me
 	}
 }
 
-func menuCallbackURL(a *App, url string) func(cd *menu.CallbackData) {
+func menuCallbackOpenURL(a *App, url string) func(cd *menu.CallbackData) {
 	return func(cd *menu.CallbackData) {
 		wailsRuntime.BrowserOpenURL(a.ctx, url)
 	}
@@ -32,38 +32,62 @@ func (a *App) Menu() *menu.Menu {
 	aboutMenu.AddText("Open log directory…", nil, func(cd *menu.CallbackData) { a.ui.Reveal(a.Env.LogDirectory) })
 	aboutMenu.AddText("Purge logs…", nil, func(cd *menu.CallbackData) { a.PurgeLogDirectory() })
 	aboutMenu.AddSeparator()
-	aboutMenu.AddText("Quit Rolens", keys.CmdOrCtrl("q"), func(cd *menu.CallbackData) { wailsRuntime.Quit(a.ctx) })
-
-	fileMenu := appMenu.AddSubmenu("File")
-	fileMenu.AddText("New host…", keys.CmdOrCtrl("y"), menuCallbackEmit(a, "CreateHost"))
-	fileMenu.AddSeparator()
-	fileMenu.AddText("Stats", keys.Combo("h", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuCallbackEmit(a, "OpenCollectionTab", "stats"))
-	fileMenu.AddText("Find", keys.Combo("f", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuCallbackEmit(a, "OpenCollectionTab", "find"))
-	fileMenu.AddText("Insert", keys.Combo("i", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuCallbackEmit(a, "OpenCollectionTab", "insert"))
-	fileMenu.AddText("Update", keys.Combo("u", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuCallbackEmit(a, "OpenCollectionTab", "update"))
-	fileMenu.AddText("Remove", keys.Combo("r", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuCallbackEmit(a, "OpenCollectionTab", "remove"))
-	fileMenu.AddText("Indexes", keys.Combo("x", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuCallbackEmit(a, "OpenCollectionTab", "indexes"))
-	fileMenu.AddText("Aggregate", keys.Combo("a", keys.CmdOrCtrlKey, keys.OptionOrAltKey), menuCallbackEmit(a, "OpenCollectionTab", "aggregate"))
 
 	if runtime.GOOS == "darwin" {
-		appMenu.Append(menu.EditMenu())
+		aboutMenu.AddText("Minimize", keys.CmdOrCtrl("M"), func(cd *menu.CallbackData) { wailsRuntime.WindowMinimise(a.ctx) })
+		aboutMenu.AddText("Hide Rolens", keys.CmdOrCtrl("H"), func(cd *menu.CallbackData) { wailsRuntime.WindowHide(a.ctx) })
+		aboutMenu.AddSeparator()
 
-		windowMenu := appMenu.AddSubmenu("Window")
-		windowMenu.AddText("Minimize", keys.CmdOrCtrl("M"), func(cd *menu.CallbackData) { wailsRuntime.WindowMinimise(a.ctx) })
-		windowMenu.AddText("Hide", keys.CmdOrCtrl("H"), func(cd *menu.CallbackData) { wailsRuntime.WindowMinimise(a.ctx) })
+		appMenu.Append(menu.EditMenu())
 	}
 
+	aboutMenu.AddText("Quit Rolens", keys.CmdOrCtrl("q"), func(cd *menu.CallbackData) { wailsRuntime.Quit(a.ctx) })
+
+	hostMenu := appMenu.AddSubmenu("Host")
+	hostMenu.AddText("New…", nil, menuCallbackEmit(a, "ui.host.new"))
+	hostMenu.AddText("Edit host…", nil, menuCallbackEmit(a, "ui.host.edit"))
+	hostMenu.AddSeparator()
+	hostMenu.AddText("Server status", nil, menuCallbackEmit(a, "ui.host.tab", "status"))
+	hostMenu.AddText("System info", nil, menuCallbackEmit(a, "ui.host.tab", "systemInfo"))
+	hostMenu.AddText("Shell", nil, menuCallbackEmit(a, "ui.host.tab", "shell"))
+	hostMenu.AddSeparator()
+	hostMenu.AddText("Remove host…", nil, menuCallbackEmit(a, "ui.host.remove"))
+
+	dbMenu := appMenu.AddSubmenu("Database")
+	dbMenu.AddText("New…", nil, menuCallbackEmit(a, "ui.db.new"))
+	dbMenu.AddSeparator()
+	dbMenu.AddText("Database statistics", nil, menuCallbackEmit(a, "ui.db.tab", "stats"))
+	dbMenu.AddText("Shell", nil, menuCallbackEmit(a, "ui.db.tab", "shell"))
+	dbMenu.AddSeparator()
+	dbMenu.AddText("Dump…", nil, menuCallbackEmit(a, "ui.db.dump"))
+	dbMenu.AddText("Drop…", nil, menuCallbackEmit(a, "ui.db.drop"))
+
+	collMenu := appMenu.AddSubmenu("Collection")
+	collMenu.AddText("New…", nil, menuCallbackEmit(a, "ui.coll.new"))
+	collMenu.AddSeparator()
+	collMenu.AddText("Collection statistics", nil, menuCallbackEmit(a, "ui.coll.tab", "stats"))
+	collMenu.AddText("Find", nil, menuCallbackEmit(a, "ui.coll.tab", "find"))
+	collMenu.AddText("Insert", nil, menuCallbackEmit(a, "ui.coll.tab", "insert"))
+	collMenu.AddText("Update", nil, menuCallbackEmit(a, "ui.coll.tab", "update"))
+	collMenu.AddText("Remove", nil, menuCallbackEmit(a, "ui.coll.tab", "remove"))
+	collMenu.AddText("Indexes", nil, menuCallbackEmit(a, "ui.coll.tab", "indexes"))
+	collMenu.AddText("Aggregate", nil, menuCallbackEmit(a, "ui.coll.tab", "aggregate"))
+	collMenu.AddText("Shell", nil, menuCallbackEmit(a, "ui.coll.tab", "shell"))
+	collMenu.AddSeparator()
+	collMenu.AddText("Truncate…", nil, menuCallbackEmit(a, "ui.coll.truncate"))
+	collMenu.AddText("Drop…", nil, menuCallbackEmit(a, "ui.coll.drop"))
+
 	helpMenu := appMenu.AddSubmenu("Help")
-	helpMenu.AddText("User guide", nil, menuCallbackURL(a, "https://garraflavatra.github.io/rolens/user-guide/"))
-	helpMenu.AddText("Website", nil, menuCallbackURL(a, "https://garraflavatra.github.io/rolens/"))
-	helpMenu.AddText("Discussion board", nil, menuCallbackURL(a, "https://github.com/garraflavatra/rolens/discussions"))
+	helpMenu.AddText("User guide", nil, menuCallbackOpenURL(a, "https://garraflavatra.github.io/rolens/user-guide/"))
+	helpMenu.AddText("Website", nil, menuCallbackOpenURL(a, "https://garraflavatra.github.io/rolens/"))
+	helpMenu.AddText("Discussion board", nil, menuCallbackOpenURL(a, "https://github.com/garraflavatra/rolens/discussions"))
 	helpMenu.AddSeparator()
-	helpMenu.AddText("Report a problem", nil, menuCallbackURL(a, "https://github.com/garraflavatra/rolens/issues/new"))
-	helpMenu.AddText("Ask a question", nil, menuCallbackURL(a, "https://github.com/garraflavatra/rolens/discussions/new?category=questions"))
+	helpMenu.AddText("Report a problem", nil, menuCallbackOpenURL(a, "https://github.com/garraflavatra/rolens/issues/new"))
+	helpMenu.AddText("Ask a question", nil, menuCallbackOpenURL(a, "https://github.com/garraflavatra/rolens/discussions/new?category=questions"))
 	helpMenu.AddSeparator()
-	helpMenu.AddText("Star Rolens on GitHub", nil, menuCallbackURL(a, "https://github.com/garraflavatra/rolens"))
-	helpMenu.AddText("Changelog", nil, menuCallbackURL(a, "https://garraflavatra.github.io/rolens/development/changelog/"))
-	helpMenu.AddText("License", nil, menuCallbackURL(a, "https://github.com/garraflavatra/rolens/blob/main/LICENSE"))
+	helpMenu.AddText("Star Rolens on GitHub", nil, menuCallbackOpenURL(a, "https://github.com/garraflavatra/rolens"))
+	helpMenu.AddText("Changelog", nil, menuCallbackOpenURL(a, "https://garraflavatra.github.io/rolens/development/changelog/"))
+	helpMenu.AddText("License", nil, menuCallbackOpenURL(a, "https://github.com/garraflavatra/rolens/blob/main/LICENSE"))
 
 	return appMenu
 }

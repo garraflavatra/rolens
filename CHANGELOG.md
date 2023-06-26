@@ -5,6 +5,7 @@
 * Improved error logging and dialogs.
 * Fixed host editing bug.
 * Made table headers stick to the top.
+* Improved the application menu.
 
 ## [v0.2.1]
 

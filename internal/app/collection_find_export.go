@@ -6,6 +6,7 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"html"
 	"os"
 	"strings"
 
@@ -32,22 +33,22 @@ const (
 var (
 	//go:embed collection_find_export_excel/app.xml
 	excelAppXml string
+	//go:embed collection_find_export_excel/contenttypes.xml
+	excelContentTypesXml string
 	//go:embed collection_find_export_excel/core.xml
 	excelCoreXml string
+	//go:embed collection_find_export_excel/dotrels.xml
+	excelDotRelsXml string
+	//go:embed collection_find_export_excel/metadata.xml
+	excelMetadataXml string
 	//go:embed collection_find_export_excel/rels.xml
 	excelRelsXml string
 	//go:embed collection_find_export_excel/styles.xml
 	excelStylesXml string
 	//go:embed collection_find_export_excel/theme.xml
 	excelThemeXml string
-	//go:embed collection_find_export_excel/contenttypes.xml
-	excelContentTypesXml string
-	//go:embed collection_find_export_excel/metadata.xml
-	excelMetadataXml string
 	//go:embed collection_find_export_excel/workbook.xml
 	excelWorkbookXml string
-	//go:embed collection_find_export_excel/dotrels.xml
-	excelDotRelsXml string
 
 	alphabet = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 )
@@ -94,7 +95,7 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 
 	var settings ExportSettings
 	if err := json.Unmarshal([]byte(settingsJson), &settings); err != nil {
-		runtime.LogWarningf(a.ctx, "Could not parse export settings: %s", err.Error())
+		runtime.LogWarningf(a.ctx, "Export: Could not parse settings: %s", err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Title:   "Couldn't parse export settings!",
 			Message: err.Error(),
@@ -122,7 +123,7 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 
 	view, found := views[settings.ViewKey]
 	if !found {
-		runtime.LogDebugf(a.ctx, "Export: unknown view %s", settings.ViewKey)
+		runtime.LogWarningf(a.ctx, "Export: unknown view %s", settings.ViewKey)
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Message: fmt.Sprintf("View %s is not known", settings.ViewKey),
 			Type:    runtime.ErrorDialog,
@@ -199,7 +200,7 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 	var query bson.M
 	if settings.Contents != ExportContentsAll {
 		if err = bson.UnmarshalExtJSON([]byte(settings.QueryJson), true, &query); err != nil {
-			runtime.LogDebugf(a.ctx, "Invalid find query (exporting): %s", settings.QueryJson)
+			runtime.LogWarningf(a.ctx, "Export: invalid find query: %s", settings.QueryJson)
 			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 				Title:   "Invalid query",
 				Message: err.Error(),
@@ -218,7 +219,7 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 	projection := bson.M{}
 	if settings.ViewKey != "list" {
 		for _, col := range view.Columns {
-			projection[col.Key] = ""
+			projection[col.Key] = 1
 		}
 	}
 
@@ -238,7 +239,7 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 		Projection: projection,
 	})
 	if err != nil {
-		runtime.LogInfof(a.ctx, "Export: unable to get cursor while exporting: %s", err.Error())
+		runtime.LogWarningf(a.ctx, "Export: unable to get cursor while exporting: %s", err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Title:   "Couldn't get cursor",
 			Message: err.Error(),
@@ -249,7 +250,7 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 
 	file, err := os.OpenFile(settings.OutFile, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		runtime.LogDebugf(a.ctx, "Export: unable to open file %s", settings.OutFile)
+		runtime.LogInfof(a.ctx, "Export: unable to open file %s", settings.OutFile)
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Title:   "Error opening file",
 			Message: err.Error(),
@@ -280,7 +281,7 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 		files := map[string]string{
 			"_rels/.rels":                excelDotRelsXml,
 			"docProps/app.xml":           excelAppXml,
-			"docProps/core.xml":          strings.Replace(excelCoreXml, "{TITLE}", fmt.Sprintf("%s.%s", dbKey, collKey), 1),
+			"docProps/core.xml":          strings.Replace(excelCoreXml, "{TITLE}", fmt.Sprintf("%s.%s Export", dbKey, collKey), 1),
 			"xl/_rels/workbook.xml.rels": excelRelsXml,
 			"xl/theme/theme1.xml":        excelThemeXml,
 			"xl/metadata.xml":            excelMetadataXml,
@@ -317,36 +318,43 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 	}
 
 	for cur.Next(ctx) {
-		if settings.ViewKey == "list" && columnKeys == nil {
+		if columnKeys == nil {
 			columnKeys = make([]string, 0)
-			els, err := cur.Current.Elements()
-			if err != nil {
-				runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-					Title:   "BSON is invalid",
-					Message: err.Error(),
-					Type:    runtime.ErrorDialog,
-				})
-			}
 
-			for _, el := range els {
-				if el.Key() == "" {
-					continue
+			if settings.ViewKey == "list" {
+				els, err := cur.Current.Elements()
+				if err != nil {
+					runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+						Title:   "BSON is invalid",
+						Message: err.Error(),
+						Type:    runtime.ErrorDialog,
+					})
 				}
 
-				switch el.Value().Type {
-				case bsontype.Boolean,
-					bsontype.Decimal128,
-					bsontype.Double,
-					bsontype.Int32,
-					bsontype.Int64,
-					bsontype.Null,
-					bsontype.ObjectID,
-					bsontype.Regex,
-					bsontype.String,
-					bsontype.Symbol,
-					bsontype.Timestamp,
-					bsontype.Undefined:
-					columnKeys = append(columnKeys, el.Key())
+				for _, el := range els {
+					if el.Key() == "" {
+						continue
+					}
+
+					switch el.Value().Type {
+					case bsontype.Boolean,
+						bsontype.Decimal128,
+						bsontype.Double,
+						bsontype.Int32,
+						bsontype.Int64,
+						bsontype.Null,
+						bsontype.ObjectID,
+						bsontype.Regex,
+						bsontype.String,
+						bsontype.Symbol,
+						bsontype.Timestamp,
+						bsontype.Undefined:
+						columnKeys = append(columnKeys, el.Key())
+					}
+				}
+			} else {
+				for _, col := range view.Columns {
+					columnKeys = append(columnKeys, col.Key)
 				}
 			}
 
@@ -376,31 +384,25 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 		case ExportFormatCsv:
 			csvItem := make([]string, 0)
 
-			switch settings.ViewKey {
-			case "list":
-				for _, k := range columnKeys {
-					r, err := cur.Current.LookupErr(k)
-					if err != nil {
-						csvItem = append(csvItem, "")
-						continue
-					}
-
-					var v any
-					if err := r.Unmarshal(&v); err != nil {
-						runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-							Title:   fmt.Sprintf("Unable to unmarshal field %s", k),
-							Message: err.Error(),
-							Type:    runtime.ErrorDialog,
-						})
-						csvItem = append(csvItem, "")
-						continue
-					}
-
-					csvItem = append(csvItem, fmt.Sprintf("%v", v))
+			for _, k := range columnKeys {
+				r, err := cur.Current.LookupErr(k)
+				if err != nil {
+					csvItem = append(csvItem, "")
+					continue
 				}
 
-			default:
-				// @todo
+				var v any
+				if err := r.Unmarshal(&v); err != nil {
+					runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+						Title:   fmt.Sprintf("Unable to unmarshal field %s", k),
+						Message: err.Error(),
+						Type:    runtime.ErrorDialog,
+					})
+					csvItem = append(csvItem, "")
+					continue
+				}
+
+				csvItem = append(csvItem, fmt.Sprintf("%v", v))
 			}
 
 			if err := csvWriter.Write(csvItem); err != nil {
@@ -456,7 +458,7 @@ func (a *App) PerformFindExport(hostKey, dbKey, collKey, settingsJson string) bo
 					continue
 				}
 
-				excelRow = append(excelRow, fmt.Sprintf("%v", v))
+				excelRow = append(excelRow, html.EscapeString(fmt.Sprintf("%v", v)))
 			}
 
 			excelSheetWriter.Write([]byte(fmt.Sprintf(`<row r="%d" spans="1:%d" s="1" x14ac:dyDescent="0.2">`, index+2, len(columnKeys))))

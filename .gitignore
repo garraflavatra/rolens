@@ -2,10 +2,11 @@
 
 /build/version.txt
 /build/bin/
+build/windows/installer/wails_tools.nsh
 /build/windows/installer/tmp/
 /build/darwin/dmg_settings.json
 
-/releases
+/releases/
 
 /frontend/node_modules/
 /frontend/dist/

@@ -48,7 +48,7 @@
       {#if title}
         <header>
           <div class="title">{title}</div>
-          <button class="btn close" on:click={close} title="close" type="button">
+          <button class="button close" on:click={close} title="close" type="button">
             <Icon name="x" />
           </button>
         </header>

@@ -27,7 +27,7 @@
   </div>
 
   <div class="buttons">
-    <button class="btn secondary" on:click={copy} disabled={!database.stats}>
+    <button class="button secondary" on:click={copy} disabled={!database.stats}>
       <Icon name={copySucceeded ? 'check' : 'clipboard'} />
       Copy JSON
     </button>

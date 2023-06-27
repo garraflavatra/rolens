@@ -42,16 +42,16 @@
 
     <svelte:fragment slot="footer">
       {#if saveable}
-        <button class="btn" on:click={save} disabled={invalid}>
+        <button class="button" on:click={save} disabled={invalid}>
           <Icon name="save" /> Save
         </button>
       {/if}
 
-      <button class="btn secondary" on:click={close}>
+      <button class="button secondary" on:click={close}>
         <Icon name="x" /> Close
       </button>
 
-      <button class="btn secondary" on:click={copy}>
+      <button class="button secondary" on:click={copy}>
         <Icon name={copySucceeded ? 'check' : 'clipboard'} /> Copy
       </button>
 

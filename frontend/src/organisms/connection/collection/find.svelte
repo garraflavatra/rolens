@@ -230,17 +230,17 @@
     </div>
 
     <div class="form-row actions">
-      <button type="submit" class="btn" title="Run query">
+      <button type="submit" class="button" title="Run query">
         <Icon name="play" /> Run
       </button>
-      <button class="btn secondary" type="button" on:click={() => collection.export(form)}>
+      <button class="button secondary" type="button" on:click={() => collection.export(form)}>
         <Icon name="save" /> Export results…
       </button>
       <div class="field">
-        <button class="btn secondary" type="button" on:click={loadQuery}>
+        <button class="button secondary" type="button" on:click={loadQuery}>
           <Icon name="upload" /> Load query…
         </button>
-        <button class="btn secondary" type="button" on:click={saveQuery}>
+        <button class="button secondary" type="button" on:click={saveQuery}>
           <Icon name="save" /> Save as…
         </button>
       </div>
@@ -293,23 +293,23 @@
               <option value={key}>{view.name}</option>
             {/each}
           </select>
-          <button class="btn" on:click={openViewConfig} title="Configure view">
+          <button class="button" on:click={openViewConfig} title="Configure view">
             <Icon name="cog" />
           </button>
         </label>
-        <button class="btn danger" on:click={removeActive} disabled={!activePath?.length} title="Drop selected item">
+        <button class="button danger" on:click={removeActive} disabled={!activePath?.length} title="Drop selected item">
           <Icon name="-" />
         </button>
-        <button class="btn" on:click={first} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results || (activePage === 0)} title="First page">
+        <button class="button" on:click={first} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results || (activePage === 0)} title="First page">
           <Icon name="chevs-l" />
         </button>
-        <button class="btn" on:click={prev} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results || (activePage === 0)} title="Previous {submittedForm.limit} items">
+        <button class="button" on:click={prev} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results || (activePage === 0)} title="Previous {submittedForm.limit} items">
           <Icon name="chev-l" />
         </button>
-        <button class="btn" on:click={next} disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results || !lastPage || (activePage >= lastPage)} title="Next {submittedForm.limit} items">
+        <button class="button" on:click={next} disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results || !lastPage || (activePage >= lastPage)} title="Next {submittedForm.limit} items">
           <Icon name="chev-r" />
         </button>
-        <button class="btn" on:click={last} disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results || !lastPage || (activePage >= lastPage)} title="Last page">
+        <button class="button" on:click={last} disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results || !lastPage || (activePage >= lastPage)} title="Last page">
           <Icon name="chevs-r" />
         </button>
       </div>

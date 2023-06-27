@@ -61,7 +61,7 @@
               <option {value}>{value}</option>
             {/each}
           </select>
-          <button class="btn secondary" type="button" on:click={() => openStageDocs(stage.type)} title="Open documentation about {stage.type || 'this stage'} on mongodb.org">
+          <button class="button secondary" type="button" on:click={() => openStageDocs(stage.type)} title="Open documentation about {stage.type || 'this stage'} on mongodb.org">
             <Icon name="?" />
           </button>
         </label>
@@ -93,10 +93,10 @@
 
   <div class="controls">
     <div>
-      <button class="btn" type="submit" disabled={invalid}>
+      <button class="button" type="submit" disabled={invalid}>
         <Icon name="play" /> Run pipeline
       </button>
-      <button class="btn" type="button" on:click={() => settingsModalOpen = true}>
+      <button class="button" type="button" on:click={() => settingsModalOpen = true}>
         <Icon name="cog" /> Settings
       </button>
     </div>

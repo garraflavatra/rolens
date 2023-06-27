@@ -178,13 +178,13 @@
     </div>
     <div>
       {#if insertedIds}
-        <button class="btn" type="button" on:click={showDocs}>View inserted docs</button>
+        <button class="button" type="button" on:click={showDocs}>View inserted docs</button>
       {/if}
       {#if collection.viewKey !== 'list'}
-        <button class="btn" type="button" on:click={showJson} title="Show JSON">
+        <button class="button" type="button" on:click={showJson} title="Show JSON">
           <Icon name="code" />
         </button>
-        <button class="btn" type="button" on:click={switchViewType} title="Edit as {oppositeViewType}">
+        <button class="button" type="button" on:click={switchViewType} title="Edit as {oppositeViewType}">
           <Icon name={oppositeViewType} /> {capitalise(oppositeViewType)}
         </button>
       {/if}
@@ -194,11 +194,11 @@
             <option value={key}>{key === 'list' ? 'Raw JSON' : view.name}</option>
           {/each}
         </select>
-        <button class="btn" type="button" on:click={openViewConfig} title="Configure view">
+        <button class="button" type="button" on:click={openViewConfig} title="Configure view">
           <Icon name="cog" />
         </button>
       </label>
-      <button type="submit" class="btn" disabled={$views[collection.viewKey]?.type === 'list' ? !json : !allValid}>
+      <button type="submit" class="button" disabled={$views[collection.viewKey]?.type === 'list' ? !json : !allValid}>
         <Icon name="+" /> Insert
       </button>
     </div>

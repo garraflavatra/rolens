@@ -106,11 +106,11 @@
 
   <svelte:fragment slot="footer">
     {#if queryToSave}
-      <button class="btn" on:click={submit}>
+      <button class="button" on:click={submit}>
         <Icon name="save" /> Save query
       </button>
     {:else}
-      <button class="btn" on:click={submit} disabled={!selectedKey}>
+      <button class="button" on:click={submit} disabled={!selectedKey}>
         <Icon name="upload" /> Load query
       </button>
     {/if}
@@ -131,7 +131,7 @@
     min-height: 200px;
   }
 
-  .btn + :global(.hint) {
+  .button + :global(.hint) {
     margin-top: 0.5rem;
   }
 </style>

@@ -71,7 +71,7 @@
               <option value="hashed" disabled={index.model.length > 1}>Hashed</option>
             </select>
           </label>
-          <button type="button" class="btn danger" on:click={() => removeRule(ruleIndex)} disabled={index.model.length < 2}>
+          <button type="button" class="button danger" on:click={() => removeRule(ruleIndex)} disabled={index.model.length < 2}>
             <Icon name="-" />
           </button>
         </div>
@@ -82,10 +82,10 @@
   </form>
 
   <div class="buttons" slot="footer">
-    <button class="btn" on:click={addRule} disabled={index.model.some(r => r.sort === 'hashed')}>
+    <button class="button" on:click={addRule} disabled={index.model.some(r => r.sort === 'hashed')}>
       <Icon name="+" /> Add rule
     </button>
-    <button class="btn" on:click={create} disabled={!index.model.length || index.model.some(r => !r.key)}>
+    <button class="button" on:click={create} disabled={!index.model.length || index.model.some(r => !r.key)}>
       <Icon name="+" /> Create index
     </button>
   </div>

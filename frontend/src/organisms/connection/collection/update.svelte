@@ -107,7 +107,7 @@
       {/if}
     {/key}
 
-    <button class="btn" type="submit" disabled={invalid}>
+    <button class="button" type="submit" disabled={invalid}>
       <Icon name="check" /> Update
     </button>
   </div>
@@ -135,11 +135,11 @@
           <input type="text" class="code" bind:value={param.value} placeholder={'{}'} use:input={{ type: 'json' }} />
         </label>
 
-        <button class="btn" disabled={form.parameters.length >= allOperators.length} on:click={() => addParameter()} type="button">
+        <button class="button" disabled={form.parameters.length >= allOperators.length} on:click={() => addParameter()} type="button">
           <Icon name="+" />
         </button>
 
-        <button class="btn" disabled={form.parameters.length < 2} on:click={() => removeParam(index)} type="button">
+        <button class="button" disabled={form.parameters.length < 2} on:click={() => removeParam(index)} type="button">
           <Icon name="-" />
         </button>
       </fieldset>

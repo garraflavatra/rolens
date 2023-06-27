@@ -53,7 +53,7 @@
     margin-bottom: -1.85rem;
   }
 
-  .blankstate :global(.btn) {
+  .blankstate :global(.button) {
     font-size: 1.35rem;
     padding: 1rem;
   }

@@ -64,7 +64,7 @@
         <div class="error">{error}</div>
       {/if}
     </div>
-    <button class="btn" disabled={!valid} on:click={submit}>
+    <button class="button" disabled={!valid} on:click={submit}>
       {host ? 'Save' : 'Create'}
     </button>
   </div>

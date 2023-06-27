@@ -66,13 +66,13 @@
   </div>
 
   <div class="actions">
-    <button class="btn" on:click={refresh}>
+    <button class="button" on:click={refresh}>
       <Icon name="reload" spin={busy} /> Reload
     </button>
-    <button class="btn" on:click={createIndex}>
+    <button class="button" on:click={createIndex}>
       <Icon name="+" /> Create index…
     </button>
-    <button class="btn danger" on:click={dropIndex} disabled={!_indexes.length || !activePath[0]}>
+    <button class="button danger" on:click={dropIndex} disabled={!_indexes.length || !activePath[0]}>
       <Icon name="x" /> Drop selected
     </button>
   </div>

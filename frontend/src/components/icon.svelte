@@ -14,7 +14,7 @@
     margin-right: 2px;
   }
 
-  :global(.btn) svg {
+  :global(.button) svg {
     height: 13px;
     width: auto;
     vertical-align: bottom;

@@ -126,7 +126,7 @@
   </form>
 
   <svelte:fragment slot="footer">
-    <button class="btn" on:click={performDump}>Perform dump</button>
+    <button class="button" on:click={performDump}>Perform dump</button>
   </svelte:fragment>
 </Modal>
 

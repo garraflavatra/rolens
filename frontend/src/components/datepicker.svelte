@@ -136,10 +136,10 @@
   </div>
 
   <div slot="footer" class="footer">
-    <button class="btn secondary" type="button" on:click={() => value = new Date()}>
+    <button class="button secondary" type="button" on:click={() => value = new Date()}>
       <Icon name="o" /> Set to now
     </button>
-    <button class="btn" type="button" on:click={() => show = false}>
+    <button class="button" type="button" on:click={() => show = false}>
       <Icon name="check" /> OK
     </button>
   </div>

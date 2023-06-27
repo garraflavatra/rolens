@@ -44,14 +44,14 @@
           <option value={key}>{name}</option>
         {/each}
       </select>
-      <button class="btn" type="button" on:click={() => dispatch('openViewConfig')} title="Edit view">
+      <button class="button" type="button" on:click={() => dispatch('openViewConfig')} title="Edit view">
         <Icon name="cog" />
       </button>
     </label>
   </form>
 
   <svelte:fragment slot="footer">
-    <button class="btn" on:click={submit}>
+    <button class="button" on:click={submit}>
       <Icon name="play" /> Start export
     </button>
   </svelte:fragment>

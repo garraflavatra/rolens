@@ -65,38 +65,38 @@ select:disabled {
   color: #444;
 }
 
-.btn {
+.button {
   background-color: #00008b;
   border: 1px solid #00008b;
   padding: 0.5rem;
   border-radius: var(--radius);
   color: #fff;
 }
-.btn:focus,
-.btn:active {
+.button:focus,
+.button:active {
   box-shadow: 0 0 0 3px rgba(0, 0, 139, 0.2);
   outline: none;
 }
-.btn.danger {
+.button.danger {
   background-color: #c00;
   border: 1px solid #c00;
 }
-.btn.danger:active,
-.btn.danger:focus {
+.button.danger:active,
+.button.danger:focus {
   box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.2);
 }
-.btn.secondary {
+.button.secondary {
   border: 1px solid #ccc;
   background-color: #fff;
   color: inherit;
 }
-.btn.secondary:hover {
+.button.secondary:hover {
   background-color: #eee;
 }
-.btn.secondary:active {
+.button.secondary:active {
   background-color: #ddd;
 }
-.btn:disabled {
+.button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

@@ -50,7 +50,7 @@
     <main class:empty={showWelcomeScreen}>
       {#if showWelcomeScreen}
         <BlankState label="Welcome to Rolens!" image="/logo.png" pale={false} big={true}>
-          <button class="btn" on:click={createFirstHost}>Add your first host</button>
+          <button class="button" on:click={createFirstHost}>Add your first host</button>
         </BlankState>
       {:else}
         <Connection />
@@ -102,7 +102,7 @@
     overflow: scroll;
   }
 
-  .btn.create {
+  .button.create {
     margin-top: 0.5rem;
   }
 </style>

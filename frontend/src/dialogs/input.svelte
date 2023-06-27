@@ -32,8 +32,8 @@
   </form>
 
   <svelte:fragment slot="footer">
-    <button on:click={submit} class="btn">OK</button>
-    <button on:click={close} class="btn secondary">Cancel</button>
+    <button on:click={submit} class="button">OK</button>
+    <button on:click={close} class="button secondary">Cancel</button>
   </svelte:fragment>
 </Modal>
 

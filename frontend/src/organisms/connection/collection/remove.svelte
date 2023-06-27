@@ -45,7 +45,7 @@
   </label>
 
   <div class="actions">
-    <button type="submit" class="btn danger">
+    <button type="submit" class="button danger">
       <Icon name="-" /> Remove
     </button>
 

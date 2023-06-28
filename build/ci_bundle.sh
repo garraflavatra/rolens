@@ -32,9 +32,9 @@ version=$(<./build/version.txt)
 mkdir bundle
 
 # macOS apps
-mv "artifacts/*/rolens-macos-11-amd64.tar.gz" "bundle/rolens-$version-macos-amd64.tar.gz"
-mv "artifacts/*/rolens-macos-11-arm64.tar.gz" "bundle/rolens-$version-macos-arm64.tar.gz"
+mv artifacts/*/rolens-macos-11-amd64.tar.gz "bundle/rolens-$version-macos-11+-amd64.tar.gz"
+mv artifacts/*/rolens-macos-11-arm64.tar.gz "bundle/rolens-$version-macos-11+-arm64.tar.gz"
 
 # Windows installers
-mv "artifacts/*/rolens-windows-2019-amd64-installer.zip" "bundle/rolens-$version-windows-10+-amd64-installer.zip"
-mv "artifacts/*/rolens-windows-2019-arm64-installer.zip" "bundle/rolens-$version-windows-10+-arm64-installer.zip"
+mv artifacts/*/rolens-windows-2019-amd64-installer.zip "bundle/rolens-$version-windows-10+-amd64-installer.zip"
+mv artifacts/*/rolens-windows-2019-arm64-installer.zip "bundle/rolens-$version-windows-10+-arm64-installer.zip"

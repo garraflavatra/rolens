@@ -72,6 +72,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
   }
   #root.platform-darwin .titlebar {
     height: var(--darwin-titlebar-height);

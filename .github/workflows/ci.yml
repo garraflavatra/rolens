@@ -72,6 +72,9 @@ jobs:
         name: rolens-${{ matrix.platform }}
         path: releases/*
 
+    - name: Test build script for users
+      run: ./build.js
+
   bundle:
     name: Bundle artifacts
     runs-on: ubuntu-22.04

@@ -36,7 +36,9 @@ You can obtain a pre-compiled Rolens binary for macOS or installer for Windows f
 
 ### Compiling from source
 
-Please refer to [the documentation](https://garraflavatra.github.io/rolens/installation/) for detailed compilation instructions.
+If you have Node.js installed, just download the source from GitHub, and run `./build.js`. The install script will check that dependencies are present and build Rolens for you.
+
+If you want to build it yourself, please refer to [the documentation](https://garraflavatra.github.io/rolens/installation/) for detailed compilation instructions.
 
 ## User guide
 
@@ -49,6 +51,8 @@ Rolens is designed to be as intuitive as possible. But if something is unclear n
 * Do you have a **question**? Ask questions on [the discussion board](https://github.com/garraflavatra/rolens/discussions/new?category=questions).
 
 Feel free to contact me if you have questions! [Send an e-mail.](mailto:romein@vburen.nl)
+
+## Con
 
 ## Author and license
 

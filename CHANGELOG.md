@@ -1,4 +1,4 @@
-## [Unreleased]
+## [v0.2.2]
 
 * Added Excel export format (#46).
 * Improved the application menu.
@@ -31,3 +31,4 @@ Initial release.
 [v0.1.0]: https://github.com/garraflavatra/rolens/releases/tag/v0.1.0
 [v0.2.0]: https://github.com/garraflavatra/rolens/releases/tag/v0.2.0
 [v0.2.1]: https://github.com/garraflavatra/rolens/releases/tag/v0.2.1
+[v0.2.2]: https://github.com/garraflavatra/rolens/releases/tag/v0.2.2

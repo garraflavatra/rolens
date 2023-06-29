@@ -87,7 +87,7 @@ func (a *App) Menu() *menu.Menu {
 	helpMenu.AddText("Ask a question", nil, menuCallbackOpenURL(a, "https://github.com/garraflavatra/rolens/discussions/new?category=questions"))
 	helpMenu.AddSeparator()
 	helpMenu.AddText("Star Rolens on GitHub", nil, menuCallbackOpenURL(a, "https://github.com/garraflavatra/rolens"))
-	helpMenu.AddText("Changelog", nil, menuCallbackOpenURL(a, "https://garraflavatra.github.io/rolens/development/changelog/"))
+	helpMenu.AddText("Changelog", nil, menuCallbackOpenURL(a, "https://garraflavatra.github.io/rolens/colophon/changelog/"))
 	helpMenu.AddText("License", nil, menuCallbackOpenURL(a, "https://github.com/garraflavatra/rolens/blob/main/LICENSE"))
 
 	return appMenu

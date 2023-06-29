@@ -90,10 +90,21 @@ module.exports = function (eleventyConfig) {
   });
 
   // Retrieve content of a file
-  eleventyConfig.addShortcode('filecontent', function (fname, startLine = 0) {
-    const buf = fs.readFileSync(path.join(indir, fname));
-    const str = buf.toString().split('\n').slice(startLine).join('\n');
-    return str;
+  eleventyConfig.addShortcode('filecontent', function (fname, a, b) {
+    let str = fs.readFileSync(path.join(indir, fname)).toString();
+
+    if (typeof a === 'number') {
+      // Line indexes
+      str = str.split('\n').slice(a, b).join('\n');
+    }
+    else if (typeof a === 'string') {
+      // Anchors
+      const aIndex = str.indexOf(a) + a.length;
+      const bIndex = b ? str.indexOf(b, aIndex) : undefined;
+      str = str.slice(aIndex, bIndex);
+    }
+
+    return str.trim();
   });
 
   // Global options

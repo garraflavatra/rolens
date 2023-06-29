@@ -103,7 +103,7 @@
   </div>
 </form>
 
-<Modal title="Advanced aggregation settings" bind:show={settingsModalOpen}>
+<Modal title="Advanced aggregation settings" show={settingsModalOpen} on:close={() => settingsModalOpen = false}>
   <div class="settinggrid">
     <label for="allowDiskUse">Allow disk use</label>
     <div class="field">

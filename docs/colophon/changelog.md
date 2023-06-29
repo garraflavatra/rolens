@@ -1,6 +1,7 @@
 ---
 title: Changelog
-parent: Development
+summary: The development history of Rolens.
+parent: Colophon
 order: 90
 ---
 

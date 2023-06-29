@@ -52,6 +52,31 @@ Rolens is designed to be as intuitive as possible. But if something is unclear n
 
 Feel free to contact me if you have questions! [Send an e-mail.](mailto:romein@vburen.nl)
 
+## Feature list
+
+At this point, Rolens is comparable to MongoHub regarding features. It cannot handle things like user management _yet_, but it _does_ have:
+
+* Connecting to hosts
+  - Host status
+  - System info
+* Database management
+  - See stats
+  - Create dumps with `mongodump`
+* Collections
+  - See stats
+  - Find, insert, update, & remove
+  - Save queries to reuse them
+  - Customizable table view for query results
+  - Versatile forms to enter data in a standardized format
+  - Aggregation pipeline editor
+  - Fully customizable export to a number of formats like JSON, CSV, and Excel
+  - Index editor
+
+## Wishlist
+
+* User management
+* Shell _([under development](https://github.com/garraflavatra/rolens/pull/44))_
+
 ## Author and license
 
 © [Romein van Buren](mailto:romein@vburen.nl) 2023. The source code and compiled binaries are released under the GNU GPLv3 license — see [`LICENSE`](./LICENSE) for the full license text.

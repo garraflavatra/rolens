@@ -1,5 +1,6 @@
 ---
 title: Development
+summary: In-depth information about Rolens source code.
 order: 50
 ---
 

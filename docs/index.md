@@ -1,5 +1,5 @@
 ---
-title:
+title: Rolens
 order: 1
 summary: Robust, blazing-fast, comprehensive, yet simple [MongoDB](https://www.mongodb.com/) administration tool for Windows, macOS and Linux.
 eleventyNavigation:
@@ -18,3 +18,11 @@ This project arose from all flaws of similar tools many of which are slow, compl
 ![Impression of Rolens's interface](./images/home-impression.png)
 
 This project is heavily inspired by the excellent [MongoHub](https://github.com/bububa/MongoHub-Mac) application, which sadly has not been updated since 2011.
+
+## Features
+
+{% filecontent "../README.md", "## Feature list", "## " %}
+
+## Wishlist
+
+{% filecontent "../README.md", "## Wishlist", "## " %}

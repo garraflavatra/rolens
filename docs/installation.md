@@ -1,5 +1,6 @@
 ---
 title: Installation
+summary: Install Rolens on your machine.
 order: 20
 ---
 

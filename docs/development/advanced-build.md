@@ -4,7 +4,7 @@ parent: Development
 order: 10
 ---
 
-If you just want to install Rolens, please refer to the [installation document](https://garraflavatra.github.io/rolens/installation/). You can read this guide to get a detailed overview of the build procedure.
+If you just want to install Rolens, please refer to the [installation document](/installation/). You can read this guide to get a detailed overview of the build procedure.
 
 ## Prerequisites
 

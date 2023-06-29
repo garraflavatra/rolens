@@ -1,7 +1,7 @@
 ---
 title: Logfiles
-parent: User guide
-order: 120
+parent: Development
+order: 40
 ---
 
 Rolens keeps track of log-worthy events and logs them in its log directory.

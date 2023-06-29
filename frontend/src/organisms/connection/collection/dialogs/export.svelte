@@ -5,7 +5,7 @@
   import { createEventDispatcher } from 'svelte';
 
   export let collection;
-  export let query = undefined;
+  export let query = {};
 
   const dispatch = createEventDispatcher();
   const exportInfo = { ...query, viewKey: collection.viewKey };

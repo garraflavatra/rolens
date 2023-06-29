@@ -2,5 +2,10 @@
 title: Managing hosts
 parent: User guide
 order: 10
-stub: true
 ---
+
+## Shortcuts
+
+You can use the following shortcuts to manage hosts and connections.
+
+{% render "shortcuts", shortcuts: shortcuts["Connecting to hosts"] %}

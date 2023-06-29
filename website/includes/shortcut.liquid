@@ -1,3 +1,4 @@
+{%- if shortcut.shift -%}<kbd>⇧</kbd>{%- endif -%}
 {%- if shortcut.option -%}<kbd>⌥</kbd>{%- endif -%}
 {%- if shortcut.ctrl -%}<kbd>⌘</kbd>{%- endif -%}
-{%- if shortcut.symbol -%}<kbd>{{ shortcut.symbol }}</kbd>{%- endif -%}
+{%- if shortcut.symbol -%}<kbd>{{ shortcut.symbol | upcase }}</kbd>{%- endif -%}

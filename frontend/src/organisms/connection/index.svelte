@@ -38,10 +38,10 @@
   });
 
   EventsOn('ui.coll.new', () => $hostTree[activeHostKey]?.databases[activeDbKey]?.newCollection());
+  EventsOn('ui.coll.export', () => $hostTree[activeHostKey]?.databases[activeDbKey]?.collections[activeCollKey]?.export());
   EventsOn('ui.coll.truncate', () => $hostTree[activeHostKey]?.databases[activeDbKey]?.collections[activeCollKey]?.truncate());
   EventsOn('ui.coll.drop', () => $hostTree[activeHostKey]?.databases[activeDbKey]?.collections[activeCollKey]?.drop());
   EventsOn('ui.coll.tab', tab => collTab = tab);
-
 </script>
 
 <div class="tree">

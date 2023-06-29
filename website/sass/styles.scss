@@ -294,3 +294,12 @@ article {
     stroke: none;
   }
 }
+
+// PRINT
+
+@media print {
+  main > aside,
+  article footer > p:not(:last-child) {
+    display: none;
+  }
+}

@@ -1,7 +1,7 @@
 ---
 title: Build directory
 parent: Development
-order: 50
+order: 30
 ---
 
 {% filecontent "../build/README.md", 2 %}

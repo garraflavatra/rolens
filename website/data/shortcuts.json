@@ -1,14 +1,22 @@
 {
-  "collections": [
-    { "description": "Open Stats panel", "option": true, "ctrl": true, "symbol": "H", "link": "/user-guide/collections/stats/" },
-    { "description": "Open Find panel", "option": true, "ctrl": true, "symbol": "F", "link": "/user-guide/collections/find/" },
-    { "description": "Open Insert panel", "option": true, "ctrl": true, "symbol": "I", "link": "/user-guide/collections/insert/" },
-    { "description": "Open Update panel", "option": true, "ctrl": true, "symbol": "U", "link": "/user-guide/collections/update/" },
-    { "description": "Open Remove panel", "option": true, "ctrl": true, "symbol": "R", "link": "/user-guide/collections/remove/" },
-    { "description": "Open Indexes panel", "option": true, "ctrl": true, "symbol": "X", "link": "/user-guide/collections/indexes/" },
-    { "description": "Open Aggregate panel", "option": true, "ctrl": true, "symbol": "A", "link": "/user-guide/collections/aggregate/" }
+  "Connecting to hosts": [
+    { "description": "Create a new host", "option": true, "symbol": "C", "link": "/user-guide/hosts/" },
+    { "description": "Edit host", "option": true, "symbol": "H", "link": "/user-guide/hosts/" }
   ],
-  "preferences": [
+  "Managing databases": [
+    { "description": "Create a new database", "option": true, "symbol": "D", "link": "/user-guide/databases/" }
+  ],
+  "Managing collections": [
+    { "description": "Open collection statistics", "shift": true, "ctrl": true, "symbol": "S", "link": "/user-guide/collections/stats/" },
+    { "description": "Open find panel", "shift": true, "ctrl": true, "symbol": "F", "link": "/user-guide/collections/find/" },
+    { "description": "Open insert panel", "shift": true, "ctrl": true, "symbol": "I", "link": "/user-guide/collections/insert/" },
+    { "description": "Open update panel", "shift": true, "ctrl": true, "symbol": "P", "link": "/user-guide/collections/update/" },
+    { "description": "Open remove panel", "shift": true, "ctrl": true, "symbol": "R", "link": "/user-guide/collections/remove/" },
+    { "description": "Show indexes", "shift": true, "ctrl": true, "symbol": "X", "link": "/user-guide/collections/indexes/" },
+    { "description": "Aggregate", "shift": true, "ctrl": true, "symbol": "A", "link": "/user-guide/collections/aggregate/" },
+    { "description": "Open shell", "shift": true, "ctrl": true, "symbol": "H", "link": "/user-guide/collections/aggregate/" }
+  ],
+  "Preferences": [
     { "description": "Open preferences", "ctrl": true, "symbol": ",", "link": "/user-guide/preferences/" }
   ]
 }

@@ -6,7 +6,7 @@ order: 10
 
 If you just want to install Rolens, please refer to the [installation document](https://garraflavatra.github.io/rolens/installation/). You can read this guide to get a detailed overview of the build procedure.
 
-### Prerequisites
+## Prerequisites
 
 Rolens is written in Go, so you should download the Go compiler from [the download page](https://go.dev/dl/). The minimum version required is 1.18. You can confirm whether it's installed correctly by running `go version` and checking that it outputs something similar to `go1.18.2`.
 
@@ -14,14 +14,14 @@ Furthermore, you need to have [Wails ^3.1](https://wails.io/docs/gettingstarted/
 
 In order to compile the frontend, [Node.js](https://nodejs.org/en/download) ^16.0 and the [npm](https://npmjs.com) package manager ^8.0 (included in Node.js) are required. To confirm the installed versions of those tools, execute `node -v` and `npm -v`.
 
-### Download source
+## Download source
 
 To obtain a copy of the source code, do either of the following:
 
 * Download a tarball or zip archive from the [release page](https://github.com/garraflavatra/rolens/releases/latest). Make sure you download the source archive, and not a pre-compiled binary.
 * Or clone [the Git repository](https://github.com/garraflavatra/rolens): `git clone https://github.com/garraflavatra/rolens.git`.
 
-### Compile
+## Compile
 
 `cd` into the root directory of the source code and run either:
 

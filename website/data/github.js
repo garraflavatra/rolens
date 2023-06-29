@@ -7,7 +7,7 @@ module.exports = async function() {
     return { stars: json.stargazers_count || 0 };
   }
   catch (error) {
-    console.error('ERROR | Could not fetch GitHub stars:', error);
+    console.error('Error: could not fetch GitHub stars:', error);
     return { stars: 0 };
   }
 }

@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   eleventyNavigation: {
     key: data => data.title,
@@ -12,6 +14,6 @@ module.exports = {
   github: {
     reportDocsIssue: data => `${data.meta.repoUrl}/issues/new?assignees=garraflavatra&labels=documentation&projects=&template=docs.yml&source=${encodeURIComponent(data.meta.siteUrl + data.page.url)}`,
     licenseUrl: data => `${data.meta.repoUrl}/blob/main/LICENSE`,
-    pageSourceUrl: data => `${data.meta.repoUrl}/blob/main/${data.page.inputPath}`,
+    pageSourceUrl: data => `${data.meta.repoUrl}/blob/main/${path.relative(process.cwd(), data.page.inputPath)}`,
   },
 };

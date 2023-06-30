@@ -36,7 +36,7 @@ You can obtain a pre-compiled Rolens binary for macOS or installer for Windows f
 
 ### Compiling from source
 
-If you have Node.js installed, just download the source from GitHub, and run `./build.js`. The install script will check that dependencies are present and build Rolens for you.
+If you have Node.js installed, just download the source from GitHub, and run `node ./build.js`. The install script will check that dependencies are present and build Rolens for you.
 
 If you want to build it yourself, please refer to the [advanced build process documentation](https://garraflavatra.github.io/rolens/development/advanced-build/) for detailed compilation instructions.
 

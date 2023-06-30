@@ -23,7 +23,7 @@ If you use a Linux-based OS, please continue reading.
 
 Rolens is free and open-source software, which means that you can compile it from source on your own machine by cloning [the repository](https://github.com/garraflavatra/rolens).
 
-If you have Node.js installed, just download the source from GitHub, and run `./build.js`. The install script will check that dependencies are present and build Rolens for you. If you want to build it yourself, please continue reading.
+If you have Node.js installed, just download the source from GitHub, and run `node ./build.js`. The install script will check that dependencies are present and build Rolens for you. If you want to build it yourself, please continue reading.
 
 ## Advanced build
 

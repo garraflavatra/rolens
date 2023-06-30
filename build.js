@@ -52,32 +52,43 @@ function isNullish(val) {
 
 // Check that Go ^1.18 is installed.
 
-const goMinorVersion = /go1\.([0-9][0-9])/.exec(
-  execSync('go version').toString()
-)?.pop();
+try {
+  const goMinorVersion = /go1\.([0-9][0-9])/.exec(
+    execSync('go version').toString()
+  )?.pop();
 
-
-if (isNullish(goMinorVersion) || (parseInt(goMinorVersion) < 18)) {
+  if (isNullish(goMinorVersion) || (parseInt(goMinorVersion) < 18)) {
+    throw new Error();
+  }
+} catch {
   missingDependencies.push({ name: 'Go ^1.18 ^16', url: 'https://go.dev/doc/install' });
 }
 
 // Check that Node.js ^16 is installed.
 
-const nodeMajorVersion = /v([0-9]{1,2})\.[0-9]{1,3}\.[0-9]{1,3}/.exec(
-  execSync('node --version').toString()
-)?.pop();
+try {
+  const nodeMajorVersion = /v([0-9]{1,2})\.[0-9]{1,3}\.[0-9]{1,3}/.exec(
+    execSync('node --version').toString()
+  )?.pop();
 
-if (isNullish(nodeMajorVersion) || (parseInt(nodeMajorVersion) < 16)) {
+  if (isNullish(nodeMajorVersion) || (parseInt(nodeMajorVersion) < 16)) {
+    throw new Error();
+  }
+} catch {
   missingDependencies.push({ name: 'Node.js ^16', url: 'https://go.dev/doc/install' });
 }
 
 // Check that Wails is installed.
 
-const wailsMinorVersion = /v2\.([0-9])\.[0-9]/.exec(
-  execSync('wails version').toString()
-)?.pop();
+try {
+  const wailsMinorVersion = /v2\.([0-9])\.[0-9]/.exec(
+    execSync('wails version').toString()
+  )?.pop();
 
-if (isNullish(wailsMinorVersion) || (parseInt(wailsMinorVersion) < 3)) {
+  if (isNullish(wailsMinorVersion) || (parseInt(wailsMinorVersion) < 3)) {
+    throw new Error();
+  }
+} catch {
   missingDependencies.push({
     name: 'Wails ^2.3',
     command: 'go install github.com/wailsapp/wails/v2/cmd/wails@latest',
@@ -88,9 +99,18 @@ if (isNullish(wailsMinorVersion) || (parseInt(wailsMinorVersion) < 3)) {
 // Check that NSIS is installed on Windows.
 
 if (isWindows) {
-  const nsisInstalled = /v3\.([0-9][0-9])/.test(execSync('makensis.exe /VERSION').toString());
-  if (!nsisInstalled) {
-    missingDependencies.push({ name: 'Nullsoft Install System ^3', url: 'https://nsis.sourceforge.io/Download' });
+  try {
+    const nsisInstalled = /v3\.([0-9][0-9])/.test(execSync('makensis.exe /VERSION').toString());
+    if (!nsisInstalled) {
+      throw new Error();
+    }
+  } catch {
+    missingDependencies.push({
+      name: 'Nullsoft Install System ^3',
+      command: 'choco install nsis',
+      url: 'https://nsis.sourceforge.io/Download',
+      comment: 'Note: you should add makensis.exe to your path:\n    setx /M PATH "%PATH%;C:\\Program Files (x86)\\NSIS\\Bin"'
+    });
   }
 }
 
@@ -111,6 +131,10 @@ if (missingDependencies.length > 0) {
     if (dependency.url) {
       console.log('  Visit the following page for more information:');
       console.log(`    ${dependency.url}`);
+    }
+
+    if (dependency.comment) {
+      console.log(`  ${dependency.comment}`);
     }
   }
 

@@ -73,7 +73,7 @@ jobs:
         path: releases/*
 
     - name: Test build script for users
-      run: ./build.js
+      run: node ./build.js
 
   bundle:
     name: Bundle artifacts

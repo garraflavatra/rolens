@@ -1,43 +1,17 @@
 <script>
-  import { indentWithTab } from '@codemirror/commands';
   import { javascript } from '@codemirror/lang-javascript';
-  import { indentOnInput } from '@codemirror/language';
-  import { EditorState } from '@codemirror/state';
-  import { EditorView, keymap } from '@codemirror/view';
-  import { basicSetup } from 'codemirror';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { onMount } from 'svelte';
+  import CodeEditor from './codeeditor.svelte';
 
   export let text = '';
   export let editor = undefined;
   export let readonly = false;
 
-  const dispatch = createEventDispatcher();
-  let editorParent;
-
-  const editorState = EditorState.create({
-    doc: '',
-    extensions: [
-      basicSetup,
-      keymap.of([ indentWithTab, indentOnInput ]),
-      javascript(),
-      EditorState.tabSize.of(4),
-      EditorState.readOnly.of(readonly),
-      EditorView.updateListener.of(e => {
-        if (!e.docChanged) {
-          return;
-        }
-        text = e.state.doc.toString();
-        dispatch('updated', { text });
-      }),
-    ],
-  });
+  const extensions = [
+    javascript(),
+  ];
 
   onMount(() => {
-    editor = new EditorView({
-      parent: editorParent,
-      state: editorState,
-    });
-
     editor.dispatch({
       changes: {
         from: 0,
@@ -45,23 +19,13 @@
         insert: text,
       },
     });
-
-    dispatch('inited', { editor });
   });
 </script>
 
-<div bind:this={editorParent} class="editor"></div>
-
-<style>
-  .editor {
-    width: 100%;
-    background-color: #fff;
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-
-  .editor :global(.cm-editor) {
-    overflow: auto;
-    height: 100%;
-  }
-</style>
+<CodeEditor bind:editor
+  bind:text
+  on:inited
+  on:updated
+  {extensions}
+  {readonly}
+/>

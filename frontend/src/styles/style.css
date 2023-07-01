@@ -50,8 +50,8 @@ a {
 
 hr {
   border: none;
-  height: 1px;
-  background-color: #ccc;
+  border-top: 1px solid #ccc;
+  width: 100%;
 }
 
 .loading {

@@ -42,7 +42,11 @@ func (a *App) connectToHost(hostKey string) (*mongo.Client, context.Context, fun
 		return nil, nil, nil, errors.New("invalid uri")
 	}
 
-	client, err := mongo.NewClient(mongoOptions.Client().ApplyURI(h.URI))
+	appName := "Rolens v" + a.Env.Version
+	opts := mongoOptions.Client()
+	opts.AppName = &appName
+	opts.ApplyURI(h.URI)
+	client, err := mongo.NewClient(opts)
 
 	if err != nil {
 		runtime.LogWarningf(a.ctx, "Could not connect to host %s: %s", hostKey, err.Error())

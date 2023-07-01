@@ -4,6 +4,7 @@
   import { EventsOn } from '$wails/runtime/runtime';
 
   import Logs from './logs.svelte';
+  import Shell from '../shell.svelte';
   import Status from './status.svelte';
   import SystemInfo from './systeminfo.svelte';
 
@@ -28,6 +29,7 @@
       <TabBar
         tabs={[
           { key: 'status', icon: 'chart', title: 'Host status' },
+          { key: 'shell', icon: 'shell', title: 'Shell' },
           { key: 'logs', icon: 'doc', title: 'Logs' },
           { key: 'systemInfo', icon: 'server', title: 'System info' },
         ]}
@@ -38,6 +40,7 @@
         {#if tab === 'status'} <Status {host} />
         {:else if tab === 'logs'} <Logs {host} />
         {:else if tab === 'systemInfo'} <SystemInfo {host} />
+        {:else if tab === 'shell'} <Shell {host} />
         {/if}
       </div>
     {/key}

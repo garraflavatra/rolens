@@ -25,6 +25,7 @@ type EnvironmentInfo struct {
 
 	HasMongoExport bool `json:"hasMongoExport"`
 	HasMongoDump   bool `json:"hasMongoDump"`
+	HasMongoShell  bool `json:"hasMongoShell"`
 
 	HomeDirectory     string `json:"homeDirectory"`
 	DataDirectory     string `json:"dataDirectory"`
@@ -48,6 +49,9 @@ func NewApp(version string) *App {
 
 	_, err = exec.LookPath("mongoexport")
 	a.Env.HasMongoExport = err == nil
+
+	_, err = exec.LookPath("mongosh")
+	a.Env.HasMongoShell = err == nil
 
 	a.Env.HomeDirectory, err = os.UserHomeDir()
 	if err != nil {

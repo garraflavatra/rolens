@@ -9,6 +9,7 @@
   import Indexes from './indexes.svelte';
   import Insert from './insert.svelte';
   import Remove from './remove.svelte';
+  import Shell from '../shell.svelte';
   import Stats from './stats.svelte';
   import Update from './update.svelte';
 
@@ -42,16 +43,19 @@
 <div class="view" class:empty={!collection}>
   {#if collection}
     {#key collection}
-      <TabBar tabs={[
-        { key: 'stats', icon: 'chart', title: 'Stats' },
-        { key: 'find', icon: 'db', title: 'Find' },
-        { key: 'insert', icon: '+', title: 'Insert' },
-        { key: 'update', icon: 'edit', title: 'Update' },
-        { key: 'remove', icon: 'trash', title: 'Remove' },
-        { key: 'indexes', icon: 'list', title: 'Indexes' },
-        { key: 'aggregate', icon: 're', title: 'Aggregate' },
-      ]}
-        bind:selectedKey={tab} />
+      <TabBar
+        tabs={[
+          { key: 'stats', icon: 'chart', title: 'Stats' },
+          { key: 'find', icon: 'db', title: 'Find' },
+          { key: 'insert', icon: '+', title: 'Insert' },
+          { key: 'update', icon: 'edit', title: 'Update' },
+          { key: 'remove', icon: 'trash', title: 'Remove' },
+          { key: 'indexes', icon: 'list', title: 'Indexes' },
+          { key: 'aggregate', icon: 're', title: 'Aggregate' },
+          { key: 'shell', icon: 'shell', title: 'Shell' },
+        ]}
+        bind:selectedKey={tab}
+      />
 
       <div class="container">
         {#if tab === 'stats'} <Stats {collection} />
@@ -61,6 +65,7 @@
         {:else if tab === 'remove'} <Remove {collection} />
         {:else if tab === 'indexes'} <Indexes {collection} />
         {:else if tab === 'aggregate'} <Aggregate {collection} />
+        {:else if tab === 'shell'} <Shell {collection} />
         {/if}
       </div>
     {/key}

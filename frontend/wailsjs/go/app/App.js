@@ -30,6 +30,10 @@ export function Environment() {
   return window['go']['app']['App']['Environment']();
 }
 
+export function ExecuteShellScript(arg1, arg2, arg3, arg4) {
+  return window['go']['app']['App']['ExecuteShellScript'](arg1, arg2, arg3, arg4);
+}
+
 export function FindItems(arg1, arg2, arg3, arg4) {
   return window['go']['app']['App']['FindItems'](arg1, arg2, arg3, arg4);
 }

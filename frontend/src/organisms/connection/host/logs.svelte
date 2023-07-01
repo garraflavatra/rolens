@@ -4,6 +4,7 @@
   import ObjectViewer from '$components/objectviewer.svelte';
   import input from '$lib/actions/input';
   import { BrowserOpenURL } from '$wails/runtime/runtime';
+  import { onDestroy } from 'svelte';
 
   export let host;
 
@@ -15,8 +16,16 @@
   let copySucceeded = false;
   let autoReloadInterval = 0;
   let objectViewerData;
+  let interval;
   $: filter && refresh();
   $: busy = !logs && !error && 'Requesting logs…';
+
+  $: if (autoReloadInterval) {
+    if (interval) {
+      clearInterval(interval);
+    }
+    interval = setInterval(refresh, autoReloadInterval * 1000);
+  }
 
   async function refresh() {
     let _logs = [];
@@ -44,6 +53,12 @@
     copySucceeded = true;
     setTimeout(() => copySucceeded = false, 1500);
   }
+
+  onDestroy(() => {
+    if (interval) {
+      clearInterval(interval);
+    }
+  });
 </script>
 
 <div class="stats">

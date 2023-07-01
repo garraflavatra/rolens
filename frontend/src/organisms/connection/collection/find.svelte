@@ -164,7 +164,7 @@
 
 <div class="find">
   <form on:submit|preventDefault={submitQuery}>
-    <div class="form-row one">
+    <div class="formrow one">
       <label class="field">
         <span class="label">Query or id</span>
         <input type="text"
@@ -192,7 +192,7 @@
       </label>
     </div>
 
-    <div class="form-row two">
+    <div class="formrow two">
       <label class="field">
         <span class="label">Fields</span>
         <input
@@ -229,7 +229,7 @@
       </label>
     </div>
 
-    <div class="form-row actions">
+    <div class="formrow actions">
       <button type="submit" class="button" title="Run query">
         <Icon name="play" /> Run
       </button>
@@ -342,18 +342,18 @@
     grid-template: auto 1fr / 1fr;
   }
 
-  .form-row {
+  .formrow {
     display: grid;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
   }
-  .form-row.one {
+  .formrow.one {
     grid-template: 1fr / 3fr 2fr;
   }
-  .form-row.two {
+  .formrow.two {
     grid-template: 1fr / 5fr 1fr 1fr;
   }
-  .form-row.actions {
+  .formrow.actions {
     margin-bottom: 0rem;
     grid-template: 1fr / repeat(4, auto);
     justify-content: start;

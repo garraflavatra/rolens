@@ -20,6 +20,7 @@
   <div class="grid">
     <ObjectGrid
       data={collection.stats}
+      showTypes={false}
       errorTitle={collection.statsError ? 'Error fetching collection stats' : ''}
       errorDescription={collection.statsError}
       busy={!collection.stats && !collection.statsError && `Fetching stats for ${collection.key}…`}

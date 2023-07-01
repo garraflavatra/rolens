@@ -20,6 +20,7 @@
   <div class="grid">
     <ObjectGrid
       data={host.status || {}}
+      showTypes={false}
       errorTitle={host.statusError ? 'Error fetching server status' : ''}
       errorDescription={host.statusError}
       busy={!host.status && !host.statusError && 'Fetching server status…'}

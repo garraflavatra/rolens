@@ -28,7 +28,7 @@
       <TabBar
         tabs={[
           { key: 'status', icon: 'chart', title: 'Host status' },
-          { key: 'logs', icon: 'text', title: 'Logs' },
+          { key: 'logs', icon: 'doc', title: 'Logs' },
           { key: 'systemInfo', icon: 'server', title: 'System info' },
         ]}
         bind:selectedKey={tab}

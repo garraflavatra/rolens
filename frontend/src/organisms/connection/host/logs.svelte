@@ -97,7 +97,7 @@
 
       <label class="field inline">
         <span class="label">Reload (sec)</span>
-        <input type="number" bind:value={autoReloadInterval} list="autoreloadintervals" use:input />
+        <input type="number" class="autoreloadinput" bind:value={autoReloadInterval} list="autoreloadintervals" use:input />
       </label>
 
       <label class="field inline">
@@ -150,5 +150,8 @@
   }
   .total {
     margin-left: auto;
+  }
+  .autoreloadinput {
+    width: 1.5rem;
   }
 </style>

@@ -24,6 +24,8 @@ export function FindItems(arg1:string,arg2:string,arg3:string,arg4:string):Promi
 
 export function GetIndexes(arg1:string,arg2:string,arg3:string):Promise<app.GetIndexesResult>;
 
+export function HostLogs(arg1:string,arg2:string):Promise<app.HostLogsResult>;
+
 export function Hosts():Promise<map[string]app.Host>;
 
 export function InsertItems(arg1:string,arg2:string,arg3:string,arg4:string):Promise<any>;

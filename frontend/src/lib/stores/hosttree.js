@@ -17,6 +17,7 @@ import {
   DropDatabase,
   DropIndex,
   GetIndexes,
+  HostLogs,
   Hosts,
   OpenCollection,
   OpenConnection,
@@ -263,15 +264,15 @@ async function refresh() {
         };
       }
 
-      host.newDatabase = async function() {
-        const name = await dialogs.enterText('Create a database', 'Enter the database name. Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.', '');
-        if (name) {
-          host.databases[name] = { key: name, new: true };
-          await host.open();
-        }
-      };
-
       await refresh();
+    };
+
+    host.newDatabase = async function() {
+      const name = await dialogs.enterText('Create a database', 'Enter the database name. Note: databases in MongoDB do not exist until they have a collection and an item. Your new database will not persist on the server; fill it to have it created.', '');
+      if (name) {
+        host.databases[name] = { key: name, new: true };
+        await host.open();
+      }
     };
 
     host.edit = async function() {
@@ -281,6 +282,10 @@ async function refresh() {
           refresh().then(resolve);
         });
       });
+    };
+
+    host.getLogs = async function(filter = 'global') {
+      return await HostLogs(hostKey, filter);
     };
 
     host.remove = async function() {

@@ -38,6 +38,10 @@ export function GetIndexes(arg1, arg2, arg3) {
   return window['go']['app']['App']['GetIndexes'](arg1, arg2, arg3);
 }
 
+export function HostLogs(arg1, arg2) {
+  return window['go']['app']['App']['HostLogs'](arg1, arg2);
+}
+
 export function Hosts() {
   return window['go']['app']['App']['Hosts']();
 }

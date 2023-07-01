@@ -9,6 +9,7 @@
 
   export let text = '';
   export let editor = undefined;
+  export let readonly = false;
 
   const dispatch = createEventDispatcher();
   let editorParent;
@@ -20,6 +21,7 @@
       keymap.of([ indentWithTab, indentOnInput ]),
       javascript(),
       EditorState.tabSize.of(4),
+      EditorState.readOnly.of(readonly),
       EditorView.updateListener.of(e => {
         if (!e.docChanged) {
           return;

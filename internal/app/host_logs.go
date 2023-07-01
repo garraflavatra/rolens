@@ -26,11 +26,19 @@ func (a *App) HostLogs(hostKey, filter string) (result HostLogsResult) {
 		result.Error = err.Error()
 	}
 
-	result.Total = res["totalLinesWritten"].(int32)
+	if res["totalLinesWritten"] != nil {
+		result.Total = res["totalLinesWritten"].(int32)
+	} else {
+		result.Total = 0
+	}
+
 	result.Logs = make([]string, 0)
 
-	for _, v := range res["log"].(bson.A) {
-		result.Logs = append(result.Logs, v.(string))
+	switch res["log"].(type) {
+	case bson.A:
+		for _, v := range res["log"].(bson.A) {
+			result.Logs = append(result.Logs, v.(string))
+		}
 	}
 
 	return

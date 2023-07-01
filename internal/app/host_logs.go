@@ -24,6 +24,7 @@ func (a *App) HostLogs(hostKey, filter string) (result HostLogsResult) {
 	if err != nil {
 		runtime.LogWarningf(a.ctx, "Could not get %s logs for %s: %s", filter, hostKey, err.Error())
 		result.Error = err.Error()
+		return
 	}
 
 	if res["totalLinesWritten"] != nil {

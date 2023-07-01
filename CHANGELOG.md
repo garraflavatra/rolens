@@ -1,3 +1,7 @@
+## [Unreleased]
+
+* Added log view (#53, #54).
+
 ## [v0.2.2]
 
 * Added Excel export format (#46).

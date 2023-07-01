@@ -11,14 +11,15 @@
   export let errorTitle = '';
   export let errorDescription = '';
   export let busy = false;
-
-  const columns = [
-    { key: 'key', label: 'Key' },
-    { key: 'value', label: 'Value' },
-    { key: 'type', label: 'Type' },
-  ];
+  export let showTypes = true;
 
   let items = [];
+
+  $: columns = [
+    { key: 'key', label: 'Key' },
+    { key: 'value', label: 'Value' },
+    showTypes ? { key: 'type', label: 'Type' } : undefined,
+  ].filter(c => !!c);
 
   $: if (data) {
     // items = dissectObject(data).map(item => ({ ...item, menu: getRootMenu(item.key, item) }));

@@ -1,0 +1,7 @@
+{
+  "F": "Fatal",
+  "E": "Error",
+  "W": "Warning",
+  "I": "Info",
+  "D": "Debug"
+}

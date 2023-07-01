@@ -20,6 +20,7 @@
   <div class="grid">
     <ObjectGrid
       data={host.systemInfo}
+      showTypes={false}
       errorTitle={host.systemInfoError ? 'Error fetching system info' : ''}
       errorDescription={host.systemInfoError}
       busy={!host.systemInfo && !host.systemInfoError && 'Fetching system info…'}

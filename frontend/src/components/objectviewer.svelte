@@ -7,6 +7,7 @@
   import ObjectEditor from './objecteditor.svelte';
 
   export let data;
+  export let readonly = false;
   export let saveable = false;
   export let successMessage = '';
 
@@ -37,7 +38,7 @@
 {#if data}
   <Modal bind:show={data} contentPadding={false}>
     <div class="objectviewer">
-      <ObjectEditor bind:text on:updated={() => successMessage = ''} />
+      <ObjectEditor bind:text on:updated={() => successMessage = ''} {readonly} />
     </div>
 
     <svelte:fragment slot="footer">

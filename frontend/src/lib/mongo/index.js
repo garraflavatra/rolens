@@ -2,8 +2,10 @@ import { ObjectId } from 'bson';
 import aggregationStages from './aggregation-stages.json';
 import atomicUpdateOperators from './atomic-update-operators.json';
 import locales from './locales.json';
+import logComponents from './log-components.json';
+import logLevels from './loglevels.json';
 
-export { aggregationStages, atomicUpdateOperators, locales };
+export { aggregationStages, atomicUpdateOperators, locales, logComponents, logLevels };
 
 // Calculate the min and max values of (un)signed integers with n bits
 export const intMin = bits => Math.pow(2, bits - 1) * -1;

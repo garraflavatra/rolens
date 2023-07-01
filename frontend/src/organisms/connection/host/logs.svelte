@@ -3,6 +3,7 @@
   import Icon from '$components/icon.svelte';
   import ObjectViewer from '$components/objectviewer.svelte';
   import input from '$lib/actions/input';
+  import { logComponents, logLevels } from '$lib/mongo';
   import { BrowserOpenURL } from '$wails/runtime/runtime';
   import { onDestroy } from 'svelte';
 
@@ -10,6 +11,8 @@
 
   const autoReloadIntervals = [ 1, 2, 5, 10, 30, 60 ];
   let filter = 'global';
+  let severityFilter = '';
+  let componentFilter = '';
   let logs;
   let total = 0;
   let error = '';
@@ -17,7 +20,7 @@
   let autoReloadInterval = 0;
   let objectViewerData;
   let interval;
-  $: filter && refresh();
+  $: (filter || severityFilter || componentFilter) && refresh();
   $: busy = !logs && !error && 'Requesting logs…';
 
   $: if (autoReloadInterval) {
@@ -30,12 +33,19 @@
   async function refresh() {
     let _logs = [];
     ({ logs: _logs, total, error } = await host.getLogs(filter));
-
     logs = [];
+
     for (let index = 0; index < _logs.length; index++) {
       const log = JSON.parse(_logs[index]);
-      log._index = index;
-      logs = [ ...logs, log ];
+
+      const matchesLevel = severityFilter ? log.s?.startsWith(severityFilter) : true;
+      const matchesComponent = componentFilter ? (componentFilter === log.c?.toUpperCase()) : true;
+
+      if (matchesLevel && matchesComponent) {
+        log._index = index;
+        log.s = logLevels[log.s] || log.s;
+        logs = [ ...logs, log ];
+      }
     }
   }
 
@@ -62,6 +72,46 @@
 </script>
 
 <div class="stats">
+  <div class="formrow">
+    <label class="field">
+      <span class="label">Auto reload (seconds)</span>
+      <input type="number" class="autoreloadinput" bind:value={autoReloadInterval} list="autoreloadintervals" use:input />
+    </label>
+
+    <label class="field">
+      <span class="label">Log type</span>
+      <select bind:value={filter}>
+        <option value="global">Global</option>
+        <option value="startupWarnings">Startup warnings</option>
+      </select>
+      <button class="button secondary" on:click={openFilterDocs} title="Documentation">
+        <Icon name="?" />
+      </button>
+    </label>
+  </div>
+
+  <div class="formrow">
+    <label class="field">
+      <span class="label">Severity</span>
+      <select bind:value={severityFilter}>
+        <option value="">All</option>
+        {#each Object.entries(logLevels) as [ value, name ]}
+          <option {value}>{value} ({name})</option>
+        {/each}
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="label">Component</span>
+      <select bind:value={componentFilter}>
+        <option value="">All</option>
+        {#each logComponents as value}
+          <option {value}>{value}</option>
+        {/each}
+      </select>
+    </label>
+  </div>
+
   <div class="grid">
     <Grid
       items={logs || []}
@@ -83,33 +133,14 @@
   </div>
 
   <div class="controls">
-    <div>
-      <div class="field inline">
-        <button class="button" on:click={refresh}>
-          <Icon name="reload" spin={busy} /> Reload
-        </button>
+    <button class="button" on:click={refresh}>
+      <Icon name="reload" spin={busy} /> Reload
+    </button>
 
-        <button class="button secondary" on:click={copy} disabled={!host.status}>
-          <Icon name={copySucceeded ? 'check' : 'clipboard'} />
-          Copy JSON
-        </button>
-      </div>
-
-      <label class="field inline">
-        <span class="label">Reload (sec)</span>
-        <input type="number" class="autoreloadinput" bind:value={autoReloadInterval} list="autoreloadintervals" use:input />
-      </label>
-
-      <label class="field inline">
-        <select bind:value={filter}>
-          <option value="global">Global</option>
-          <option value="startupWarnings">Startup warnings</option>
-        </select>
-        <button class="button secondary" on:click={openFilterDocs} title="Documentation">
-          <Icon name="?" />
-        </button>
-      </label>
-    </div>
+    <button class="button secondary" on:click={copy} disabled={!host.status}>
+      <Icon name={copySucceeded ? 'check' : 'clipboard'} />
+      Copy JSON
+    </button>
 
     {#if total}
       <div class="total">
@@ -133,10 +164,16 @@
   .stats {
     display: grid;
     gap: 0.5rem;
-    grid-template: 1fr auto / 1fr;
+    grid-template: auto auto 1fr auto / 1fr;
   }
 
-  .stats .grid {
+  .formrow {
+    display: grid;
+    gap: 0.5rem;
+    grid-template: 1fr / 1fr 1fr;
+  }
+
+  .grid {
     overflow: auto;
     min-height: 0;
     min-width: 0;
@@ -146,7 +183,7 @@
   .controls {
     display: flex;
     align-items: center;
-    gap: 0.1rem;
+    gap: 0.2rem;
   }
   .total {
     margin-left: auto;

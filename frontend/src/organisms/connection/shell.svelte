@@ -77,11 +77,15 @@
         </button>
       </BlankState>
     {:else}
-      <pre>{result.output || ''}</pre>
+      <pre>{result.output || ''}{#if result.stderr}<div class="error">{result.stderr}</div>{/if}</pre>
     {/if}
   </div>
 
   <div class="controls">
+    <button class="button" on:click={run}>
+      <Icon name="play" /> Run
+    </button>
+
     {#key result}
       <div class="status flash-green">
         {#if result?.status}
@@ -89,10 +93,6 @@
         {/if}
       </div>
     {/key}
-
-    <button class="btn" on:click={run}>
-      <Icon name="play" /> Run
-    </button>
   </div>
 </div>
 
@@ -114,7 +114,7 @@
   }
 
   .output {
-    background-color: #111;
+    background-color: #2e3027;
     color: #fff;
     overflow: auto;
     display: flex;
@@ -129,6 +129,10 @@
     -webkit-user-select: text;
     cursor: text;
   }
+  .output pre .error {
+    color: #ff8989;
+    margin-top: 2px;
+  }
   .output :global(.blankstate) {
     margin: auto;
     padding: 0.5rem;
@@ -141,6 +145,6 @@
     grid-column: 1 / 3;
   }
   .controls .status {
-    margin-right: auto;
+    margin-left: auto;
   }
 </style>

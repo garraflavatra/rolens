@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -13,6 +14,7 @@ import (
 
 type ExecuteShellScriptResult struct {
 	Output           string `json:"output"`
+	Stderr           string `json:"stderr"`
 	Status           int    `json:"status"`
 	ErrorTitle       string `json:"errorTitle"`
 	ErrorDescription string `json:"errorDescription"`
@@ -85,14 +87,17 @@ func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result
 		return
 	}
 
+	var outbuf, errbuf strings.Builder
 	cmd := exec.Command("mongosh", "--file", fname, host.URI)
-	stdout, err := cmd.Output()
+	cmd.Stdout = &outbuf
+	cmd.Stderr = &errbuf
+	err = cmd.Run()
 
 	if exiterr, ok := err.(*exec.ExitError); ok {
 		result.Status = exiterr.ExitCode()
 	} else if err != nil {
 		runtime.LogWarningf(a.ctx, "Shell: failed to execute: mongosh --file %s: %s", fname, err.Error())
-		result.ErrorTitle = "Could not execute script"
+		result.ErrorTitle = "mongosh failure"
 		result.ErrorDescription = err.Error()
 		return
 	} else {
@@ -100,6 +105,7 @@ func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result
 	}
 
 	os.Remove(fname)
-	result.Output = string(stdout)
+	result.Output = outbuf.String()
+	result.Stderr = errbuf.String()
 	return
 }

@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 * Added log view (#53, #54).
+* Added shell (#37).
 
 ## [v0.2.2]
 

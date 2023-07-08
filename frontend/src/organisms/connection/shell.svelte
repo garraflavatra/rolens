@@ -8,6 +8,7 @@
   export let host = undefined;
   export let database = undefined;
   export let collection = undefined;
+  export let visible = false;
 
   const placeholder = '// Write your script here...';
   const extensions = [ javascript() ];
@@ -40,6 +41,8 @@
     timeout = setTimeout(() => copySucceeded = false, 1500);
   }
 
+  $: visible && editor.focus();
+
   onMount(() => {
     editor.dispatch({
       changes: {
@@ -56,6 +59,7 @@
     });
     editor.focus();
   });
+
   onDestroy(() => clearTimeout(timeout));
 </script>
 

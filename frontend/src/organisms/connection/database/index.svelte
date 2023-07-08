@@ -7,17 +7,15 @@
   import Stats from './stats.svelte';
 
   export let database;
-  export let hostKey;
-  export let dbKey;
   export let tab = 'stats';
 
-  $: if (database) {
-    database.hostKey = hostKey;
-    database.dbKey = dbKey;
-  }
+  const tabs = {
+    'stats': { icon: 'chart', title: 'Database stats', component: Stats },
+    'shell': { icon: 'shell', title: 'Shell', component: Shell },
+  };
 
-  $: if (hostKey || dbKey) {
-    tab = 'stats';
+  for (const key of Object.keys(tabs)) {
+    tabs[key].key = key;
   }
 
   EventsOn('OpenStatsTab', name => (tab = name || tab));
@@ -26,17 +24,13 @@
 <div class="view" class:empty={!database}>
   {#if database}
     {#key database}
-      <TabBar
-        tabs={[
-          { key: 'stats', icon: 'chart', title: 'Database stats' },
-          { key: 'shell', icon: 'shell', title: 'Shell' },
-        ]}
-        bind:selectedKey={tab} />
-      <div class="container">
-        {#if tab === 'stats'} <Stats {database} />
-        {:else if tab === 'shell'} <Shell {database} />
-        {/if}
-      </div>
+      <TabBar tabs={Object.values(tabs)} bind:selectedKey={tab} />
+
+      {#each Object.values(tabs) as view}
+        <div class="container" class:hidden={tab !== view.key}>
+          <svelte:component this={view.component} visible={tab === view.key} {database} />
+        </div>
+      {/each}
     {/key}
   {:else}
     <BlankState label="Select a database to continue" />
@@ -60,6 +54,9 @@
     overflow: auto;
     min-height: 0;
     min-width: 0;
+  }
+  .container.hidden {
+    display: none;
   }
   .container > :global(*) {
     width: 100%;

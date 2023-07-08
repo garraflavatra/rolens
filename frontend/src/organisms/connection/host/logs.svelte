@@ -8,6 +8,7 @@
   import { onDestroy } from 'svelte';
 
   export let host;
+  export let visible = false;
 
   const autoReloadIntervals = [ 1, 2, 5, 10, 30, 60 ];
   let filter = 'global';
@@ -31,6 +32,10 @@
   }
 
   async function refresh() {
+    if (!visible) {
+      return;
+    }
+
     let _logs = [];
     ({ logs: _logs, total, error } = await host.getLogs(filter));
     logs = [];
@@ -63,6 +68,8 @@
     copySucceeded = true;
     setTimeout(() => copySucceeded = false, 1500);
   }
+
+  $: visible && !logs && refresh();
 
   onDestroy(() => {
     if (interval) {

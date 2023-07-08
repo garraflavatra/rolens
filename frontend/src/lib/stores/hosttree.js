@@ -95,6 +95,7 @@ async function refresh() {
             collection.key = collKey;
             collection.dbKey = dbKey;
             collection.hostKey = hostKey;
+            collection.viewKey = 'list';
             collection.indexes = collection.indexes || [];
 
             delete collection.new;

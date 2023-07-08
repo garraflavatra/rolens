@@ -6,6 +6,7 @@
   import { onMount } from 'svelte';
 
   export let collection;
+  export let visible = false;
 
   let json = '';
   let many = true;
@@ -23,6 +24,8 @@
     );
   }
 
+  $: visible && editor.focus();
+
   onMount(() => {
     editor.dispatch({
       changes: {
@@ -34,7 +37,6 @@
         anchor: 3,
       },
     });
-    editor.focus();
   });
 </script>
 

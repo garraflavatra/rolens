@@ -9,15 +9,17 @@
   import SystemInfo from './systeminfo.svelte';
 
   export let host;
-  export let hostKey;
   export let tab = 'status';
 
-  $: if (host) {
-    host.hostKey = hostKey;
-  }
+  const tabs = {
+    'status': { icon: 'chart', title: 'Host status', component: Status },
+    'shell': { icon: 'shell', title: 'Shell', component: Shell },
+    'logs': { icon: 'doc', title: 'Logs', component: Logs },
+    'systemInfo': { icon: 'server', title: 'System info', component: SystemInfo },
+  };
 
-  $: if (hostKey) {
-    tab = 'status';
+  for (const key of Object.keys(tabs)) {
+    tabs[key].key = key;
   }
 
   EventsOn('OpenStatusTab', name => (tab = name || tab));
@@ -26,23 +28,13 @@
 <div class="view" class:empty={!host}>
   {#if host}
     {#key host}
-      <TabBar
-        tabs={[
-          { key: 'status', icon: 'chart', title: 'Host status' },
-          { key: 'shell', icon: 'shell', title: 'Shell' },
-          { key: 'logs', icon: 'doc', title: 'Logs' },
-          { key: 'systemInfo', icon: 'server', title: 'System info' },
-        ]}
-        bind:selectedKey={tab}
-      />
+      <TabBar tabs={Object.values(tabs)} bind:selectedKey={tab} />
 
-      <div class="container">
-        {#if tab === 'status'} <Status {host} />
-        {:else if tab === 'logs'} <Logs {host} />
-        {:else if tab === 'systemInfo'} <SystemInfo {host} />
-        {:else if tab === 'shell'} <Shell {host} />
-        {/if}
-      </div>
+      {#each Object.values(tabs) as view}
+        <div class="container" class:hidden={tab !== view.key}>
+          <svelte:component this={view.component} visible={tab === view.key} {host} />
+        </div>
+      {/each}
     {/key}
   {:else}
     <BlankState label="Select a host to continue" />
@@ -66,6 +58,9 @@
     overflow: auto;
     min-height: 0;
     min-width: 0;
+  }
+  .container.hidden {
+    display: none;
   }
   .container > :global(*) {
     width: 100%;

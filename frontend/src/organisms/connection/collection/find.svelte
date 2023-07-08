@@ -11,9 +11,9 @@
   import { convertLooseJson } from '$lib/strings';
   import { FindItems, RemoveItemById, UpdateFoundDocument } from '$wails/go/app/App';
   import { EJSON } from 'bson';
-  import { onMount } from 'svelte';
 
   export let collection;
+  export let visible = false;
 
   const defaults = {
     query: '{}',
@@ -42,7 +42,7 @@
   }
 
   async function submitQuery() {
-    if (querying) {
+    if (querying || !visible) {
       return;
     }
 
@@ -159,7 +159,7 @@
   }
 
   $: collection && refresh();
-  onMount(refresh);
+  $: visible && refresh();
 </script>
 
 <div class="find">

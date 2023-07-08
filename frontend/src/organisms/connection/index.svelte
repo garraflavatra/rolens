@@ -9,9 +9,17 @@
   import HostTree from './hosttree.svelte';
 
   let path = [];
+  let prevPath = '';
   let hostTab = '';
   let dbTab = '';
   let collTab = '';
+
+  $: if (path.join('.') !== prevPath) {
+    hostTab = 'status';
+    dbTab = 'stats';
+    collTab = 'stats';
+    prevPath = path.join('.');
+  }
 
   $: activeHostKey = path[0];
   $: activeDbKey = path[1];
@@ -55,26 +63,17 @@
 </div>
 
 {#if activeCollKey}
-  <CollectionView
-    collection={$hostTree[activeHostKey]?.databases[activeDbKey]?.collections?.[activeCollKey]}
-    hostKey={activeHostKey}
-    dbKey={activeDbKey}
-    collKey={activeCollKey}
-    bind:tab={collTab}
-  />
+  {#key activeCollKey}
+    <CollectionView collection={$hostTree[activeHostKey]?.databases[activeDbKey]?.collections?.[activeCollKey]} bind:tab={collTab} />
+  {/key}
 {:else if activeDbKey}
-  <DatabaseView
-    database={$hostTree[activeHostKey]?.databases[activeDbKey]}
-    hostKey={activeHostKey}
-    dbKey={activeDbKey}
-    bind:tab={dbTab}
-  />
+  {#key activeDbKey}
+    <DatabaseView database={$hostTree[activeHostKey]?.databases[activeDbKey]} bind:tab={dbTab} />
+  {/key}
 {:else if activeHostKey}
-  <HostView
-    host={$hostTree[activeHostKey]}
-    hostKey={activeHostKey}
-    bind:tab={hostTab}
-  />
+  {#key activeHostKey}
+    <HostView host={$hostTree[activeHostKey]} bind:tab={hostTab} />
+  {/key}
 {/if}
 
 <style>

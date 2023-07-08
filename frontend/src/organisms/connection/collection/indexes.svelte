@@ -1,9 +1,9 @@
 <script>
   import Icon from '$components/icon.svelte';
   import ObjectGrid from '$components/objectgrid.svelte';
-  import { onMount } from 'svelte';
 
   export let collection;
+  export let visible = false;
 
   let activePath = [];
   let _indexes = [];
@@ -11,6 +11,10 @@
   let busy = false;
 
   async function refresh() {
+    if (!visible) {
+      return;
+    }
+
     busy = 'Fetching indexes…';
     error = await collection.getIndexes();
 
@@ -49,7 +53,7 @@
     }
   }
 
-  onMount(refresh);
+  $: visible && refresh();
 </script>
 
 <div class="indexes">

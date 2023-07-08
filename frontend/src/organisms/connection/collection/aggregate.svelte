@@ -68,7 +68,8 @@
 
         <!-- svelte-ignore a11y-label-has-associated-control -->
         <label class="field">
-          <ObjectEditor bind:text={stage.data}
+          <ObjectEditor
+            bind:text={stage.data}
             on:inited={e => {
               e.detail.editor.dispatch({
                 changes: {
@@ -80,7 +81,6 @@
                   anchor: 3,
                 },
               });
-              e.detail.editor.focus();
             }} />
         </label>
       </Details>

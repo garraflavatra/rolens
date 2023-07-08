@@ -1,7 +1,6 @@
 <script>
   import BlankState from '$components/blankstate.svelte';
   import TabBar from '$components/tabbar.svelte';
-  import { EventsOn } from '$wails/runtime/runtime';
   import { tick } from 'svelte';
 
   import Aggregate from './aggregate.svelte';
@@ -14,61 +13,44 @@
   import Update from './update.svelte';
 
   export let collection;
-  export let hostKey;
-  export let dbKey;
-  export let collKey;
-  export let tab = 'find';
+  export let tab = 'stats';
 
-  let find;
+  const tabs = {
+    'stats': { icon: 'chart', title: 'Stats', component: Stats },
+    'find': { icon: 'db', title: 'Find', component: Find },
+    'insert': { icon: '+', title: 'Insert', component: Insert },
+    'update': { icon: 'edit', title: 'Update', component: Update },
+    'remove': { icon: 'trash', title: 'Remove', component: Remove },
+    'indexes': { icon: 'list', title: 'Indexes', component: Indexes },
+    'aggregate': { icon: 're', title: 'Aggregate', component: Aggregate },
+    'shell': { icon: 'shell', title: 'Shell', component: Shell },
+  };
 
-  $: if (collection) {
-    collection.hostKey = hostKey;
-    collection.dbKey = dbKey;
-    collection.key = collKey;
+  for (const key of Object.keys(tabs)) {
+    tabs[key].key = key;
   }
-
-  $: if (hostKey || dbKey || collKey) {
-    tab = 'find';
-  }
-
-  EventsOn('OpenCollectionTab', name => (tab = name || tab));
 
   async function catchQuery(event) {
     tab = 'find';
     await tick();
-    find.performQuery(event.detail);
+    tabs.find.instance.performQuery(event.detail);
   }
 </script>
 
 <div class="view" class:empty={!collection}>
   {#if collection}
-    {#key collection}
-      <TabBar
-        tabs={[
-          { key: 'stats', icon: 'chart', title: 'Stats' },
-          { key: 'find', icon: 'db', title: 'Find' },
-          { key: 'insert', icon: '+', title: 'Insert' },
-          { key: 'update', icon: 'edit', title: 'Update' },
-          { key: 'remove', icon: 'trash', title: 'Remove' },
-          { key: 'indexes', icon: 'list', title: 'Indexes' },
-          { key: 'aggregate', icon: 're', title: 'Aggregate' },
-          { key: 'shell', icon: 'shell', title: 'Shell' },
-        ]}
-        bind:selectedKey={tab}
-      />
+    <TabBar tabs={Object.values(tabs)} bind:selectedKey={tab} />
 
-      <div class="container">
-        {#if tab === 'stats'} <Stats {collection} />
-        {:else if tab === 'find'} <Find {collection} bind:this={find} />
-        {:else if tab === 'insert'} <Insert {collection} on:performFind={catchQuery} />
-        {:else if tab === 'update'} <Update {collection} on:performFind={catchQuery} />
-        {:else if tab === 'remove'} <Remove {collection} />
-        {:else if tab === 'indexes'} <Indexes {collection} />
-        {:else if tab === 'aggregate'} <Aggregate {collection} />
-        {:else if tab === 'shell'} <Shell {collection} />
-        {/if}
+    {#each Object.values(tabs) as view}
+      <div class="container" class:hidden={tab !== view.key}>
+        <svelte:component
+          this={view.component}
+          visible={tab === view.key}
+          on:performFind={catchQuery}
+          {collection}
+        />
       </div>
-    {/key}
+    {/each}
   {:else}
     <BlankState label="Select a collection to continue" />
   {/if}
@@ -91,6 +73,9 @@
     overflow: auto;
     min-height: 0;
     min-width: 0;
+  }
+  .container.hidden {
+    display: none;
   }
   .container > :global(*) {
     width: 100%;

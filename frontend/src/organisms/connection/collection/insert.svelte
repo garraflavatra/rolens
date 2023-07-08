@@ -14,6 +14,7 @@
   import Form from './components/form.svelte';
 
   export let collection;
+  export let visible = false;
 
   const dispatch = createEventDispatcher();
   const formValidity = {};
@@ -98,6 +99,8 @@
     views.openConfig(collection);
   }
 
+  $: visible && editor.focus();
+
   onMount(() => {
     if (collection.viewKey === 'list') {
       editor.dispatch({
@@ -110,7 +113,6 @@
           anchor: 3,
         },
       });
-      editor.focus();
     }
   });
 </script>

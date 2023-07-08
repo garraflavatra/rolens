@@ -8,7 +8,7 @@
   import { startProgress } from '$lib/progress';
   import applicationSettings from '$lib/stores/settings';
   import views from '$lib/stores/views';
-  import { convertLooseJson } from '$lib/strings';
+  import { convertLooseJson, stringCouldBeID } from '$lib/strings';
   import { FindItems, RemoveItemById, UpdateFoundDocument } from '$wails/go/app/App';
   import { EJSON } from 'bson';
 
@@ -44,6 +44,10 @@
   async function submitQuery() {
     if (querying || !visible) {
       return;
+    }
+
+    if (stringCouldBeID(form.query)) {
+      form.query = `{ "_id": "${form.query}" }`;
     }
 
     querying = `Querying ${collection.key}…`;
@@ -172,7 +176,7 @@
           placeholder={defaults.query}
           autocomplete="off"
           spellcheck="false"
-          use:input={{ type: 'json', autofocus: true }}
+          use:input
           bind:this={queryField}
           bind:value={form.query}
         />

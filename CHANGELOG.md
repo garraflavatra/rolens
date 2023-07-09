@@ -2,6 +2,8 @@
 
 * Added log view (#53, #54).
 * Added shell (#37).
+* Find view: paste ID and press Enter (#55).
+* Preserve state after the user switched to another tab (#56).
 
 ## [v0.2.2]
 

@@ -39,10 +39,11 @@ navigationOptions:
     {{ content }}
 
     {% if stub %}
-    <div class="wipdoc">
+    <div class="stubmessage">
       <p>
-        Oops… this Rolens documentation page is a work-in-progress! You could
-        <a href="{{ github.pageSourceUrl }}" target="_blank">help writing it</a> — thanks!
+        This Rolens documentation page is a work-in-progress! You could
+        <a href="{{ github.pageSourceUrl }}" target="_blank">help writing it</a>
+       by sending a PR — thanks!
       </p>
     </div>
     {% endif %}

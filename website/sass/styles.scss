@@ -262,6 +262,16 @@ article {
     }
   }
 
+  .stubmessage {
+    padding: 1rem;
+    border: 1px solid #aeae27;
+    border-radius: 0.75rem;
+    background-color: rgba(255, 255, 0, 0.235);
+  }
+  .stubmessage > :last-child {
+    margin-bottom: 0;
+  }
+
   footer {
     margin-top: 3rem;
     padding-top: 1rem;

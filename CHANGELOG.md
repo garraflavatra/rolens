@@ -1,9 +1,10 @@
 ## [Unreleased]
 
 * Added log view (#53, #54).
-* Added shell (#37).
+* Added a shell script editor (#37), plus export/import feature.
 * Find view: paste ID and press Enter (#55).
-* Preserve state after the user switched to another tab (#56).
+* Preserve state after switching to another tab (#56).
+* Find view: ask for confirmation before negligently deleting documents when the user has clicked the '-' button (#58).
 
 ## [v0.2.2]
 

@@ -24,8 +24,5 @@ export function looseJsonIsValid(json) {
 }
 
 export function stringCouldBeID(string) {
-  if (looseJsonIsValid(string)) {
-    return false;
-  }
   return /^[a-zA-Z0-9_-]{1,}$/.test(string);
 }

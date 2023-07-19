@@ -6,6 +6,7 @@
   import Shell from '../shell.svelte';
   import Stats from './stats.svelte';
 
+  export let host;
   export let database;
   export let tab = 'stats';
 
@@ -28,7 +29,7 @@
 
       {#each Object.values(tabs) as view}
         <div class="container" class:hidden={tab !== view.key}>
-          <svelte:component this={view.component} visible={tab === view.key} {database} />
+          <svelte:component this={view.component} visible={tab === view.key} {host} {database} />
         </div>
       {/each}
     {/key}

@@ -20,6 +20,13 @@ type ExecuteShellScriptResult struct {
 	ErrorDescription string `json:"errorDescription"`
 }
 
+type SaveShellScriptResult struct {
+	Host             Host   `json:"host"`
+	Fname            string `json:"filename"`
+	ErrorTitle       string `json:"errorTitle"`
+	ErrorDescription string `json:"errorDescription"`
+}
+
 func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result ExecuteShellScriptResult) {
 	if !a.Env.HasMongoShell {
 		result.ErrorTitle = "mongosh not found"
@@ -27,8 +34,40 @@ func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result
 		return
 	}
 
+	saveRes := a.SaveShellScript(hostKey, dbKey, collKey, script, true)
+	if (saveRes.ErrorTitle != "") || (saveRes.ErrorDescription != "") {
+		result.ErrorTitle = saveRes.ErrorTitle
+		result.ErrorDescription = saveRes.ErrorDescription
+		return
+	}
+
+	var outbuf, errbuf strings.Builder
+	cmd := exec.Command("mongosh", "--file", saveRes.Fname, saveRes.Host.URI)
+	cmd.Stdout = &outbuf
+	cmd.Stderr = &errbuf
+	err := cmd.Run()
+
+	if exiterr, ok := err.(*exec.ExitError); ok {
+		result.Status = exiterr.ExitCode()
+	} else if err != nil {
+		runtime.LogWarningf(a.ctx, "Shell: failed to execute: mongosh --file %s: %s", saveRes.Fname, err.Error())
+		result.ErrorTitle = "mongosh failure"
+		result.ErrorDescription = err.Error()
+		return
+	} else {
+		result.Status = 0
+	}
+
+	os.Remove(saveRes.Fname)
+	result.Output = outbuf.String()
+	result.Stderr = errbuf.String()
+	return
+}
+
+func (a *App) SaveShellScript(hostKey, dbKey, collKey, script string, temp bool) (result SaveShellScriptResult) {
 	hosts, err := a.Hosts()
 	if err != nil {
+		runtime.LogWarningf(a.ctx, "Shell: could not get hosts: %s", err.Error())
 		result.ErrorTitle = "Could not get hosts"
 		result.ErrorDescription = err.Error()
 		return
@@ -36,10 +75,12 @@ func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result
 
 	host, hostFound := hosts[hostKey]
 	if !hostFound {
+		runtime.LogWarningf(a.ctx, "Shell: host %s does not exist", host)
 		result.ErrorTitle = "The specified host does not seem to exist"
 		return
 	}
 
+	result.Host = host
 	id, err := uuid.NewRandom()
 	if err != nil {
 		runtime.LogErrorf(a.ctx, "Shell: failed to generate a UUID: %s", err.Error())
@@ -48,14 +89,35 @@ func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result
 		return
 	}
 
-	dirname := path.Join(a.Env.DataDirectory, "Shell Scripts")
-	fname := path.Join(dirname, fmt.Sprintf("%s.mongosh.js", id.String()))
+	if temp {
+		dirname, err := os.MkdirTemp(os.TempDir(), "rolens-script")
+		if err != nil {
+			runtime.LogErrorf(a.ctx, "Shell: failed to create temporary directory: %s", err.Error())
+			result.ErrorTitle = "Could not generate temporary directory for script"
+			result.ErrorDescription = err.Error()
+			return
+		}
+		result.Fname = path.Join(dirname, fmt.Sprintf("%s.mongosh.js", id.String()))
+	} else {
+		result.Fname, err = runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
+			DefaultFilename:      "New Script.js",
+			DefaultDirectory:     path.Join(a.Env.DataDirectory, "Shell Scripts"),
+			Title:                "Save MongoDB Shell Script",
+			CanCreateDirectories: true,
+			Filters: []runtime.FileFilter{
+				{
+					DisplayName: "MongoDB Shell Script (*.js)",
+					Pattern:     "*.js",
+				},
+			},
+		})
 
-	if err := os.MkdirAll(dirname, os.ModePerm); err != nil {
-		runtime.LogWarningf(a.ctx, "Shell: failed to mkdir %s", err.Error())
-		result.ErrorTitle = "Could not create temporary directory"
-		result.ErrorDescription = err.Error()
-		return
+		if err != nil {
+			runtime.LogErrorf(a.ctx, "Shell: failed to save script: %s", err.Error())
+			result.ErrorTitle = "Could not save shell script"
+			result.ErrorDescription = err.Error()
+			return
+		}
 	}
 
 	scriptHeader := fmt.Sprintf("// Namespace: %s.%s\n", dbKey, collKey)
@@ -77,35 +139,46 @@ func (a *App) ExecuteShellScript(hostKey, dbKey, collKey, script string) (result
 		scriptHeader = scriptHeader + fmt.Sprintf("coll = db.getCollection('%s');\n", collKey)
 	}
 
-	scriptHeader = scriptHeader + "\n// Start of user script\n"
-	script = scriptHeader + script
+	scriptHeader = scriptHeader + "\n"
+	script = scriptHeader + strings.TrimLeft(strings.TrimRight(script, " \t\n"), "\n")
 
-	if err := os.WriteFile(fname, []byte(script), os.ModePerm); err != nil {
-		runtime.LogWarningf(a.ctx, "Shell: failed to write script to %s", err.Error())
+	if err := os.WriteFile(result.Fname, []byte(script), os.ModePerm); err != nil {
+		runtime.LogWarningf(a.ctx, "Shell: failed to write script to %s: %s", result.Fname, err.Error())
 		result.ErrorTitle = "Could not create temporary script file"
 		result.ErrorDescription = err.Error()
 		return
 	}
 
-	var outbuf, errbuf strings.Builder
-	cmd := exec.Command("mongosh", "--file", fname, host.URI)
-	cmd.Stdout = &outbuf
-	cmd.Stderr = &errbuf
-	err = cmd.Run()
+	return
+}
 
-	if exiterr, ok := err.(*exec.ExitError); ok {
-		result.Status = exiterr.ExitCode()
-	} else if err != nil {
-		runtime.LogWarningf(a.ctx, "Shell: failed to execute: mongosh --file %s: %s", fname, err.Error())
-		result.ErrorTitle = "mongosh failure"
-		result.ErrorDescription = err.Error()
-		return
-	} else {
-		result.Status = 0
+func (a *App) OpenShellScript() string {
+	dir := path.Join(a.Env.DataDirectory, "Shell Scripts")
+	os.MkdirAll(dir, os.ModePerm)
+
+	fname, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		DefaultDirectory:     path.Join(a.Env.DataDirectory, "Shell Scripts"),
+		Title:                "Load a MongoDB Shell Script",
+		CanCreateDirectories: true,
+		Filters: []runtime.FileFilter{
+			{
+				DisplayName: "MongoDB Shell Script (*.js)",
+				Pattern:     "*.js",
+			},
+		},
+	})
+
+	if err != nil {
+		runtime.LogWarningf(a.ctx, "Shell: error opening script: %s", err.Error())
+		return ""
 	}
 
-	os.Remove(fname)
-	result.Output = outbuf.String()
-	result.Stderr = errbuf.String()
-	return
+	script, err := os.ReadFile(fname)
+
+	if err != nil {
+		runtime.LogWarningf(a.ctx, "Shell: error reading script %s: %s", fname, err.Error())
+		return ""
+	}
+
+	return string(script)
 }

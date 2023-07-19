@@ -70,6 +70,10 @@ export function OpenDatabase(arg1, arg2) {
   return window['go']['app']['App']['OpenDatabase'](arg1, arg2);
 }
 
+export function OpenShellScript() {
+  return window['go']['app']['App']['OpenShellScript']();
+}
+
 export function PerformDump(arg1) {
   return window['go']['app']['App']['PerformDump'](arg1);
 }
@@ -112,6 +116,10 @@ export function ReportSharedStateVariable(arg1, arg2) {
 
 export function SaveQuery(arg1) {
   return window['go']['app']['App']['SaveQuery'](arg1);
+}
+
+export function SaveShellScript(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['app']['App']['SaveShellScript'](arg1, arg2, arg3, arg4, arg5);
 }
 
 export function SavedQueries() {

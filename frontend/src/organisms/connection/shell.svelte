@@ -2,6 +2,7 @@
   import BlankState from '$components/blankstate.svelte';
   import CodeEditor from '$components/codeeditor.svelte';
   import Icon from '$components/icon.svelte';
+  import { OpenShellScript, SaveShellScript } from '$wails/go/app/App';
   import { javascript } from '@codemirror/lang-javascript';
   import { onDestroy, onMount } from 'svelte';
 
@@ -19,7 +20,7 @@
   let busy = false;
   let editor;
 
-  async function run() {
+  async function runScript() {
     busy = true;
 
     if (collection) {
@@ -33,6 +34,36 @@
     }
 
     busy = false;
+  }
+
+  async function loadScript() {
+    const _script = await OpenShellScript();
+    if (_script) {
+      script = _script;
+      editor.dispatch({
+        changes: {
+          from: 0,
+          to: editor.state.doc.length,
+          insert: script,
+        },
+        selection: {
+          from: 0,
+          anchor: 0,
+          to: 0,
+          head: 0,
+        },
+      });
+    }
+  }
+
+  async function saveScript() {
+    await SaveShellScript(
+      host?.key || '',
+      database?.key || '',
+      collection?.key || '',
+      script,
+      false // not temporary
+    );
   }
 
   async function copyErrorDescription() {
@@ -86,9 +117,18 @@
   </div>
 
   <div class="controls">
-    <button class="button" on:click={run}>
+    <button class="button" on:click={runScript}>
       <Icon name="play" /> Run
     </button>
+
+    <div class="field inline">
+      <button class="button secondary" on:click={loadScript}>
+        <Icon name="upload" /> Load script…
+      </button>
+      <button class="button secondary" on:click={saveScript}>
+        <Icon name="save" /> Save as…
+      </button>
+    </div>
 
     {#key result}
       <div class="status flash-green">
@@ -145,6 +185,7 @@
   .controls {
     margin-top: 0.5rem;
     display: flex;
+    gap: 0.2rem;
     align-items: center;
     grid-column: 1 / 3;
   }

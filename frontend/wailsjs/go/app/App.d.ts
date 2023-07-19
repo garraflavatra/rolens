@@ -40,6 +40,8 @@ export function OpenConnection(arg1:string):Promise<app.OpenConnectionResult>;
 
 export function OpenDatabase(arg1:string,arg2:string):Promise<app.OpenDatabaseResult>;
 
+export function OpenShellScript():Promise<string>;
+
 export function PerformDump(arg1:string):Promise<boolean>;
 
 export function PerformFindExport(arg1:string,arg2:string,arg3:string,arg4:string):Promise<boolean>;
@@ -61,6 +63,8 @@ export function RenameCollection(arg1:string,arg2:string,arg3:string,arg4:string
 export function ReportSharedStateVariable(arg1:string,arg2:string):Promise<void>;
 
 export function SaveQuery(arg1:string):Promise<string>;
+
+export function SaveShellScript(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<app.SaveShellScriptResult>;
 
 export function SavedQueries():Promise<map[string]app.SavedQuery>;
 

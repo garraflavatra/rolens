@@ -12,6 +12,8 @@
   import Stats from './stats.svelte';
   import Update from './update.svelte';
 
+  export let host;
+  export let database;
   export let collection;
   export let tab = 'stats';
 
@@ -47,6 +49,8 @@
           this={view.component}
           visible={tab === view.key}
           on:performFind={catchQuery}
+          {host}
+          {database}
           {collection}
         />
       </div>

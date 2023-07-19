@@ -64,11 +64,20 @@
 
 {#if activeCollKey}
   {#key activeCollKey}
-    <CollectionView collection={$hostTree[activeHostKey]?.databases[activeDbKey]?.collections?.[activeCollKey]} bind:tab={collTab} />
+    <CollectionView
+      host={$hostTree[activeHostKey]}
+      database={$hostTree[activeHostKey]?.databases[activeDbKey]}
+      collection={$hostTree[activeHostKey]?.databases[activeDbKey]?.collections?.[activeCollKey]}
+      bind:tab={collTab}
+    />
   {/key}
 {:else if activeDbKey}
   {#key activeDbKey}
-    <DatabaseView database={$hostTree[activeHostKey]?.databases[activeDbKey]} bind:tab={dbTab} />
+    <DatabaseView
+      host={$hostTree[activeHostKey]}
+      database={$hostTree[activeHostKey]?.databases[activeDbKey]}
+      bind:tab={dbTab}
+    />
   {/key}
 {:else if activeHostKey}
   {#key activeHostKey}

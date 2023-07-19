@@ -141,3 +141,28 @@ func (a *App) ReportSharedStateVariable(key, value string) {
 	a.State.Store(key, value)
 	wailsRuntime.LogDebug(a.ctx, fmt.Sprintf("State: %s=\"%s\"", key, value))
 }
+
+func (a *App) AskConfirmation(message string) bool {
+	var title string = ""
+	if runtime.GOOS == "darwin" {
+		title = message
+		message = ""
+	} else {
+		title = "Confirm"
+	}
+
+	button, err := wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
+		Type:          wailsRuntime.QuestionDialog,
+		Title:         title,
+		Message:       message,
+		Buttons:       []string{"Yes", "No"},
+		DefaultButton: "Yes",
+		CancelButton:  "No",
+	})
+
+	if err == nil {
+		return button == "Yes"
+	} else {
+		return false
+	}
+}

@@ -4,6 +4,7 @@
   import ObjectGrid from '$components/objectgrid.svelte';
   import ObjectViewer from '$components/objectviewer.svelte';
   import input from '$lib/actions/input';
+  import dialogs from '$lib/dialogs';
   import { deepClone } from '$lib/objects';
   import { startProgress } from '$lib/progress';
   import applicationSettings from '$lib/stores/settings';
@@ -117,6 +118,10 @@
 
   async function removeActive() {
     if (!activePath[0]) {
+      return;
+    }
+    const sure = await dialogs.confirm('Are you sure you wish to delete this item?');
+    if (!sure) {
       return;
     }
     const ok = await RemoveItemById(collection.hostKey, collection.dbKey, collection.key, activePath[0]);

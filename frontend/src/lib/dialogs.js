@@ -1,3 +1,4 @@
+import { AskConfirmation } from '$wails/go/app/App';
 import InputDialog from '../dialogs/input.svelte';
 
 function newDialog(dialogComponent, data = {}) {
@@ -29,6 +30,10 @@ function enterText(title = '', description = '', value = '') {
   });
 }
 
-const dialogs = { new: newDialog, enterText };
+function confirm(message = '') {
+  return AskConfirmation(message);
+}
+
+const dialogs = { new: newDialog, enterText, confirm };
 
 export default dialogs;

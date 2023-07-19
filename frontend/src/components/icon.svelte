@@ -29,11 +29,15 @@
     height: 13px;
     margin-right: 2px;
   }
-
   :global(.button) svg {
     height: 13px;
     width: auto;
     vertical-align: bottom;
+  }
+  :global(.blankstate .button) svg {
+    height: 17px;
+    vertical-align: -3px;
+    margin-right: 4px;
   }
 </style>
 

@@ -2,7 +2,9 @@
   import BlankState from '$components/blankstate.svelte';
   import CodeEditor from '$components/codeeditor.svelte';
   import Icon from '$components/icon.svelte';
+  import environment from '$lib/stores/environment';
   import { OpenShellScript, SaveShellScript } from '$wails/go/app/App';
+  import { BrowserOpenURL } from '$wails/runtime/runtime';
   import { javascript } from '@codemirror/lang-javascript';
   import { onDestroy, onMount } from 'svelte';
 
@@ -22,6 +24,10 @@
   let editor;
 
   async function runScript() {
+    if (!$environment.hasMongoDump) {
+      return;
+    }
+
     busy = true;
 
     if (collection) {
@@ -77,6 +83,10 @@
     horizontal = !horizontal;
   }
 
+  function openMongoshInstallDocs() {
+    BrowserOpenURL('https://garraflavatra.github.io/rolens/user-guide/shell/');
+  }
+
   $: visible && editor.focus();
 
   onMount(() => {
@@ -108,7 +118,17 @@
   </div>
 
   <div class="output">
-    {#if busy}
+    {#if !$environment.hasMongoShell}
+      <BlankState
+        title="mongosh is required to run shell scripts"
+        label="Please refer to the documentation for more information."
+        icon="!"
+      >
+        <button class="button" on:click={openMongoshInstallDocs}>
+          <Icon name="info" /> Read the documentation
+        </button>
+      </BlankState>
+    {:else if busy}
       <BlankState icon="loading" label="Executing…" />
     {:else if result.errorTitle || result.errorDescription}
       <BlankState title={result.errorTitle} label={result.errorDescription} icon="!">

@@ -3,6 +3,7 @@
 
   export let name = '';
   export let spin = false;
+  export let rotation = 0;
 
   if (name === 'loading') {
     spin = true;
@@ -10,6 +11,19 @@
 </script>
 
 <style>
+  @keyframes spinning {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  svg {
+    transition: transform 0.25s;
+    will-change: transform;
+  }
+  svg.spinning {
+    animation: spinning 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+
   :global(.field) svg {
     width: 13px;
     height: 13px;
@@ -20,15 +34,6 @@
     height: 13px;
     width: auto;
     vertical-align: bottom;
-  }
-
-  @keyframes spinning {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  svg.spinning {
-    animation: spinning 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   }
 </style>
 
@@ -43,6 +48,7 @@
   stroke-linecap="round"
   stroke-linejoin="round"
   class:spinning={spin}
+  style:transform="rotate({rotation}deg)"
 >
   {@html icons[name] || ''}
 </svg>

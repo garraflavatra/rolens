@@ -15,6 +15,7 @@
   const extensions = [ javascript() ];
   let script = '';
   let result = {};
+  let horizontal = false;
   let copySucceeded = false;
   let timeout;
   let busy = false;
@@ -72,6 +73,10 @@
     timeout = setTimeout(() => copySucceeded = false, 1500);
   }
 
+  function toggleView() {
+    horizontal = !horizontal;
+  }
+
   $: visible && editor.focus();
 
   onMount(() => {
@@ -94,7 +99,7 @@
   onDestroy(() => clearTimeout(timeout));
 </script>
 
-<div class="shell">
+<div class="shell" class:horizontal>
   <div class="overflow">
     <!-- svelte-ignore a11y-label-has-associated-control -->
     <label class="field">
@@ -130,6 +135,10 @@
       </button>
     </div>
 
+    <button class="button viewtoggle" title="Toggle horizontal/vertical view" on:click={toggleView}>
+      <Icon name="columns" rotation={horizontal ? 90 : 0} />
+    </button>
+
     {#key result}
       <div class="status flash-green">
         {#if result?.status}
@@ -144,6 +153,9 @@
   .shell {
     display: grid;
     grid-template: 1fr auto / 1fr 1fr;
+  }
+  .shell.horizontal {
+    grid-template: 1fr 1fr auto / 1fr;
   }
 
   .overflow {
@@ -189,7 +201,10 @@
     align-items: center;
     grid-column: 1 / 3;
   }
-  .controls .status {
+  .controls .viewtoggle {
     margin-left: auto;
+  }
+  .shell.horizontal .controls {
+    grid-column: 1;
   }
 </style>

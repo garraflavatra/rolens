@@ -10,12 +10,14 @@ import IndexDetailDialog from '$organisms/connection/collection/dialogs/indexdet
 import QueryChooserDialog from '$organisms/connection/collection/dialogs/querychooser.svelte';
 import DumpDialog from '$organisms/connection/database/dialogs/dump.svelte';
 import HostDetailDialog from '$organisms/connection/host/dialogs/hostdetail.svelte';
+import DuplicateDialog from '$organisms/connection/collection/dialogs/duplicate.svelte';
 
 import {
   CreateIndex,
   DropCollection,
   DropDatabase,
   DropIndex,
+  DuplicateCollection,
   ExecuteShellScript,
   GetIndexes,
   HostLogs,
@@ -29,6 +31,7 @@ import {
   RenameCollection,
   TruncateCollection
 } from '$wails/go/app/App';
+
 
 const { set, subscribe } = writable({});
 const getValue = () => get({ subscribe });
@@ -120,9 +123,30 @@ async function refresh() {
               }
             };
 
+            collection.duplicate = async function() {
+              const dialog = dialogs.new(DuplicateDialog, { host, dbKey, collKey });
+              return new Promise(resolve => {
+                dialog.$on('duplicate', async event => {
+                  const success = await DuplicateCollection(
+                    hostKey,
+                    dbKey,
+                    collKey,
+                    event.detail.newHost,
+                    event.detail.newDb,
+                    event.detail.newColl
+                  );
+
+                  if (success) {
+                    await refresh();
+                    dialog.$close();
+                    resolve();
+                  }
+                });
+              });
+            };
+
             collection.export = function(query) {
               const dialog = dialogs.new(ExportDialog, { collection, query });
-
               return new Promise(resolve => {
                 dialog.$on('export', async event => {
                   const success = await PerformFindExport(hostKey, dbKey, collKey, JSON.stringify(event.detail.exportInfo));

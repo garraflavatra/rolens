@@ -2,6 +2,7 @@
 
 * Added log view (#53, #54).
 * Added a shell script editor (#37), plus export/import feature.
+* Added collection duplication feature (#63).
 * Find view: paste ID and press Enter (#55).
 * Preserve state after switching to another tab (#56).
 * Find view: ask for confirmation before negligently deleting documents when the user has clicked the '-' button (#58).

@@ -33,6 +33,8 @@
                     { label: 'Dump collection (BSON via mongodump)…', fn: collection.dump },
                     { separator: true },
                     { label: 'Rename collection…', fn: collection.rename },
+                    { label: 'Duplicate collection…', fn: collection.duplicate },
+                    { separator: true },
                     { label: 'Truncate collection…', fn: collection.truncate },
                     { label: 'Drop collection…', fn: collection.drop },
                     { separator: true },

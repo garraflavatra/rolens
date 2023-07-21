@@ -1,10 +1,12 @@
 package app
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type OpenCollectionResult struct {
@@ -53,6 +55,77 @@ func (a *App) RenameCollection(hostKey, dbKey, collKey, newCollKey string) bool 
 	}
 
 	return true
+}
+
+func (a *App) DuplicateCollection(origHostKey, origDbKey, origCollKey, destHostKey, destDbKey, destCollKey string) bool {
+	runtime.LogDebugf(a.ctx, "Duplicating collection %s:%s.%s to %s:%s.%s", origHostKey, origDbKey, origCollKey, destHostKey, destDbKey, destCollKey)
+
+	if (origHostKey == destHostKey) && (origDbKey == destDbKey) && (origCollKey == destCollKey) {
+		runtime.LogInfof(a.ctx, "Duplicating collection: cannot duplicate to the same collection")
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:    runtime.WarningDialog,
+			Title:   "Error while duplicating collection",
+			Message: "The new collection name cannot equal the old one!",
+		})
+		return false
+	}
+
+	origHost, origCtx, origClose, err := a.connectToHost(origHostKey)
+	if err != nil {
+		return false
+	}
+	defer origClose()
+
+	var destHost *mongo.Client
+	var destCtx context.Context
+
+	if origHostKey != destHostKey {
+		var destClose func()
+		destHost, destCtx, destClose, err = a.connectToHost(destHostKey)
+
+		if err != nil {
+			return false
+		}
+
+		defer destClose()
+	} else {
+		destHost = origHost
+		destCtx = origCtx
+	}
+
+	destColl := destHost.Database(destDbKey).Collection(destCollKey)
+	origCur, err := origHost.Database(origDbKey).Collection(origCollKey).Find(origCtx, bson.D{})
+
+	if err != nil {
+		runtime.LogInfof(a.ctx, "Duplicating collection: could not create origin cursor: %s", err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:    runtime.WarningDialog,
+			Title:   "Error while duplicating collection",
+			Message: "Could not create origin cursor: " + err.Error(),
+		})
+		return false
+	}
+
+	var n int64 = 0
+	var ok = true
+
+	for origCur.Next(origCtx) {
+		_, err := destColl.InsertOne(destCtx, origCur.Current)
+
+		if err != nil {
+			ok = false
+			runtime.LogInfof(a.ctx, "Duplicating collection: could not insert item %d: %s", n, err.Error())
+			runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+				Type:    runtime.WarningDialog,
+				Title:   "Error while duplicating collection",
+				Message: fmt.Sprintf("Could not insert item %d: %s", n, err.Error()),
+			})
+		}
+
+		n += 1
+	}
+
+	return ok
 }
 
 func (a *App) TruncateCollection(hostKey, dbKey, collKey string) bool {

@@ -10,6 +10,9 @@ export default function input(node, { autofocus, type, onValid, onInvalid, manda
   mandatory: false,
 }) {
 
+  node.setAttribute('spellcheck', false);
+  node.setAttribute('autocomplete', false);
+
   const getMessage = () => {
     const checkInteger = () => (isInt(node.value) ? false : 'Value must be an integer');
     const checkNumberBoundaries = boundaries => {

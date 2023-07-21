@@ -3,7 +3,7 @@
   import Modal from '$components/modal.svelte';
   import input from '$lib/actions/input';
   import hostTree from '$lib/stores/hosttree';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
 
   export let host = {};
   export let dbKey = '';
@@ -55,7 +55,7 @@
       </label>
       <label class="field">
         <span class="label">Collection</span>
-        <input type="text" bind:value={newColl} use:input />
+        <input type="text" bind:value={newColl} use:input={{ autofocus: true }} />
       </label>
     </div>
   </div>

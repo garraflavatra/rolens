@@ -5,6 +5,7 @@
 * Find view: paste ID and press Enter (#55).
 * Preserve state after switching to another tab (#56).
 * Find view: ask for confirmation before negligently deleting documents when the user has clicked the '-' button (#58).
+* Build script recreates the build output directory after it has been removed (#62).
 
 ## [v0.2.2]
 

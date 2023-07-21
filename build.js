@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const { execSync, spawn } = require('child_process');
-const { readFileSync, statSync, rmdirSync } = require('fs');
+const { readFileSync, statSync, rmdirSync, mkdirSync } = require('fs');
 
 // Check that the script is run from the root.
 
@@ -145,6 +145,12 @@ if (missingDependencies.length > 0) {
 
 console.log('Cleaning output directory...');
 try { rmdirSync('./build/bin'); } catch {}
+try {
+  mkdirSync('./build/bin');
+}
+catch (err) {
+  console.log('Failed to create build output directory!');
+}
 
 // Build Rolens.
 
@@ -154,8 +160,25 @@ console.log();
 const proc = spawn('wails', [ 'build', '-clean', isWindows ? '-nsis' : '' ]);
 
 if (!quiet) {
-  proc.stdout.on('data', data => process.stdout.write(data));
+  const suppressMessages = [
+    'Wails CLI',
+    'If Wails is useful',
+    'https://github.com/sponsors/leaanthony',
+  ];
+
+  proc.stdout.on('data', data => {
+    for (let i = 0; i < suppressMessages.length; i++) {
+      if (data.toString().indexOf(suppressMessages[i]) !== -1) {
+        return;
+      }
+    }
+    process.stdout.write(data);
+  });
+
   proc.stderr.on('data', data => process.stderr.write(data));
 }
 
-proc.on('exit', code => process.exit(code));
+proc.on('exit', code => {
+  console.log();
+  process.exit(code);
+});

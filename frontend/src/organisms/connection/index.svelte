@@ -17,7 +17,7 @@
   $: if (path.join('.') !== prevPath) {
     hostTab = 'status';
     dbTab = 'stats';
-    collTab = 'stats';
+    collTab = 'find';
     prevPath = path.join('.');
   }
 

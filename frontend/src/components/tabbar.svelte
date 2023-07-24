@@ -3,7 +3,7 @@
   import Icon from './icon.svelte';
 
   export let tabs = [];
-  export let selectedKey = {};
+  export let selectedKey = '';
   export let canAddTab = false;
   export let multiline = false;
 

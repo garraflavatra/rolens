@@ -15,7 +15,7 @@
   export let host;
   export let database;
   export let collection;
-  export let tab = 'stats';
+  export let tab = 'find';
 
   const tabs = {
     'stats': { icon: 'chart', title: 'Stats', component: Stats },

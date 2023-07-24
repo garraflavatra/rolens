@@ -10,7 +10,7 @@
   import applicationSettings from '$lib/stores/settings';
   import views from '$lib/stores/views';
   import { convertLooseJson, stringCouldBeID } from '$lib/strings';
-  import { FindItems, RemoveItemById, UpdateFoundDocument } from '$wails/go/app/App';
+  import { CountItems, FindItems, RemoveItemById, UpdateFoundDocument } from '$wails/go/app/App';
   import { EJSON } from 'bson';
 
   export let collection;
@@ -26,11 +26,13 @@
 
   let form = { ...defaults };
   let result = {};
+  let countResult = {};
   let submittedForm = {};
   let queryField;
   let activePath = [];
   let objectViewerData;
   let querying = false;
+  let counting = false;
   let objectViewerSuccessMessage = '';
   let viewsForCollection = {};
 
@@ -69,6 +71,17 @@
 
     resetFocus();
     querying = false;
+  }
+
+  async function countItems() {
+    counting = true;
+    countResult = await CountItems(
+      collection.hostKey,
+      collection.dbKey,
+      collection.key,
+      convertLooseJson(form.query) || defaults.query
+    );
+    counting = false;
   }
 
   async function refresh() {
@@ -290,11 +303,26 @@
     </div>
 
     <div class="controls">
-      <div>
-        {#key result}
-          <span class="flash-green">Results: {result.total || 0}</span>
-        {/key}
+      <div class="count">
+        {#if counting}
+          <span>Counting items…</span>
+        {:else if countResult?.error}
+          <span>{countResult.error}</span>
+        {:else if countResult?.total === -1}
+          <span>Something went wrong</span>
+        {:else if countResult?.total}
+          <!-- svelte-ignore a11y-invalid-attribute -->
+          <a href="" on:click|preventDefault={countItems}>Results: {countResult.total}</a>
+        {:else if result?.total === -1}
+          <!-- svelte-ignore a11y-invalid-attribute -->
+          <a href="" on:click|preventDefault={countItems}>Count items</a>
+        {:else if result?.total}
+          {#key result}
+            <span class="flash-green">Results: {result.total || 0}</span>
+          {/key}
+        {/if}
       </div>
+
       <div>
         <label class="field inline">
           <select bind:value={collection.viewKey}>
@@ -387,5 +415,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .count {
+    text-overflow: ellipsis;
   }
 </style>

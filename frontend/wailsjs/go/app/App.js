@@ -14,6 +14,10 @@ export function AskConfirmation(arg1) {
   return window['go']['app']['App']['AskConfirmation'](arg1);
 }
 
+export function CountItems(arg1, arg2, arg3, arg4) {
+  return window['go']['app']['App']['CountItems'](arg1, arg2, arg3, arg4);
+}
+
 export function CreateIndex(arg1, arg2, arg3, arg4) {
   return window['go']['app']['App']['CreateIndex'](arg1, arg2, arg3, arg4);
 }

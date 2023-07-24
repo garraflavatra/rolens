@@ -1,7 +1,9 @@
 package app
 
 import (
+	"context"
 	"encoding/json"
+	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.mongodb.org/mongo-driver/bson"
@@ -21,6 +23,11 @@ type FindItemsResult struct {
 	Results          []string `json:"results"`
 	ErrorTitle       string   `json:"errorTitle"`
 	ErrorDescription string   `json:"errorDescription"`
+}
+
+type CountItemsResult struct {
+	Total int64  `json:"total"`
+	Error string `json:"error"`
 }
 
 func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) (result FindItemsResult) {
@@ -75,12 +82,14 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) (result FindIt
 		Sort:       sort,
 	}
 
-	total, err := client.Database(dbKey).Collection(collKey).CountDocuments(ctx, query, nil)
-	if err != nil {
+	ctx2, cancel := context.WithDeadline(ctx, time.Now().Add(time.Second))
+	defer cancel()
+	total, err := client.Database(dbKey).Collection(collKey).CountDocuments(ctx2, query, nil)
+	if err == nil {
+		result.Total = total
+	} else {
+		result.Total = -1
 		runtime.LogWarningf(a.ctx, "Encountered an error while counting documents: %s", err.Error())
-		result.ErrorTitle = "Error while counting documents"
-		result.ErrorDescription = err.Error()
-		return
 	}
 
 	cur, err := client.Database(dbKey).Collection(collKey).Find(ctx, query, &opt)
@@ -102,7 +111,6 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) (result FindIt
 		return
 	}
 
-	result.Total = total
 	result.Results = make([]string, 0)
 
 	for _, r := range results {
@@ -114,6 +122,34 @@ func (a *App) FindItems(hostKey, dbKey, collKey, formJson string) (result FindIt
 			return
 		}
 		result.Results = append(result.Results, string(marshalled))
+	}
+
+	return
+}
+
+func (a *App) CountItems(hostKey, dbKey, collKey, query string) (result CountItemsResult) {
+	var q bson.M
+	err := bson.UnmarshalExtJSON([]byte(query), true, &q)
+	if err != nil {
+		runtime.LogInfof(a.ctx, "Invalid count query: %s", err.Error())
+		result.Error = "Invalid query"
+		return
+	}
+
+	client, ctx, close, err := a.connectToHost(hostKey)
+	if err != nil {
+		return
+	}
+	defer close()
+
+	ctx, _ = context.WithDeadline(ctx, time.Now().Add(2*time.Minute))
+	total, err := client.Database(dbKey).Collection(collKey).CountDocuments(ctx, q, nil)
+	if err == nil {
+		result.Total = total
+	} else {
+		result.Total = -1
+		result.Error = err.Error()
+		runtime.LogWarningf(a.ctx, "Encountered an error while counting documents: %s", err.Error())
 	}
 
 	return

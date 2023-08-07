@@ -7,9 +7,7 @@
   export let editor = undefined;
   export let readonly = false;
 
-  const extensions = [
-    javascript(),
-  ];
+  const extensions = [ javascript() ];
 
   onMount(() => {
     editor.dispatch({

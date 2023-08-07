@@ -1,5 +1,5 @@
 <script>
-  import { daysAbbr, months } from '$lib/constants';
+  import { daysAbbr, months } from '$lib/constants.js';
   import { addDays, getWeek, isDate, isSameDay, startOfWeek } from 'date-fns';
   import { onMount } from 'svelte';
   import Clock from '../clock.svelte';
@@ -97,7 +97,7 @@
       <table class="calendar">
         <thead>
           <tr>
-            <th></th>
+            <th />
             {#each daysAbbr as dayName}
               <th>{dayName}</th>
             {/each}

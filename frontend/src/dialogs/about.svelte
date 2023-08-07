@@ -1,7 +1,7 @@
 <script>
   import Modal from '$components/modal.svelte';
-  import alink from '$lib/actions/alink';
-  import environment from '$lib/stores/environment';
+  import alink from '$lib/actions/alink.js';
+  import environment from '$lib/stores/environment.js';
 </script>
 
 <Modal width="400px" title=" " on:close>

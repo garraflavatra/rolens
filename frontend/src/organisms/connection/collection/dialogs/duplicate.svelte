@@ -1,9 +1,9 @@
 <script>
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
-  import input from '$lib/actions/input';
-  import hostTree from '$lib/stores/hosttree';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import input from '$lib/actions/input.js';
+  import hostTree from '$lib/stores/hosttree.js';
+  import { createEventDispatcher } from 'svelte';
 
   export let host = {};
   export let dbKey = '';

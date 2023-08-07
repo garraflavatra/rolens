@@ -1,6 +1,6 @@
 <script>
   import Grid from '$components/grid/grid.svelte';
-  import hostTree from '$lib/stores/hosttree';
+  import hostTree from '$lib/stores/hosttree.js';
 
   export let path = [];
 </script>

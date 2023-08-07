@@ -1,4 +1,4 @@
-import { ReportSharedStateVariable } from '$wails/go/app/App';
+import { ReportSharedStateVariable } from '$wails/go/app/App.js';
 import { writable } from 'svelte/store';
 
 function sharedStateStore(name) {

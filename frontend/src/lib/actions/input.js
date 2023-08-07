@@ -1,6 +1,6 @@
-import { isInt } from '$lib/math';
-import { canBeObjectId, int32, int64, uint64 } from '$lib/mongo';
-import { jsonLooseParse } from '$lib/strings';
+import { isInt } from '$lib/math.js';
+import { canBeObjectId, int32, int64, uint64 } from '$lib/mongo/index.js';
+import { jsonLooseParse } from '$lib/strings.js';
 
 export default function input(node, { autofocus, type, onValid, onInvalid, mandatory } = {
   autofocus: false,

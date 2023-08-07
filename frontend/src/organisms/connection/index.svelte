@@ -1,8 +1,8 @@
 <script>
   import Icon from '$components/icon.svelte';
-  import hostTree from '$lib/stores/hosttree';
-  import sharedState from '$lib/stores/sharedstate';
-  import { EventsOn } from '$wails/runtime/runtime';
+  import hostTree from '$lib/stores/hosttree.js';
+  import sharedState from '$lib/stores/sharedstate.js';
+  import { EventsOn } from '$wails/runtime/runtime.js';
   import CollectionView from './collection/index.svelte';
   import DatabaseView from './database/index.svelte';
   import HostView from './host/index.svelte';

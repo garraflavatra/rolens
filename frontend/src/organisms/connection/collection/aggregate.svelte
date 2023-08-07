@@ -3,11 +3,11 @@
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
   import ObjectEditor from '$components/editors/objecteditor.svelte';
-  import { aggregationStageDocumentationURL, aggregationStages } from '$lib/mongo';
+  import { aggregationStageDocumentationURL, aggregationStages } from '$lib/mongo/index.js';
   import Collation from '$lib/mongo/collation.svelte';
-  import { jsonLooseParse, looseJsonIsValid } from '$lib/strings';
-  import { Aggregate } from '$wails/go/app/App';
-  import { BrowserOpenURL } from '$wails/runtime/runtime';
+  import { jsonLooseParse, looseJsonIsValid } from '$lib/strings.js';
+  import { Aggregate } from '$wails/go/app/App.js';
+  import { BrowserOpenURL } from '$wails/runtime/runtime.js';
   import { onMount } from 'svelte';
 
   export let collection;

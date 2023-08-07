@@ -1,6 +1,6 @@
 <script>
-  import input from '$lib/actions/input';
-  import { canBeObjectId, numericInputTypes } from '$lib/mongo';
+  import input from '$lib/actions/input.js';
+  import { canBeObjectId, numericInputTypes } from '$lib/mongo.js';
   import { ObjectId } from 'bson';
   import { onMount } from 'svelte';
   import Datepicker from './datepicker.svelte';
@@ -70,7 +70,12 @@
 <div class="forminput {type}">
   <div class="field">
     {#if type === 'string'}
-      <input type="text" bind:value use:input={{ type, onValid, onInvalid, mandatory, autofocus }} autocomplete="off" spellcheck="false" />
+      <input
+        type="text"
+        bind:value
+        use:input={{ type, onValid, onInvalid, mandatory, autofocus }}
+        autocomplete="off"
+        spellcheck="false" />
     {:else if type === 'objectid'}
       <input
         type="text"
@@ -79,7 +84,11 @@
         use:input={{ type, onValid, onInvalid, mandatory, autofocus }}
       />
     {:else if numericInputTypes.includes(type)}
-      <input type="number" bind:value use:input={{ type, onValid, onInvalid, mandatory, autofocus }} />
+      <input
+        type="number"
+        bind:value
+        use:input={{ type, onValid, onInvalid, mandatory, autofocus }}
+      />
     {:else if type === 'bool'}
       <select bind:value on:change={selectChange} bind:this={selectInput}>
         <option value={undefined} disabled={mandatory}>Unset</option>
@@ -98,18 +107,38 @@
           <Icon name="edit" />
         </button>
       {/if}
-      <button class="button-small" type="button" title="Generate random object id" on:click={generateObjectId}>
+      <button
+        class="button-small"
+        type="button"
+        title="Generate random object id"
+        on:click={generateObjectId}
+      >
         <Icon name="reload" />
       </button>
     {:else if type === 'date'}
-      <button class="button-small" type="button" title="Edit date" on:click={() => showDatepicker = true}>
+      <button
+        class="button-small"
+        type="button"
+        title="Edit date"
+        on:click={() => showDatepicker = true}
+      >
         <Icon name="edit" />
       </button>
-      <button class="button-small" type="button" title="Set date to now" on:click={() => value = new Date()}>
+      <button
+        class="button-small"
+        type="button"
+        title="Set date to now"
+        on:click={() => value = new Date()}
+      >
         <Icon name="o" />
       </button>
     {/if}
-    <button class="button-small" type="button" title="Reset field to default value" on:click={() => value = undefined}>
+    <button
+      class="button-small"
+      type="button"
+      title="Reset field to default value"
+      on:click={() => value = undefined}
+    >
       <Icon name="trash" />
     </button>
   </div>

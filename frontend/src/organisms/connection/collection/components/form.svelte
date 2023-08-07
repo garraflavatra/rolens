@@ -2,8 +2,8 @@
   import FormInput from '$components/editors/forminput.svelte';
   import Hint from '$components/hint.svelte';
   import Icon from '$components/icon.svelte';
-  import { inputTypes } from '$lib/mongo';
-  import { resolveKeypath, setValue } from '$lib/objects';
+  import { inputTypes } from '$lib/mongo/index.js';
+  import { resolveKeypath, setValue } from '$lib/objects.js';
 
   export let item = {};
   export let view = {};
@@ -50,7 +50,12 @@
         </span>
       </div>
       <div class="input">
-        <FormInput {column} bind:value={keypathProxy[column.key]} bind:valid={validity[column.key]} autofocus={index === 0} />
+        <FormInput
+          {column}
+          bind:value={keypathProxy[column.key]}
+          bind:valid={validity[column.key]}
+          autofocus={index === 0}
+        />
       </div>
     </label>
   {:else}

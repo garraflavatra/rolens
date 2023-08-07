@@ -1,7 +1,7 @@
 <script>
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
-  import views from '$lib/stores/views';
+  import views from '$lib/stores/views.js';
   import { createEventDispatcher } from 'svelte';
 
   export let collection;

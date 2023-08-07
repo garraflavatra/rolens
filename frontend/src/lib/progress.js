@@ -1,4 +1,4 @@
-import { StartProgressBar, StopProgressBar } from '$wails/go/ui/UI';
+import { StartProgressBar, StopProgressBar } from '$wails/go/ui/UI.js';
 
 let taskCounter = 0;
 

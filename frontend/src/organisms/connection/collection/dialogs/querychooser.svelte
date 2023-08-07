@@ -3,9 +3,9 @@
   import Hint from '$components/hint.svelte';
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
-  import input from '$lib/actions/input';
-  import hostTree from '$lib/stores/hosttree';
-  import queries from '$lib/stores/queries';
+  import input from '$lib/actions/input.js';
+  import hostTree from '$lib/stores/hosttree.js';
+  import queries from '$lib/stores/queries.js';
   import { createEventDispatcher } from 'svelte';
 
   export let queryToSave = undefined;
@@ -71,7 +71,7 @@
         <input type="text" bind:value={queryToSave.name} use:input={{ autofocus: true }} />
       </label>
       <label class="field">
-        <textarea bind:value={queryToSave.remarks} placeholder="Remarks…" use:input></textarea>
+        <textarea bind:value={queryToSave.remarks} placeholder="Remarks…" use:input />
       </label>
     {/if}
 

@@ -1,5 +1,5 @@
 <script>
-  import { looseJsonIsValid } from '$lib/strings';
+  import { looseJsonIsValid } from '$lib/strings.js';
   import { EJSON } from 'bson';
   import { createEventDispatcher, onDestroy } from 'svelte';
   import Icon from './icon.svelte';

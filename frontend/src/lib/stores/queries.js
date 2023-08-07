@@ -1,4 +1,4 @@
-import { RemoveQuery, SavedQueries, SaveQuery, UpdateQueries } from '$wails/go/app/App';
+import { RemoveQuery, SavedQueries, SaveQuery, UpdateQueries } from '$wails/go/app/App.js';
 import { get, writable } from 'svelte/store';
 
 const { set, subscribe } = writable({});

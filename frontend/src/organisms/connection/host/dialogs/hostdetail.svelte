@@ -1,8 +1,8 @@
 <script>
   import Modal from '$components/modal.svelte';
-  import input from '$lib/actions/input';
-  import hostTree from '$lib/stores/hosttree';
-  import { AddHost, UpdateHost } from '$wails/go/app/App';
+  import input from '$lib/actions/input.js';
+  import hostTree from '$lib/stores/hosttree.js';
+  import { AddHost, UpdateHost } from '$wails/go/app/App.js';
   import { createEventDispatcher, onMount } from 'svelte';
 
   export let hostKey = '';
@@ -54,7 +54,13 @@
 
     <label class="field">
       <span class="label">Connection string</span>
-      <input type="text" placeholder="mongodb://..." bind:value={form.uri} spellcheck="false" use:input />
+      <input
+        type="text"
+        placeholder="mongodb://..."
+        bind:value={form.uri}
+        spellcheck="false"
+        use:input
+      />
     </label>
   </form>
 

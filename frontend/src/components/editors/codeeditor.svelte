@@ -40,7 +40,7 @@
   });
 </script>
 
-<div bind:this={editorParent} class="editor"></div>
+<div bind:this={editorParent} class="editor" />
 
 <style>
   .editor {

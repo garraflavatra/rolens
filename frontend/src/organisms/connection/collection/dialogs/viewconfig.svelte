@@ -2,9 +2,9 @@
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
   import TabBar from '$components/tabbar.svelte';
-  import input from '$lib/actions/input';
-  import { randomString } from '$lib/math';
-  import views from '$lib/stores/views';
+  import input from '$lib/actions/input.js';
+  import { randomString } from '$lib/math.js';
+  import views from '$lib/stores/views.js';
 
   export let collection;
   export let firstItem = {};
@@ -114,7 +114,12 @@
         {#key collection.viewKey}
           <label class="field">
             <span class="label">View name</span>
-            <input type="text" use:input={{ autofocus: true }} bind:value={$views[collection.viewKey].name} disabled={collection.viewKey === 'list'} />
+            <input
+              type="text"
+              use:input={{ autofocus: true }}
+              bind:value={$views[collection.viewKey].name}
+              disabled={collection.viewKey === 'list'}
+            />
           </label>
         {/key}
         <label class="field">
@@ -128,7 +133,11 @@
 
       {#if $views[collection.viewKey].type === 'list'}
         <div class="flex">
-          <input type="checkbox" id="hideObjectIndicators" bind:checked={$views[collection.viewKey].hideObjectIndicators} />
+          <input
+            type="checkbox"
+            id="hideObjectIndicators"
+            bind:checked={$views[collection.viewKey].hideObjectIndicators}
+          />
           <label for="hideObjectIndicators">
             Hide object indicators ({'{...}'} and [...]) in list view and show nothing instead
           </label>
@@ -185,16 +194,41 @@
                 </span>
               </label>
 
-              <button class="button" type="button" on:click={() => addColumn(columnIndex)} title="Add column before this one">
+              <button
+                class="button"
+                type="button"
+                on:click={() => addColumn(columnIndex)}
+                title="Add column before this one"
+              >
                 <Icon name="+" />
               </button>
-              <button class="button" type="button" on:click={() => moveColumn(columnIndex, -1)} disabled={columnIndex === 0} title="Move column one position up">
+
+              <button
+                class="button"
+                type="button"
+                on:click={() => moveColumn(columnIndex, -1)}
+                disabled={columnIndex === 0}
+                title="Move column one position up"
+              >
                 <Icon name="chev-u" />
               </button>
-              <button class="button" type="button" on:click={() => moveColumn(columnIndex, 1)} disabled={columnIndex === $views[collection.viewKey].columns.length - 1} title="Move column one position down">
+
+              <button
+                class="button"
+                type="button"
+                on:click={() => moveColumn(columnIndex, 1)}
+                disabled={columnIndex === $views[collection.viewKey].columns.length - 1}
+                title="Move column one position down"
+              >
                 <Icon name="chev-d" />
               </button>
-              <button class="button danger" type="button" on:click={() => removeColumn(columnIndex)} title="Remove this column">
+
+              <button
+                class="button danger"
+                type="button"
+                on:click={() => removeColumn(columnIndex)}
+                title="Remove this column"
+              >
                 <Icon name="x" />
               </button>
             </div>
@@ -202,10 +236,16 @@
             <p>No columns yet</p>
           {/each}
         </div>
+
         <button class="button" on:click={addColumn}>
           <Icon name="+" /> Add column
         </button>
-        <button class="button" on:click={addSuggestedColumns} disabled={!Object.keys(firstItem || {}).length}>
+
+        <button
+          class="button"
+          on:click={addSuggestedColumns}
+          disabled={!Object.keys(firstItem || {}).length}
+        >
           <Icon name="zap" /> Add suggested columns
         </button>
       {/if}

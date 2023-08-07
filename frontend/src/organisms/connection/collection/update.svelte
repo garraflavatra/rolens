@@ -1,10 +1,10 @@
 <script>
   import Icon from '$components/icon.svelte';
-  import input from '$lib/actions/input';
-  import { atomicUpdateOperators } from '$lib/mongo';
-  import { deepClone } from '$lib/objects';
-  import { convertLooseJson, jsonLooseParse } from '$lib/strings';
-  import { UpdateItems } from '$wails/go/app/App';
+  import input from '$lib/actions/input.js';
+  import { atomicUpdateOperators } from '$lib/mongo/index.js';
+  import { deepClone } from '$lib/objects.js';
+  import { convertLooseJson, jsonLooseParse } from '$lib/strings.js';
+  import { UpdateItems } from '$wails/go/app/App.js';
 
   export let collection = {};
 
@@ -27,7 +27,8 @@
   });
 
   // function buildCode(form) {
-  //   let operation = '{ ' + form.parameters.filter(p => p.type).map(p => `${p.type}: ${p.value || '{}'}`).join(', ') + ' }';
+  //   let operation = '{ ' + form.parameters.filter(p => p.type).map(p =>
+  // `${p.type}: ${p.value || '{}'}`).join(', ') + ' }';
   //   if (operation === '{  }') {
   //     operation = '{}';
   //   }
@@ -38,7 +39,8 @@
   //   form.many && (options += 'multi: true');
   //   (form.upsert || form.many) && (options += ' }');
 
-  //   const code = `db.${collection.key}.update(${form.query || '{}'}, ${operation}${options});`;
+  //   const code = `db.${collection.key}.update(${form.query || '{}'},
+  // ${operation}${options});`;
   //   return code;
   // }
 
@@ -48,7 +50,13 @@
     f.parameters = f.parameters.map(param => {
       return { ...param, value: convertLooseJson(param.value) };
     });
-    updatedCount = await UpdateItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(f));
+
+    updatedCount = await UpdateItems(
+      collection.hostKey,
+      collection.dbKey,
+      collection.key,
+      JSON.stringify(f)
+    );
   }
 
   function removeParam(index) {
@@ -114,7 +122,12 @@
 
   <label class="field">
     <span class="label">Filter</span>
-    <input type="text" class="code" bind:value={form.query} use:input={{ type: 'json', autofocus: true }} placeholder={'{}'} />
+    <input
+      type="text"
+      class="code"
+      bind:value={form.query}
+      use:input={{ type: 'json', autofocus: true }}
+      placeholder={'{}'} />
   </label>
 
   <fieldset class="parameters">
@@ -132,7 +145,13 @@
               </optgroup>
             {/each}
           </select>
-          <input type="text" class="code" bind:value={param.value} placeholder={'{}'} use:input={{ type: 'json' }} />
+          <input
+            type="text"
+            class="code"
+            bind:value={param.value}
+            placeholder={'{}'}
+            use:input={{ type: 'json' }}
+          />
         </label>
 
         <button class="button" disabled={form.parameters.length >= allOperators.length} on:click={() => addParameter()} type="button">

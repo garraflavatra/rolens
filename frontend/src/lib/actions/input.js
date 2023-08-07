@@ -14,7 +14,7 @@ export default function input(node, { autofocus, type, onValid, onInvalid, manda
   node.setAttribute('autocomplete', false);
 
   const getMessage = () => {
-    const checkInteger = () => (isInt(node.value) ? false : 'Value must be an integer');
+    const checkInteger = () => (Number.isInteger(node.value) ? false : 'Value must be an integer');
     const checkNumberBoundaries = boundaries => {
       if (node.value < boundaries[0]) {
         return `Input is too low for type ${type}`;

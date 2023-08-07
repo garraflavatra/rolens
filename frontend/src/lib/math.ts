@@ -1,13 +1,4 @@
-// https://stackoverflow.com/a/14794066
-export function isInt(value) {
-  if (isNaN(value)) {
-    return false;
-  }
-  const x = parseFloat(value);
-  return (x | 0) === x;
-}
-
-export function randInt(min, max) {
+export function randInt(min: number, max: number) {
   return Math.round(Math.random() * (max - min) + min);
 }
 

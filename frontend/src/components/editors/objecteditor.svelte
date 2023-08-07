@@ -22,7 +22,8 @@
   });
 </script>
 
-<CodeEditor bind:editor
+<CodeEditor
+  bind:editor
   bind:text
   on:inited
   on:updated

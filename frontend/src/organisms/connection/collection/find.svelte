@@ -1,7 +1,7 @@
 <script>
-  import Grid from '$components/grid.svelte';
+  import Grid from '$components/grid/grid.svelte';
   import Icon from '$components/icon.svelte';
-  import ObjectGrid from '$components/objectgrid.svelte';
+  import ObjectGrid from '$components/grid/objectgrid.svelte';
   import ObjectViewer from '$components/objectviewer.svelte';
   import input from '$lib/actions/input';
   import dialogs from '$lib/dialogs';

@@ -4,7 +4,7 @@
   import { ObjectId } from 'bson';
   import { onMount } from 'svelte';
   import Datepicker from './datepicker.svelte';
-  import Icon from './icon.svelte';
+  import Icon from '../icon.svelte';
 
   export let column = {};
   export let value = undefined;

@@ -1,8 +1,8 @@
 <script>
   import Details from '$components/details.svelte';
-  import Grid from '$components/grid.svelte';
+  import Grid from '$components/grid/grid.svelte';
   import Icon from '$components/icon.svelte';
-  import ObjectEditor from '$components/objecteditor.svelte';
+  import ObjectEditor from '$components/editors/objecteditor.svelte';
   import ObjectViewer from '$components/objectviewer.svelte';
   import { randomString } from '$lib/math';
   import { inputTypes } from '$lib/mongo';

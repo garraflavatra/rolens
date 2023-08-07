@@ -1,5 +1,5 @@
 <script>
-  import FormInput from '$components/forminput.svelte';
+  import FormInput from '$components/editors/forminput.svelte';
   import Hint from '$components/hint.svelte';
   import Icon from '$components/icon.svelte';
   import { inputTypes } from '$lib/mongo';

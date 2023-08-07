@@ -1,6 +1,6 @@
 <script>
   import Icon from '$components/icon.svelte';
-  import ObjectEditor from '$components/objecteditor.svelte';
+  import ObjectEditor from '$components/editors/objecteditor.svelte';
   import { convertLooseJson } from '$lib/strings';
   import { RemoveItems } from '$wails/go/app/App';
   import { onMount } from 'svelte';

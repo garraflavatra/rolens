@@ -1,6 +1,6 @@
 <script>
   import Icon from '$components/icon.svelte';
-  import ObjectGrid from '$components/objectgrid.svelte';
+  import ObjectGrid from '$components/grid/objectgrid.svelte';
 
   export let database;
 

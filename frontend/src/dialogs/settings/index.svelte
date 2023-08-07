@@ -1,5 +1,5 @@
 <script>
-  import DirectoryChooser from '$components/directorychooser.svelte';
+  import DirectoryChooser from '$components/editors/directorychooser.svelte';
   import Modal from '$components/modal.svelte';
   import input from '$lib/actions/input';
   import settings from '$lib/stores/settings';

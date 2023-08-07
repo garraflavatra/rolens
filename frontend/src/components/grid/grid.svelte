@@ -1,8 +1,8 @@
 <script>
   import { onDestroy } from 'svelte';
-  import BlankState from './blankstate.svelte';
+  import BlankState from '../blankstate.svelte';
   import GridItems from './grid-items.svelte';
-  import Icon from './icon.svelte';
+  import Icon from '../icon.svelte';
 
   export let columns = [];
   export let items = [];

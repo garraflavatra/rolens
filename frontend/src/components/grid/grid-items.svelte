@@ -2,8 +2,8 @@
   import { pathsAreEqual, resolveKeypath, setValue } from '$lib/objects';
   import contextMenu from '$lib/stores/contextmenu';
   import { createEventDispatcher } from 'svelte';
-  import FormInput from './forminput.svelte';
-  import Icon from './icon.svelte';
+  import FormInput from '$components/editors/forminput.svelte';
+  import Icon from '$components/icon.svelte';
 
   export let items = [];
   export let columns = [];

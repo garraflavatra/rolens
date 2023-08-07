@@ -1,6 +1,6 @@
 <script>
   import BlankState from '$components/blankstate.svelte';
-  import CodeEditor from '$components/codeeditor.svelte';
+  import CodeEditor from '$components/editors/codeeditor.svelte';
   import Icon from '$components/icon.svelte';
   import environment from '$lib/stores/environment';
   import { OpenShellScript, SaveShellScript } from '$wails/go/app/App';

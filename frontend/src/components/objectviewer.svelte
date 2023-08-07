@@ -4,7 +4,7 @@
   import { createEventDispatcher, onDestroy } from 'svelte';
   import Icon from './icon.svelte';
   import Modal from './modal.svelte';
-  import ObjectEditor from './objecteditor.svelte';
+  import ObjectEditor from './editors/objecteditor.svelte';
 
   export let data;
   export let readonly = false;

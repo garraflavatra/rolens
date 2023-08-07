@@ -2,9 +2,9 @@
   import { daysAbbr, months } from '$lib/constants';
   import { addDays, getWeek, isDate, isSameDay, startOfWeek } from 'date-fns';
   import { onMount } from 'svelte';
-  import Clock from './clock.svelte';
-  import Icon from './icon.svelte';
-  import Modal from './modal.svelte';
+  import Clock from '../clock.svelte';
+  import Icon from '../icon.svelte';
+  import Modal from '../modal.svelte';
 
   export let value;
   export let show = false;

@@ -1,6 +1,6 @@
 <script>
-  import DirectoryChooser from '$components/directorychooser.svelte';
-  import Grid from '$components/grid.svelte';
+  import DirectoryChooser from '$components/editors/directorychooser.svelte';
+  import Grid from '$components/grid/grid.svelte';
   import Modal from '$components/modal.svelte';
   import { startProgress } from '$lib/progress';
   import hostTree from '$lib/stores/hosttree';

@@ -1,5 +1,5 @@
 <script>
-  import Grid from '$components/grid.svelte';
+  import Grid from '$components/grid/grid.svelte';
   import Hint from '$components/hint.svelte';
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';

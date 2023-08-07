@@ -2,9 +2,9 @@
   import BlankState from '$components/blankstate.svelte';
   import CodeEditor from '$components/editors/codeeditor.svelte';
   import Icon from '$components/icon.svelte';
-  import environment from '$lib/stores/environment';
-  import { OpenShellScript, SaveShellScript } from '$wails/go/app/App';
-  import { BrowserOpenURL } from '$wails/runtime/runtime';
+  import environment from '$lib/stores/environment.js';
+  import { OpenShellScript, SaveShellScript } from '$wails/go/app/App.js';
+  import { BrowserOpenURL } from '$wails/runtime/runtime.js';
   import { javascript } from '@codemirror/lang-javascript';
   import { onDestroy, onMount } from 'svelte';
 

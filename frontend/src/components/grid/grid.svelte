@@ -57,17 +57,17 @@
         <thead>
           <tr>
             {#if !hideChildrenToggles}
-              <th class="has-toggle"></th>
+              <th class="has-toggle" />
             {/if}
 
-            <th class="has-icon"></th>
+            <th class="has-icon" />
 
             {#each columns as column}
               <th scope="col">{column.title || ''}</th>
             {/each}
 
             {#if canRemoveItems}
-              <th class="has-button"></th>
+              <th class="has-button" />
             {/if}
           </tr>
         </thead>

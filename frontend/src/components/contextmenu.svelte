@@ -50,7 +50,7 @@
 <svelte:window on:keydown={keydown} />
 
 {#if items && position}
-  <div class="backdrop" on:pointerdown={close}></div>
+  <div class="backdrop" on:pointerdown={close} />
   <nav>
     <ul class="contextmenu" role="" style:left="{position[0]}px" style:top="{position[1]}px">
       {#each items as item, index}

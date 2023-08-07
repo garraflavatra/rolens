@@ -1,7 +1,7 @@
 <script>
   import Icon from '$components/icon.svelte';
   import Modal from '$components/modal.svelte';
-  import input from '$lib/actions/input';
+  import input from '$lib/actions/input.js';
   import { createEventDispatcher } from 'svelte';
 
   export let collection;
@@ -27,7 +27,12 @@
   <form on:submit|preventDefault={create}>
     <label class="field name">
       <span class="label">Name</span>
-      <input type="text" placeholder="Optional" bind:value={index.name} use:input={{ autofocus: true }} />
+      <input
+        type="text"
+        placeholder="Optional"
+        bind:value={index.name}
+        use:input={{ autofocus: true }}
+      />
     </label>
 
     <div class="toggles">
@@ -62,8 +67,9 @@
         <div class="row">
           <label class="field">
             <span class="label">Key</span>
-            <input type="text" placeholder="_id" bind:value={rule.key}>
+            <input type="text" placeholder="_id" bind:value={rule.key} />
           </label>
+
           <label class="field">
             <select bind:value={rule.sort}>
               <option value={1}>Ascending</option>
@@ -71,6 +77,7 @@
               <option value="hashed" disabled={index.model.length > 1}>Hashed</option>
             </select>
           </label>
+
           <button type="button" class="button danger" on:click={() => removeRule(ruleIndex)} disabled={index.model.length < 2}>
             <Icon name="-" />
           </button>
@@ -85,6 +92,7 @@
     <button class="button" on:click={addRule} disabled={index.model.some(r => r.sort === 'hashed')}>
       <Icon name="+" /> Add rule
     </button>
+
     <button class="button" on:click={create} disabled={!index.model.length || index.model.some(r => !r.key)}>
       <Icon name="+" /> Create index
     </button>

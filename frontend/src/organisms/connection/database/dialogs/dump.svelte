@@ -2,10 +2,10 @@
   import DirectoryChooser from '$components/editors/directorychooser.svelte';
   import Grid from '$components/grid/grid.svelte';
   import Modal from '$components/modal.svelte';
-  import { startProgress } from '$lib/progress';
-  import hostTree from '$lib/stores/hosttree';
-  import applicationSettings from '$lib/stores/settings';
-  import { OpenConnection, OpenDatabase } from '$wails/go/app/App';
+  import { startProgress } from '$lib/progress.js';
+  import hostTree from '$lib/stores/hosttree.js';
+  import applicationSettings from '$lib/stores/settings.js';
+  import { OpenConnection, OpenDatabase } from '$wails/go/app/App.js';
   import { createEventDispatcher } from 'svelte';
 
   export let info = {};

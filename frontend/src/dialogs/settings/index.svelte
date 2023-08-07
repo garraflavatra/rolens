@@ -1,8 +1,8 @@
 <script>
   import DirectoryChooser from '$components/editors/directorychooser.svelte';
   import Modal from '$components/modal.svelte';
-  import input from '$lib/actions/input';
-  import settings from '$lib/stores/settings';
+  import input from '$lib/actions/input.js';
+  import settings from '$lib/stores/settings.js';
 </script>
 
 <Modal title="Preferences" on:close>
@@ -15,7 +15,13 @@
 
     <label for="defaultSort">Default sort query</label>
     <label class="field">
-      <input type="text" class="code" bind:value={$settings.defaultSort} id="defaultSort" use:input={{ type: 'json' }} />
+      <input
+        type="text"
+        class="code"
+        bind:value={$settings.defaultSort}
+        id="defaultSort"
+        use:input={{ type: 'json' }}
+      />
     </label>
 
     <label for="autosubmitQuery">Autosubmit query</label>

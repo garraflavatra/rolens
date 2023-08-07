@@ -1,7 +1,7 @@
 <script>
   import BlankState from '$components/blankstate.svelte';
   import TabBar from '$components/tabbar.svelte';
-  import { EventsOn } from '$wails/runtime/runtime';
+  import { EventsOn } from '$wails/runtime/runtime.js';
 
   import Shell from '../shell.svelte';
   import Stats from './stats.svelte';
@@ -11,8 +11,8 @@
   export let tab = 'stats';
 
   const tabs = {
-    'stats': { icon: 'chart', title: 'Database stats', component: Stats },
-    'shell': { icon: 'shell', title: 'Shell', component: Shell },
+    stats: { icon: 'chart', title: 'Database stats', component: Stats },
+    shell: { icon: 'shell', title: 'Shell', component: Shell },
   };
 
   for (const key of Object.keys(tabs)) {

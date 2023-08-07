@@ -1,5 +1,5 @@
 <script>
-  import { OpenDirectory } from '$wails/go/ui/UI';
+  import { OpenDirectory } from '$wails/go/ui/UI.js';
 
   export let value = '';
   export let id = '';
@@ -10,7 +10,13 @@
   }
 </script>
 
-<input type="text" on:pointerdown={selectDir} readonly {id} {value} />
+<input
+  type="text"
+  on:pointerdown={selectDir}
+  readonly
+  {id}
+  {value}
+/>
 
 <style>
   input {

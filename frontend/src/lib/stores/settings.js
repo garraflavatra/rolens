@@ -1,4 +1,4 @@
-import { Settings, UpdateSettings } from '$wails/go/app/App';
+import { Settings, UpdateSettings } from '$wails/go/app/App.js';
 import { writable } from 'svelte/store';
 
 const { set, subscribe } = writable({});

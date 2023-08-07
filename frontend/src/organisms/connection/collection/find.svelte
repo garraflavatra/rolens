@@ -3,14 +3,14 @@
   import Icon from '$components/icon.svelte';
   import ObjectGrid from '$components/grid/objectgrid.svelte';
   import ObjectViewer from '$components/objectviewer.svelte';
-  import input from '$lib/actions/input';
-  import dialogs from '$lib/dialogs';
-  import { deepClone } from '$lib/objects';
-  import { startProgress } from '$lib/progress';
-  import applicationSettings from '$lib/stores/settings';
-  import views from '$lib/stores/views';
-  import { convertLooseJson, stringCouldBeID } from '$lib/strings';
-  import { CountItems, FindItems, RemoveItemById, UpdateFoundDocument } from '$wails/go/app/App';
+  import input from '$lib/actions/input.js';
+  import dialogs from '$lib/dialogs.js';
+  import { deepClone } from '$lib/objects.js';
+  import { startProgress } from '$lib/progress.js';
+  import applicationSettings from '$lib/stores/settings.js';
+  import views from '$lib/stores/views.js';
+  import { convertLooseJson, stringCouldBeID } from '$lib/strings.js';
+  import { CountItems, FindItems, RemoveItemById, UpdateFoundDocument } from '$wails/go/app/App.js';
   import { EJSON } from 'bson';
 
   export let collection;
@@ -36,7 +36,11 @@
   let objectViewerSuccessMessage = '';
   let viewsForCollection = {};
 
-  // $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields && form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `.limit(${form.limit})` : ''};`;
+  // $: code = `db.${collection.key}.find(${form.query || '{}'}${form.fields &&
+  // form.fields !== '{}' ? `, ${form.fields}` : ''}).sort(${form.sort})
+  // ${form.skip ? `.skip(${form.skip})` : ''}${form.limit ? `
+  // .limit(${form.limit})` : ''};`;
+
   $: lastPage = (submittedForm.limit && result?.results?.length) ? Math.max(0, Math.ceil((result.total - submittedForm.limit) / submittedForm.limit)) : 0;
   $: activePage = (submittedForm.limit && submittedForm.skip && result?.results?.length) ? submittedForm.skip / submittedForm.limit : 0;
 
@@ -55,13 +59,17 @@
 
     querying = `Querying ${collection.key}…`;
     activePath = [];
-    const newResult = await FindItems(collection.hostKey, collection.dbKey, collection.key, JSON.stringify({
-      fields: convertLooseJson(form.fields || defaults.fields),
-      limit: form.limit ?? defaults.limit,
-      query: convertLooseJson(form.query) || defaults.query,
-      skip: form.skip ?? defaults.skip,
-      sort: convertLooseJson(form.sort) || defaults.sort,
-    }));
+    const newResult = await FindItems(
+      collection.hostKey,
+      collection.dbKey,
+      collection.key, JSON.stringify({
+        fields: convertLooseJson(form.fields || defaults.fields),
+        limit: form.limit ?? defaults.limit,
+        query: convertLooseJson(form.query) || defaults.query,
+        skip: form.skip ?? defaults.skip,
+        sort: convertLooseJson(form.sort) || defaults.sort,
+      })
+    );
 
     if (newResult) {
       newResult.results = newResult.results?.map(s => EJSON.parse(s, { relaxed: false }));
@@ -137,7 +145,14 @@
     if (!sure) {
       return;
     }
-    const ok = await RemoveItemById(collection.hostKey, collection.dbKey, collection.key, activePath[0]);
+
+    const ok = await RemoveItemById(
+      collection.hostKey,
+      collection.dbKey,
+      collection.key,
+      activePath[0]
+    );
+
     if (ok) {
       await submitQuery();
     }
@@ -189,7 +204,8 @@
     <div class="formrow one">
       <label class="field">
         <span class="label">Query or id</span>
-        <input type="text"
+        <input
+          type="text"
           class="code"
           placeholder={defaults.query}
           autocomplete="off"
@@ -230,7 +246,8 @@
 
       <label class="field">
         <span class="label">Skip</span>
-        <input type="number"
+        <input
+          type="number"
           min="0"
           bind:value={form.skip}
           use:input
@@ -241,7 +258,8 @@
 
       <label class="field">
         <span class="label">Limit</span>
-        <input type="number"
+        <input
+          type="number"
           min="0"
           bind:value={form.limit}
           use:input
@@ -334,19 +352,49 @@
             <Icon name="cog" />
           </button>
         </label>
-        <button class="button danger" on:click={removeActive} disabled={!activePath?.length} title="Drop selected item">
+
+        <button
+          class="button danger"
+          on:click={removeActive}
+          disabled={!activePath?.length}
+          title="Drop selected item"
+        >
           <Icon name="-" />
         </button>
-        <button class="button" on:click={first} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results || (activePage === 0)} title="First page">
+
+        <button
+          class="button"
+          on:click={first}
+          disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results || (activePage === 0)}
+          title="First page"
+        >
           <Icon name="chevs-l" />
         </button>
-        <button class="button" on:click={prev} disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results || (activePage === 0)} title="Previous {submittedForm.limit} items">
+
+        <button
+          class="button"
+          on:click={prev}
+          disabled={!submittedForm.limit || (submittedForm.skip <= 0) || !result?.results || (activePage === 0)}
+          title="Previous {submittedForm.limit} items"
+        >
           <Icon name="chev-l" />
         </button>
-        <button class="button" on:click={next} disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results || !lastPage || (activePage >= lastPage)} title="Next {submittedForm.limit} items">
+
+        <button
+          class="button"
+          on:click={next}
+          disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results || !lastPage || (activePage >= lastPage)}
+          title="Next {submittedForm.limit} items"
+        >
           <Icon name="chev-r" />
         </button>
-        <button class="button" on:click={last} disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results || !lastPage || (activePage >= lastPage)} title="Last page">
+
+        <button
+          class="button"
+          on:click={last}
+          disabled={!submittedForm.limit || ((result?.results?.length || 0) < submittedForm.limit) || !result?.results || !lastPage || (activePage >= lastPage)}
+          title="Last page"
+        >
           <Icon name="chevs-r" />
         </button>
       </div>
@@ -355,7 +403,12 @@
 </div>
 
 {#if objectViewerData}
-  <ObjectViewer bind:data={objectViewerData} saveable on:save={saveDocument} bind:successMessage={objectViewerSuccessMessage} />
+  <ObjectViewer
+    bind:data={objectViewerData}
+    saveable
+    on:save={saveDocument}
+    bind:successMessage={objectViewerSuccessMessage}
+  />
 {/if}
 
 <datalist id="limits">

@@ -2,9 +2,9 @@
   import Grid from '$components/grid/grid.svelte';
   import Icon from '$components/icon.svelte';
   import ObjectViewer from '$components/objectviewer.svelte';
-  import input from '$lib/actions/input';
-  import { logComponents, logLevels } from '$lib/mongo';
-  import { BrowserOpenURL } from '$wails/runtime/runtime';
+  import input from '$lib/actions/input.js';
+  import { logComponents, logLevels } from '$lib/mongo/index.js';
+  import { BrowserOpenURL } from '$wails/runtime/runtime.js';
   import { onDestroy } from 'svelte';
 
   export let host;
@@ -82,7 +82,13 @@
   <div class="formrow">
     <label class="field">
       <span class="label">Auto reload (seconds)</span>
-      <input type="number" class="autoreloadinput" bind:value={autoReloadInterval} list="autoreloadintervals" use:input />
+      <input
+        type="number"
+        class="autoreloadinput"
+        bind:value={autoReloadInterval}
+        list="autoreloadintervals"
+        use:input
+      />
     </label>
 
     <label class="field">

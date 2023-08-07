@@ -18,14 +18,14 @@
   export let tab = 'find';
 
   const tabs = {
-    'stats': { icon: 'chart', title: 'Stats', component: Stats },
-    'find': { icon: 'db', title: 'Find', component: Find },
-    'insert': { icon: '+', title: 'Insert', component: Insert },
-    'update': { icon: 'edit', title: 'Update', component: Update },
-    'remove': { icon: 'trash', title: 'Remove', component: Remove },
-    'indexes': { icon: 'list', title: 'Indexes', component: Indexes },
-    'aggregate': { icon: 're', title: 'Aggregate', component: Aggregate },
-    'shell': { icon: 'shell', title: 'Shell', component: Shell },
+    stats: { icon: 'chart', title: 'Stats', component: Stats },
+    find: { icon: 'db', title: 'Find', component: Find },
+    insert: { icon: '+', title: 'Insert', component: Insert },
+    update: { icon: 'edit', title: 'Update', component: Update },
+    remove: { icon: 'trash', title: 'Remove', component: Remove },
+    indexes: { icon: 'list', title: 'Indexes', component: Indexes },
+    aggregate: { icon: 're', title: 'Aggregate', component: Aggregate },
+    shell: { icon: 'shell', title: 'Shell', component: Shell },
   };
 
   for (const key of Object.keys(tabs)) {

@@ -4,11 +4,11 @@
   import Icon from '$components/icon.svelte';
   import ObjectEditor from '$components/editors/objecteditor.svelte';
   import ObjectViewer from '$components/objectviewer.svelte';
-  import { randomString } from '$lib/math';
-  import { inputTypes } from '$lib/mongo';
-  import views from '$lib/stores/views';
-  import { capitalise, convertLooseJson, jsonLooseParse } from '$lib/strings';
-  import { InsertItems } from '$wails/go/app/App';
+  import { randomString } from '$lib/math.js';
+  import { inputTypes } from '$lib/mongo/index.js';
+  import views from '$lib/stores/views.js';
+  import { capitalise, convertLooseJson, jsonLooseParse } from '$lib/strings.js';
+  import { InsertItems } from '$wails/go/app/App.js';
   import { EJSON } from 'bson';
   import { createEventDispatcher, onMount } from 'svelte';
   import Form from './components/form.svelte';

@@ -1,4 +1,4 @@
-import { AskConfirmation } from '$wails/go/app/App';
+import { AskConfirmation } from '$wails/go/app/App.js';
 import InputDialog from '../dialogs/input.svelte';
 
 function newDialog(dialogComponent, data = {}) {

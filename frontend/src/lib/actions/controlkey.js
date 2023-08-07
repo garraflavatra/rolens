@@ -1,4 +1,4 @@
-import environment from '$lib/stores/environment';
+import environment from '$lib/stores/environment.js';
 import { get } from 'svelte/store';
 
 export function controlKeyDown(event) {

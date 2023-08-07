@@ -1,6 +1,6 @@
 <script>
-  import { pathsAreEqual, resolveKeypath, setValue } from '$lib/objects';
-  import contextMenu from '$lib/stores/contextmenu';
+  import { pathsAreEqual, resolveKeypath, setValue } from '$lib/objects.js';
+  import contextMenu from '$lib/stores/contextmenu.js';
   import { createEventDispatcher } from 'svelte';
   import FormInput from '$components/editors/forminput.svelte';
   import Icon from '$components/icon.svelte';
@@ -131,7 +131,7 @@
     on:dblclick={() => doubleClick(item[key], index)}
     on:contextmenu|preventDefault={evt => showContextMenu(evt, item)}
     class:selectable={canSelect}
-    class:selected={canSelect && pathsAreEqual(activePath, [ ...path, item[key] ])}
+    class:selected={canSelect && pathsAreEqual(activePath, ...path, item[key])}
     class:striped
   >
     {#if !hideChildrenToggles}
@@ -157,7 +157,11 @@
     {#each columns as column, columnIndex}
       <td class:right={column.right} title={keypathProxies[index][column.key]}>
         {#if column.inputType}
-          <FormInput {column} bind:value={keypathProxies[index][column.key]} bind:valid={validity[columnIndex]} />
+          <FormInput
+            {column}
+            bind:value={keypathProxies[index][column.key]}
+            bind:valid={validity[columnIndex]}
+          />
         {:else}
           <div class="value" style:margin-left="{level * 10}px">
             {formatValue(keypathProxies[index][column.key])}
@@ -168,7 +172,12 @@
 
     {#if canRemoveItems}
       <td class="has-button">
-        <button class="button-small" type="button" on:click|stopPropagation={() => removeItem(index, item[key])} on:dblclick|stopPropagation>
+        <button
+          class="button-small"
+          type="button"
+          on:click|stopPropagation={() => removeItem(index, item[key])}
+          on:dblclick|stopPropagation
+        >
           <Icon name="x" />
         </button>
       </td>

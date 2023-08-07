@@ -1,6 +1,6 @@
 import { derived } from 'svelte/store';
-import environment from './environment';
-import applicationSettings from './settings';
+import environment from './environment.js';
+import applicationSettings from './settings.js';
 
 let alreadyInited = false;
 

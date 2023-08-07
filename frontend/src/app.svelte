@@ -1,14 +1,14 @@
 <script>
   import BlankState from '$components/blankstate.svelte';
   import ContextMenu from '$components/contextmenu.svelte';
-  import dialogs from '$lib/dialogs';
-  import contextMenu from '$lib/stores/contextmenu';
-  import environment from '$lib/stores/environment';
-  import hostTree from '$lib/stores/hosttree';
-  import applicationInited from '$lib/stores/inited';
-  import windowTitle from '$lib/stores/windowtitle';
+  import dialogs from '$lib/dialogs.js';
+  import contextMenu from '$lib/stores/contextmenu.js';
+  import environment from '$lib/stores/environment.js';
+  import hostTree from '$lib/stores/hosttree.js';
+  import applicationInited from '$lib/stores/inited.js';
+  import windowTitle from '$lib/stores/windowtitle.js';
   import Connection from '$organisms/connection/index.svelte';
-  import { EventsOn } from '$wails/runtime';
+  import { EventsOn } from '$wails/runtime.js';
   import { tick } from 'svelte';
   import AboutDialog from './dialogs/about.svelte';
   import SettingsDialog from './dialogs/settings/index.svelte';

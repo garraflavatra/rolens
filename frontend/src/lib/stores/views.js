@@ -1,6 +1,6 @@
-import dialogs from '$lib/dialogs';
+import dialogs from '$lib/dialogs.js';
 import ViewConfigDialog from '$organisms/connection/collection/dialogs/viewconfig.svelte';
-import { UpdateViewStore, Views } from '$wails/go/app/App';
+import { UpdateViewStore, Views } from '$wails/go/app/App.js';
 import { get, writable } from 'svelte/store';
 
 const { set, subscribe } = writable({});

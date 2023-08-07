@@ -1,9 +1,9 @@
-import dialogs from '$lib/dialogs';
-import { startProgress } from '$lib/progress';
+import dialogs from '$lib/dialogs.js';
+import { startProgress } from '$lib/progress.js';
 import { get, writable } from 'svelte/store';
-import applicationInited from './inited';
-import queries from './queries';
-import windowTitle from './windowtitle';
+import applicationInited from './inited.js';
+import queries from './queries.js';
+import windowTitle from './windowtitle.js';
 
 import ExportDialog from '$organisms/connection/collection/dialogs/export.svelte';
 import IndexDetailDialog from '$organisms/connection/collection/dialogs/indexdetail.svelte';
@@ -30,7 +30,7 @@ import {
   RemoveHost,
   RenameCollection,
   TruncateCollection
-} from '$wails/go/app/App';
+} from '$wails/go/app/App.js';
 
 const { set, subscribe } = writable({});
 const getValue = () => get({ subscribe });
@@ -121,7 +121,10 @@ async function refresh() {
             collection.rename = async function() {
               const newCollKey = await dialogs.enterText('Rename collection', `Enter a new name for collection ${collKey}.`, collKey);
               if (newCollKey && (newCollKey !== collKey)) {
-                const progress = startProgress(`Renaming collection "${collKey}" to "${newCollKey}"…`);
+                const progress = startProgress(
+                  `Renaming collection "${collKey}" to "${newCollKey}"…`
+                );
+
                 const ok = await RenameCollection(hostKey, dbKey, collKey, newCollKey);
                 await database.open();
                 progress.end();
@@ -155,7 +158,13 @@ async function refresh() {
               const dialog = dialogs.new(ExportDialog, { collection, query });
               return new Promise(resolve => {
                 dialog.$on('export', async event => {
-                  const success = await PerformFindExport(hostKey, dbKey, collKey, JSON.stringify(event.detail.exportInfo));
+                  const success = await PerformFindExport(
+                    hostKey,
+                    dbKey,
+                    collKey,
+                    JSON.stringify(event.detail.exportInfo)
+                  );
+
                   if (success) {
                     dialog.$close();
                     resolve();
@@ -230,10 +239,17 @@ async function refresh() {
 
               return new Promise(resolve => {
                 dialog.$on('create', async event => {
-                  const newIndexName = await CreateIndex(collection.hostKey, collection.dbKey, collection.key, JSON.stringify(event.detail.index));
+                  const newIndexName = await CreateIndex(
+                    collection.hostKey,
+                    collection.dbKey,
+                    collection.key,
+                    JSON.stringify(event.detail.index)
+                  );
+
                   if (newIndexName) {
                     dialog.$close();
                   }
+
                   resolve(newIndexName);
                 });
               });

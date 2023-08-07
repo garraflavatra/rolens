@@ -1,5 +1,5 @@
 <script>
-  import { locales } from '$lib/mongo';
+  import { locales } from './index.js';
 
   const defaultCollation = {
     locale: 'en_US',

@@ -9,10 +9,10 @@ export default defineConfig({
   plugins: [ svelte() ],
   resolve: {
     alias: {
-      '$components': currentDir + '/src/components',
-      '$organisms': currentDir + '/src/organisms',
-      '$wails': currentDir + '/wailsjs',
-      '$lib': currentDir + '/src/lib',
+      $components: currentDir + '/src/components',
+      $organisms: currentDir + '/src/organisms',
+      $wails: currentDir + '/wailsjs',
+      $lib: currentDir + '/src/lib',
     },
   },
 });

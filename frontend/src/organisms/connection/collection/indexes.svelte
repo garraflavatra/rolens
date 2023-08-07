@@ -73,9 +73,11 @@
     <button class="button" on:click={refresh}>
       <Icon name="reload" spin={busy} /> Reload
     </button>
+
     <button class="button" on:click={createIndex}>
       <Icon name="+" /> Create index…
     </button>
+
     <button class="button danger" on:click={dropIndex} disabled={!_indexes.length || !activePath[0]}>
       <Icon name="x" /> Drop selected
     </button>

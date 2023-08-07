@@ -1,4 +1,4 @@
-import { BrowserOpenURL } from '$wails/runtime/runtime';
+import { BrowserOpenURL } from '$wails/runtime/runtime.js';
 
 export default function alink(node) {
   node.addEventListener('click', e => {

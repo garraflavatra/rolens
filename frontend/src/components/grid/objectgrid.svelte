@@ -1,5 +1,5 @@
 <script>
-  import { isBsonBuiltin } from '$lib/mongo';
+  import { isBsonBuiltin } from '$lib/mongo.js';
   import { isDate } from 'date-fns';
   import Grid from './grid.svelte';
 
@@ -22,7 +22,6 @@
   ].filter(c => !!c);
 
   $: if (data) {
-    // items = dissectObject(data).map(item => ({ ...item, menu: getRootMenu(item.key, item) }));
     items = [];
 
     if (Array.isArray(data)) {

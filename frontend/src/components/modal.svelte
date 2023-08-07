@@ -3,7 +3,7 @@
 </script>
 
 <script>
-  import { Beep } from '$wails/go/ui/UI';
+  import { Beep } from '$wails/go/ui/UI.js';
   import { createEventDispatcher } from 'svelte';
   import Icon from './icon.svelte';
 

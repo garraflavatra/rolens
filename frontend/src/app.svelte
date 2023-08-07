@@ -8,7 +8,7 @@
   import applicationInited from '$lib/stores/inited.js';
   import windowTitle from '$lib/stores/windowtitle.js';
   import Connection from '$organisms/connection/index.svelte';
-  import { EventsOn } from '$wails/runtime.js';
+  import { EventsOn } from '$wails/runtime/runtime.js';
   import { tick } from 'svelte';
   import AboutDialog from './dialogs/about.svelte';
   import SettingsDialog from './dialogs/settings/index.svelte';

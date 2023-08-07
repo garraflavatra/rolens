@@ -1,6 +1,6 @@
 <script>
   import input from '$lib/actions/input.js';
-  import { canBeObjectId, numericInputTypes } from '$lib/mongo.js';
+  import { canBeObjectId, numericInputTypes } from '$lib/mongo/index.js';
   import { ObjectId } from 'bson';
   import { onMount } from 'svelte';
   import Datepicker from './datepicker.svelte';

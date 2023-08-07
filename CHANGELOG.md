@@ -8,6 +8,7 @@
 * Find view: ask for confirmation before negligently deleting documents when the user has clicked the '-' button (#58).
 * Build script recreates the build output directory after it has been removed (#62).
 * Set a deadline for counting documents, and added a button to count documents if the deadline has been exceeded.
+
 ## [v0.2.2]
 
 * Added Excel export format (#46).

@@ -2,7 +2,7 @@ import './styles/loading.css';
 import './styles/reset.css';
 import './styles/style.css';
 
-import { LogError } from '$wails/runtime.js';
+import { LogError } from '$wails/runtime/runtime.js';
 import App from './app.svelte';
 
 window.addEventListener('unhandledrejection', event => {

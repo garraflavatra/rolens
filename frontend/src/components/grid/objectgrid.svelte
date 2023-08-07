@@ -1,5 +1,5 @@
 <script>
-  import { isBsonBuiltin } from '$lib/mongo.js';
+  import { isBsonBuiltin } from '$lib/mongo/index.js';
   import { isDate } from 'date-fns';
   import Grid from './grid.svelte';
 

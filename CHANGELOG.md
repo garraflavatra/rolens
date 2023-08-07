@@ -1,13 +1,22 @@
 ## [Unreleased]
 
+New features:
+
 * Added log view (#53, #54).
 * Added a shell script editor (#37), plus export/import feature.
 * Added collection duplication feature (#63).
 * Find view: paste ID and press Enter (#55).
+
+Patches:
+
 * Preserve state after switching to another tab (#56).
 * Find view: ask for confirmation before negligently deleting documents when the user has clicked the '-' button (#58).
-* Build script recreates the build output directory after it has been removed (#62).
 * Set a deadline for counting documents, and added a button to count documents if the deadline has been exceeded.
+
+Bugfixes:
+
+* Build script recreates the build output directory after it has been removed (#62).
+* After dropping a collection or database, the hosttree was not reloaded correctly. Now, dropped databases and collections are correctly removed from the host tree.
 
 ## [v0.2.2]
 

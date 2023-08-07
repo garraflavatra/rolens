@@ -32,7 +32,6 @@ import {
   TruncateCollection
 } from '$wails/go/app/App';
 
-
 const { set, subscribe } = writable({});
 const getValue = () => get({ subscribe });
 let hostTreeInited = false;
@@ -49,7 +48,14 @@ async function refresh() {
     host.uri = hostDetails.uri;
 
     host.open = async function() {
-      const { databases: dbNames, status, statusError, systemInfo, systemInfoError } = await OpenConnection(hostKey);
+      const {
+        databases: dbNames,
+        status,
+        statusError,
+        systemInfo,
+        systemInfoError,
+      } = await OpenConnection(hostKey);
+
       host.status = status;
       host.statusError = statusError;
       host.systemInfo = systemInfo;
@@ -184,6 +190,7 @@ async function refresh() {
             collection.drop = async function() {
               const success = await DropCollection(hostKey, dbKey, collKey);
               if (success) {
+                delete database.collections[collKey];
                 await refresh();
               }
             };
@@ -276,14 +283,11 @@ async function refresh() {
         };
 
         database.drop = async function() {
-          const progress = startProgress(`Dropping database "${dbKey}"…`);
           const success = await DropDatabase(hostKey, dbKey);
-
           if (success) {
+            delete host.databases[dbKey];
             await refresh();
           }
-
-          progress.end();
         };
 
         database.newCollection = async function() {

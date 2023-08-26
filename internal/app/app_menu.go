@@ -47,9 +47,10 @@ func (a *App) Menu() *menu.Menu {
 	hostMenu.AddText("New…", keys.OptionOrAlt("C"), menuCallbackEmit(a, "ui.host.new"))
 	hostMenu.AddText("Edit host…", keys.OptionOrAlt("H"), menuCallbackEmit(a, "ui.host.edit"))
 	hostMenu.AddSeparator()
-	hostMenu.AddText("Server status", nil, menuCallbackEmit(a, "ui.host.tab", "status"))
-	hostMenu.AddText("System info", nil, menuCallbackEmit(a, "ui.host.tab", "systemInfo"))
+	hostMenu.AddText("Host status", nil, menuCallbackEmit(a, "ui.host.tab", "status"))
 	hostMenu.AddText("Shell", nil, menuCallbackEmit(a, "ui.host.tab", "shell"))
+	hostMenu.AddText("Logs", nil, menuCallbackEmit(a, "ui.host.tab", "logs"))
+	hostMenu.AddText("System info", nil, menuCallbackEmit(a, "ui.host.tab", "systemInfo"))
 	hostMenu.AddSeparator()
 	hostMenu.AddText("Remove host…", nil, menuCallbackEmit(a, "ui.host.remove"))
 

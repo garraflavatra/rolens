@@ -52,7 +52,10 @@
       return obj;
     }
     else if ((typeof obj === 'object') && (obj !== null)) {
-      return Object.entries(obj).map(([ k, item ]) => {
+      return Object.entries(obj).map(([
+        k,
+        item,
+      ]) => {
         return { ...item, [key]: k };
       });
     }
@@ -67,7 +70,10 @@
     }
 
     activeKey = itemKey;
-    activePath = [ ...path.slice(0, level), itemKey ];
+    activePath = [
+      ...path.slice(0, level),
+      itemKey,
+    ];
     dispatch('select', { level, itemKey, index, path: activePath });
   }
 
@@ -126,12 +132,17 @@
 </script>
 
 {#each _items as item, index}
+  {@const selected = canSelect && pathsAreEqual(activePath, [
+    ...path,
+    item[key],
+  ])}
+
   <tr
     on:click={() => select(item[key], index)}
     on:dblclick={() => doubleClick(item[key], index)}
     on:contextmenu|preventDefault={evt => showContextMenu(evt, item)}
     class:selectable={canSelect}
-    class:selected={canSelect && pathsAreEqual(activePath, ...path, item[key])}
+    class:selected
     class:striped
   >
     {#if !hideChildrenToggles}
@@ -193,7 +204,10 @@
       {hideChildrenToggles}
       {canSelect}
       {canRemoveItems}
-      path={[ ...path, item[key] ]}
+      path={[
+        ...path,
+        item[key],
+      ]}
       items={item.children}
       level={level + 1}
       bind:activePath

@@ -3,7 +3,6 @@
   import ContextMenu from '$components/contextmenu.svelte';
   import dialogs from '$lib/dialogs.js';
   import contextMenu from '$lib/stores/contextmenu.js';
-  import environment from '$lib/stores/environment.js';
   import hostTree from '$lib/stores/hosttree.js';
   import applicationInited from '$lib/stores/inited.js';
   import windowTitle from '$lib/stores/windowtitle.js';
@@ -43,7 +42,7 @@
 
 <svelte:window on:contextmenu|preventDefault />
 
-<div id="root" class="platform-{$environment?.platform}">
+<div id="root">
   <div class="titlebar">{$windowTitle}</div>
 
   {#if $applicationInited && (showWelcomeScreen !== undefined)}
@@ -74,7 +73,7 @@
     align-items: center;
     overflow: hidden;
   }
-  #root.platform-darwin .titlebar {
+  :global([data-platform="darwin"]) .titlebar {
     height: var(--darwin-titlebar-height);
   }
 
@@ -86,7 +85,7 @@
   main.empty {
     grid-template: 1fr / 1fr;
   }
-  #root.platform-darwin main {
+  :global([data-platform="darwin"]) main {
     height: calc(100vh - var(--darwin-titlebar-height));
   }
 
@@ -97,13 +96,5 @@
   }
   main > :global(.addressbar) {
     grid-column: 1 / 3;
-  }
-
-  .databaselist {
-    overflow: scroll;
-  }
-
-  .button.create {
-    margin-top: 0.5rem;
   }
 </style>

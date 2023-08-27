@@ -73,19 +73,14 @@
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
     margin: 0;
-    padding-top: 50px;
+    padding: 2rem;
     --wails-draggable: drag;
-  }
-  :global(#root.platform-darwin) .outer {
-    margin-top: var(--darwin-titlebar-height);
   }
 
   .inner {
     max-height: 80vh;
     background-color: #fff;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: auto;
+    margin: auto;
     width: 100%;
     border-radius: var(--radius);
     display: flex;

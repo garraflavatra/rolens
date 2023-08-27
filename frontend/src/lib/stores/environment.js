@@ -11,5 +11,10 @@ async function reload() {
 
 reload();
 
+subscribe(env => {
+  // @ts-ignore
+  document.body.dataset.platform = env?.platform;
+});
+
 const environment = { reload, subscribe };
 export default environment;

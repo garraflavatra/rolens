@@ -16,7 +16,7 @@ require (
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/josephspurrier/goversioninfo v1.4.0 // indirect
 	github.com/randall77/makefat v0.0.0-20210315173500-7ddd0e42c844 // indirect
-	golang.org/x/image v0.7.0 // indirect
+	golang.org/x/image v0.10.0 // indirect
 )
 
 require (
@@ -55,7 +55,7 @@ require (
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sync v0.3.0
 	golang.org/x/sys v0.8.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/text v0.11.0 // indirect
 )
 
 // replace github.com/wailsapp/wails/v2 v2.3.1 => /Users/romeinvanburen/go/pkg/mod

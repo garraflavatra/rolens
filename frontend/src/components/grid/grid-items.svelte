@@ -234,15 +234,15 @@
     text-overflow: ellipsis;
   }
   td.has-toggle {
-    width: 20px;
+    width: 1.5em;
   }
   td.has-icon {
     padding: 0;
-    width: 17px;
+    width: 1px;
   }
   td.has-icon :global(svg) {
-    width: 13px;
-    height: 13px;
+    width: 1em;
+    height: 1em;
   }
 
   td .value {
@@ -254,14 +254,13 @@
   }
 
   button.toggle {
-    color: inherit;
+    margin: 2px 0 0 3px;
     padding: 0;
-    margin: 0;
-    vertical-align: top;
+    color: inherit;
   }
   button.toggle :global(svg) {
-    width: 13px;
-    height: 13px;
+    width: 0.9em;
+    height: 0.9em;
     vertical-align: top;
   }
 

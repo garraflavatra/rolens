@@ -8,7 +8,7 @@ If you just want to install Rolens, please refer to the [installation document](
 
 ## Prerequisites
 
-Rolens is written in Go, so you should download the Go compiler from [the download page](https://go.dev/dl/). The minimum version required is 1.18. You can confirm whether it's installed correctly by running `go version` and checking that it outputs something similar to `go1.18.2`.
+Rolens is written in Go, so you should download the Go compiler from [the download page](https://go.dev/dl/). The minimum version required is 1.20. You can confirm whether it's installed correctly by running `go version` and checking that it outputs something similar to `go1.20.4` or higher.
 
 Furthermore, you need to have [Wails ^3.1](https://wails.io/docs/gettingstarted/installation) installed: `go install github.com/wailsapp/wails/v2/cmd/wails@latest`. Wails may have platform-specific dependencies; you can consult [`wails doctor`](https://wails.io/docs/reference/cli#doctor) to find out what dependencies Wails needs and how to install them.
 

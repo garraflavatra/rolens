@@ -21,8 +21,8 @@ jobs:
           - macos-13
           - ubuntu-20.04
           - ubuntu-22.04
-        go-version: [1.18]
-        node-version: [16]
+        go-version: [ 1.21 ]
+        node-version: [ 16 ]
 
     runs-on: ${{ matrix.platform }}
 

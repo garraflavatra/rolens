@@ -14,26 +14,18 @@
   const activeIndicatorRight = tweened(0, { easing: cubicInOut, duration: 400 });
   const liElements = {};
   let navEl;
-  let activeLiEl;
 
-  function select(tabKey, activeLi) {
+  function select(tabKey) {
     selectedKey = tabKey;
-    activeLiEl = activeLi;
     dispatch('select', tabKey);
   }
 
-  function moveActiveIndicator(target) {
+  function moveActiveIndicator(target = liElements[selectedKey]) {
     if (!compact) {
       return;
     }
 
     const navRect = navEl.getBoundingClientRect();
-    if (!target) {
-      const activeLiRect = activeLiEl?.getBoundingClientRect() || navRect;
-      $activeIndicatorLeft = activeLiRect.x - navRect.x;
-      $activeIndicatorRight = navRect.right - activeLiRect.right;
-    }
-
     const itemRect = target.getBoundingClientRect();
     $activeIndicatorLeft = itemRect.x - navRect.x;
     $activeIndicatorRight = navRect.right - itemRect.right;
@@ -57,7 +49,7 @@
         on:mouseenter={event => moveActiveIndicator(event.target)}
         on:mouseleave={() => moveActiveIndicator()}
       >
-        <button class="tab" on:click={event => select(tab.key, event.target.parentElement)}>
+        <button class="tab" on:click={() => select(tab.key)}>
           {#if tab.icon} <Icon name={tab.icon} /> {/if}
           <span class="label">{tab.title}</span>
         </button>

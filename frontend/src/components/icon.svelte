@@ -19,23 +19,25 @@
   svg {
     transition: transform 0.25s;
     will-change: transform;
+    width: 1.2em;
+    height: 1.2em;
   }
   svg.spinning {
     animation: spinning 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   }
 
   :global(.field) svg {
-    width: 13px;
-    height: 13px;
+    width: 1em;
+    height: 1em;
     margin-right: 2px;
   }
   :global(.button) svg {
-    height: 13px;
+    height: 1em;
     width: auto;
     vertical-align: bottom;
   }
   :global(.blankstate .button) svg {
-    height: 17px;
+    height: 1.25em;
     vertical-align: -3px;
     margin-right: 4px;
   }

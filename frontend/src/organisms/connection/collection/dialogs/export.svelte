@@ -16,7 +16,7 @@
   }
 </script>
 
-<Modal title="Export results" width="450px" on:close>
+<Modal title="Export results" width="500px" on:close>
   <form on:submit|preventDefault={submit}>
     <label class="field">
       <span class="label">Export</span>
@@ -40,7 +40,10 @@
     <label class="field">
       <span class="label">View to use</span>
       <select bind:value={exportInfo.viewKey}>
-        {#each Object.entries(views.forCollection(collection.hostKey, collection.dbKey, collection.key)) as [ key, { name } ]}
+        {#each Object.entries(views.forCollection(collection.hostKey, collection.dbKey, collection.key)) as [
+          key,
+          { name },
+        ]}
           <option value={key}>{name}</option>
         {/each}
       </select>

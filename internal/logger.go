@@ -21,7 +21,7 @@ func NewAppLogger(directory, filename string) *AppLogger {
 }
 
 func (l *AppLogger) Print(message string) {
-	os.MkdirAll(l.directory, os.ModePerm)
+	os.MkdirAll(l.directory, 0755)
 	f, _ := os.OpenFile(l.filepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	f.WriteString(message)
 	f.Close()

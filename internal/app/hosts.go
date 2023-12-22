@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"os"
 	"path"
 
 	"github.com/google/uuid"
@@ -23,7 +22,7 @@ func updateHostsFile(a *App, newData map[string]Host) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(filePath, jsonData, os.ModePerm)
+	err = ioutil.WriteFile(filePath, jsonData, 0644)
 	return err
 }
 

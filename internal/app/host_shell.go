@@ -142,7 +142,7 @@ func (a *App) SaveShellScript(hostKey, dbKey, collKey, script string, temp bool)
 	scriptHeader = scriptHeader + "\n"
 	script = scriptHeader + strings.TrimLeft(strings.TrimRight(script, " \t\n"), "\n")
 
-	if err := os.WriteFile(result.Fname, []byte(script), os.ModePerm); err != nil {
+	if err := os.WriteFile(result.Fname, []byte(script), 0755); err != nil {
 		runtime.LogWarningf(a.ctx, "Shell: failed to write script to %s: %s", result.Fname, err.Error())
 		result.ErrorTitle = "Could not create temporary script file"
 		result.ErrorDescription = err.Error()
@@ -154,7 +154,7 @@ func (a *App) SaveShellScript(hostKey, dbKey, collKey, script string, temp bool)
 
 func (a *App) OpenShellScript() string {
 	dir := path.Join(a.Env.DataDirectory, "Shell Scripts")
-	os.MkdirAll(dir, os.ModePerm)
+	os.MkdirAll(dir, 0755)
 
 	fname, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
 		DefaultDirectory:     path.Join(a.Env.DataDirectory, "Shell Scripts"),
@@ -200,7 +200,7 @@ func (a *App) SaveShellOuput(output string) {
 		})
 	}
 
-	if err := os.WriteFile(fname, []byte(output), os.ModePerm); err != nil {
+	if err := os.WriteFile(fname, []byte(output), 0755); err != nil {
 		runtime.LogWarningf(a.ctx, "Shell: error writing shell output to %s: %s", fname, err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
 			Title: "Error writing shell output",

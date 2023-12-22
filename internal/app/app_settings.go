@@ -3,7 +3,6 @@ package app
 import (
 	"encoding/json"
 	"io/ioutil"
-	"os"
 	"path"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -77,7 +76,7 @@ func (a *App) UpdateSettings(jsonData string) Settings {
 	}
 
 	filePath := path.Join(a.Env.DataDirectory, "settings.json")
-	err = ioutil.WriteFile(filePath, newJson, os.ModePerm)
+	err = ioutil.WriteFile(filePath, newJson, 0644)
 	if err != nil {
 		runtime.LogErrorf(a.ctx, "Could not update host list: %s", err.Error())
 		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{

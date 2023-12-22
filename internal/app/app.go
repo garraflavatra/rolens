@@ -75,8 +75,8 @@ func NewApp(version string) *App {
 		panic(errors.New("unsupported platform"))
 	}
 
-	os.MkdirAll(a.Env.DataDirectory, os.ModePerm)
-	os.MkdirAll(a.Env.LogDirectory, os.ModePerm)
+	os.MkdirAll(a.Env.DataDirectory, 0755)
+	os.MkdirAll(a.Env.LogDirectory, 0755)
 
 	return a
 }

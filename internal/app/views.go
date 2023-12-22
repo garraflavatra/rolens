@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"os"
 	"path"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -63,7 +62,7 @@ func updateViewStore(a *App, newData ViewStore) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(filePath, jsonData, os.ModePerm)
+	err = ioutil.WriteFile(filePath, jsonData, 0644)
 	return err
 }
 

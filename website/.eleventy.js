@@ -119,6 +119,5 @@ module.exports = function (eleventyConfig) {
     templateFormats: ['html', 'liquid', 'md', '11ty.js'],
     markdownTemplateEngine: 'liquid',
     htmlTemplateEngine: 'liquid',
-    pathPrefix: '/rolens/',
   };
 };

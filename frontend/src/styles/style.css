@@ -218,3 +218,8 @@ code,
 .flash-green {
   animation: 1s ease-out 0s 1 flashGreen;
 }
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

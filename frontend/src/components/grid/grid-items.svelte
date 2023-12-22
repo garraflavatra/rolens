@@ -156,6 +156,10 @@
             <Icon name={childrenOpen[item[key]] ? 'chev-d' : 'chev-r'} />
           </button>
         {/if}
+
+        {#if item.loading}
+          <span class="spinner" style:margin-left="{level * 10}px" />
+        {/if}
       </td>
     {/if}
 
@@ -234,11 +238,25 @@
     text-overflow: ellipsis;
   }
   td.has-toggle {
+    position: relative;
     width: 1.5em;
+  }
+  td.has-toggle .spinner {
+    position: absolute;
+    top: 0.3em;
+    left: 0.22em;
+    width: 1em;
+    height: 1em;
+    border: 1px solid var(--primary);
+    border-radius: 50px;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    animation: .6s linear 0 spin;
+    animation-iteration-count: infinite;
   }
   td.has-icon {
     padding: 0;
-    width: 1px;
+    width: 1.5em;
   }
   td.has-icon :global(svg) {
     width: 1em;

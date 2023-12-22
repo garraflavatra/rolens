@@ -43,6 +43,7 @@ async function refresh() {
     hostKey,
     hostDetails,
   ] of Object.entries(hosts)) {
+
     hostTree[hostKey] = hostTree[hostKey] || {};
     const host = hostTree[hostKey];
     host.key = hostKey;
@@ -50,6 +51,9 @@ async function refresh() {
     host.uri = hostDetails.uri;
 
     host.open = async function() {
+      host.loading = true;
+      set(hostTree);
+
       const {
         databases: dbNames,
         status,
@@ -88,6 +92,9 @@ async function refresh() {
         delete database.new;
 
         database.open = async function() {
+          database.loading = true;
+          set(hostTree);
+
           const { collections: collNames, stats, statsError } = await OpenDatabase(hostKey, dbKey);
           database.stats = stats;
           database.statsError = statsError;
@@ -285,6 +292,8 @@ async function refresh() {
 
           await refresh();
           windowTitle.setSegments(dbKey, host.name, 'Rolens');
+          database.loading = false;
+          set(hostTree);
         };
 
         database.dump = function() {
@@ -324,6 +333,8 @@ async function refresh() {
       }
 
       await refresh();
+      host.loading = false;
+      set(hostTree);
     };
 
     host.executeShellScript = async function(script) {

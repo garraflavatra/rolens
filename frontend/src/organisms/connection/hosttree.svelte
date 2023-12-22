@@ -7,20 +7,27 @@
 
 <Grid
   striped={false}
-  columns={[ { key: 'name' }, { key: 'count', right: true } ]}
+  columns={[
+    { key: 'name' },
+    { key: 'count', right: true },
+  ]}
   items={Object.values($hostTree || {}).map(host => {
     return {
       id: host.key,
       name: host.name,
+      loading: host.loading,
       icon: 'server',
+
       children: Object.values(host.databases || {})
         .sort((a, b) => a.key.localeCompare(b))
         .map(database => {
           return {
             id: database.key,
             name: database.key,
-            icon: 'db',
+            loading: database.loading,
             count: Object.keys(database.collections || {}).length || '',
+            icon: 'db',
+
             children: Object.values(database.collections)
               .sort((a, b) => a.key.localeCompare(b))
               .map(collection => {
@@ -42,6 +49,7 @@
                   ],
                 };
               }) || [],
+
             menu: [
               { label: 'Dump database (BSON via mongodump)…', fn: database.dump },
               { label: 'Drop database…', fn: database.drop },
@@ -51,6 +59,7 @@
             ],
           };
         }),
+
       menu: [
         { label: 'New database…', fn: host.newDatabase },
         { separator: true },

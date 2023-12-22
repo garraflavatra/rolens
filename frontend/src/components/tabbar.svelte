@@ -1,5 +1,7 @@
 <script>
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
+  import { tweened } from 'svelte/motion';
+  import { cubicInOut } from 'svelte/easing';
   import Icon from './icon.svelte';
 
   export let tabs = [];
@@ -8,19 +10,54 @@
   export let compact = true;
 
   const dispatch = createEventDispatcher();
+  const activeIndicatorLeft = tweened(0, { easing: cubicInOut, duration: 400 });
+  const activeIndicatorRight = tweened(0, { easing: cubicInOut, duration: 400 });
+  const liElements = {};
   let navEl;
+  let activeLiEl;
 
-  function select(tabKey) {
+  function select(tabKey, activeLi) {
     selectedKey = tabKey;
+    activeLiEl = activeLi;
     dispatch('select', tabKey);
   }
+
+  function moveActiveIndicator(target) {
+    if (!compact) {
+      return;
+    }
+
+    const navRect = navEl.getBoundingClientRect();
+    if (!target) {
+      const activeLiRect = activeLiEl?.getBoundingClientRect() || navRect;
+      $activeIndicatorLeft = activeLiRect.x - navRect.x;
+      $activeIndicatorRight = navRect.right - activeLiRect.right;
+    }
+
+    const itemRect = target.getBoundingClientRect();
+    $activeIndicatorLeft = itemRect.x - navRect.x;
+    $activeIndicatorRight = navRect.right - itemRect.right;
+  }
+
+  onMount(() => {
+    if (selectedKey) {
+      moveActiveIndicator(liElements[selectedKey]);
+    }
+  });
 </script>
 
 <nav class="tabs" class:compact bind:this={navEl}>
   <ul>
     {#each tabs as tab (tab.key)}
-      <li class="tab" class:active={tab.key === selectedKey} class:closable={tab.closable}>
-        <button class="tab" on:click={() => select(tab.key)}>
+      <li
+        class="tab"
+        class:active={tab.key === selectedKey}
+        class:closable={tab.closable}
+        bind:this={liElements[tab.key]}
+        on:mouseenter={event => moveActiveIndicator(event.target)}
+        on:mouseleave={() => moveActiveIndicator()}
+      >
+        <button class="tab" on:click={event => select(tab.key, event.target.parentElement)}>
           {#if tab.icon} <Icon name={tab.icon} /> {/if}
           <span class="label">{tab.title}</span>
         </button>
@@ -41,9 +78,21 @@
       </li>
     {/if}
   </ul>
+
+  {#if compact}
+    <span
+      class="activeindicator"
+      style:left="{$activeIndicatorLeft}px"
+      style:right="{$activeIndicatorRight}px"
+    />
+  {/if}
 </nav>
 
 <style>
+  nav {
+    position: relative;
+  }
+
   ul {
     overflow-x: auto;
     display: flex;
@@ -110,18 +159,17 @@
   nav.tabs.compact li {
     border-bottom: 2px solid transparent;
   }
-  nav.tabs.compact li.tab:hover,
-  nav.tabs.compact li.tab.active {
-    color: var(--primary);
-    border-color: var(--primary);
-  }
   nav.tabs.compact button.tab {
     border: none;
     color: inherit;
     background-color: transparent;
-    border-width: 0;
   }
-  nav.tabs.compact li.active button.tab {
-    border-bottom-width: 2px;
+
+  .activeindicator {
+    display: block;
+    position: absolute;
+    bottom: -1px;
+    height: 2px;
+    background-color: var(--primary);
   }
 </style>

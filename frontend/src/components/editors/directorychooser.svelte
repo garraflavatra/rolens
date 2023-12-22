@@ -1,12 +1,12 @@
 <script>
-  import { OpenDirectory } from '$wails/go/ui/UI.js';
+  import { ChooseDirectory } from '$wails/go/app/App.js';
 
   export let value = '';
   export let id = '';
   export let title = 'Choose a directory';
 
   async function selectDir() {
-    value = await OpenDirectory(title) || value;
+    value = await ChooseDirectory(title) || value;
   }
 </script>
 

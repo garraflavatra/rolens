@@ -4,12 +4,6 @@ import {context} from '../models';
 
 export function Beep():Promise<void>;
 
-export function OpenDirectory(arg1:string):Promise<string>;
-
 export function Reveal(arg1:string):Promise<void>;
 
-export function StartProgressBar(arg1:number,arg2:string):Promise<void>;
-
 export function Startup(arg1:context.Context):Promise<void>;
-
-export function StopProgressBar(arg1:number):Promise<void>;

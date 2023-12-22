@@ -2,7 +2,6 @@
   import DirectoryChooser from '$components/editors/directorychooser.svelte';
   import Grid from '$components/grid/grid.svelte';
   import Modal from '$components/modal.svelte';
-  import { startProgress } from '$lib/progress.js';
   import hostTree from '$lib/stores/hosttree.js';
   import applicationSettings from '$lib/stores/settings.js';
   import { OpenConnection, OpenDatabase } from '$wails/go/app/App.js';
@@ -23,7 +22,6 @@
     info.collKeys = [];
 
     if (hostKey) {
-      const progress = startProgress(`Opening connection to host "${hostKey}"`);
       const databases = await OpenConnection(hostKey);
 
       if (databases && !$hostTree[hostKey]) {
@@ -32,8 +30,6 @@
           $hostTree[hostKey].databases[dbKey] = $hostTree[hostKey].databases[dbKey] || { collections: {} };
         });
       }
-
-      progress.end();
     }
   }
 
@@ -42,14 +38,11 @@
     info.dbKey = dbKey;
 
     if (dbKey) {
-      const progress = startProgress(`Opening database "${dbKey}"`);
       const collections = await OpenDatabase(info.hostKey, dbKey);
 
       for (const collKey of collections?.sort() || []) {
         $hostTree[info.hostKey].databases[dbKey].collections[collKey] = {};
       }
-
-      progress.end();
     }
   }
 

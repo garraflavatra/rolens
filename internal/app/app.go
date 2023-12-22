@@ -166,3 +166,25 @@ func (a *App) AskConfirmation(message string) bool {
 		return false
 	}
 }
+
+func (a *App) ChooseDirectory(title string) string {
+	if title == "" {
+		title = "Choose a directory"
+	}
+
+	dir, err := wailsRuntime.OpenDirectoryDialog(a.ctx, wailsRuntime.OpenDialogOptions{
+		Title: title,
+		DefaultDirectory: a.Env.DownloadDirectory,
+		CanCreateDirectories: true,
+	})
+
+	if err != nil {
+		wailsRuntime.MessageDialog(a.ctx, wailsRuntime.MessageDialogOptions{
+			Title:   "Error while opening directory",
+			Message: err.Error(),
+			Type:    wailsRuntime.ErrorDialog,
+		})
+	}
+
+	return dir
+}

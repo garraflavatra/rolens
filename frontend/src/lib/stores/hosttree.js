@@ -1,5 +1,4 @@
 import dialogs from '$lib/dialogs.js';
-import { startProgress } from '$lib/progress.js';
 import { get, writable } from 'svelte/store';
 import applicationInited from './inited.js';
 import queries from './queries.js';
@@ -40,7 +39,10 @@ async function refresh() {
   const hosts = await Hosts();
   const hostTree = getValue();
 
-  for (const [ hostKey, hostDetails ] of Object.entries(hosts)) {
+  for (const [
+    hostKey,
+    hostDetails,
+  ] of Object.entries(hosts)) {
     hostTree[hostKey] = hostTree[hostKey] || {};
     const host = hostTree[hostKey];
     host.key = hostKey;
@@ -70,7 +72,10 @@ async function refresh() {
         host.databases[dbKey] = host.databases[dbKey] || {};
       }
 
-      for (const [ dbKey, database ] of Object.entries(host.databases)) {
+      for (const [
+        dbKey,
+        database,
+      ] of Object.entries(host.databases)) {
         if (!database.new && !dbNames.includes(dbKey)) {
           delete host.databases[dbKey];
           continue;
@@ -95,7 +100,10 @@ async function refresh() {
             database.collections[collKey] = database.collections[collKey] || {};
           }
 
-          for (const [ collKey, collection ] of Object.entries(database.collections)) {
+          for (const [
+            collKey,
+            collection,
+          ] of Object.entries(database.collections)) {
             if (!collection.new && !collNames.includes(collKey)) {
               delete database.collections[collKey];
               continue;
@@ -121,13 +129,8 @@ async function refresh() {
             collection.rename = async function() {
               const newCollKey = await dialogs.enterText('Rename collection', `Enter a new name for collection ${collKey}.`, collKey);
               if (newCollKey && (newCollKey !== collKey)) {
-                const progress = startProgress(
-                  `Renaming collection "${collKey}" to "${newCollKey}"…`
-                );
-
                 const ok = await RenameCollection(hostKey, dbKey, collKey, newCollKey);
                 await database.open();
-                progress.end();
                 return ok;
               }
             };

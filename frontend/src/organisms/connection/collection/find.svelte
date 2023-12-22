@@ -6,7 +6,6 @@
   import input from '$lib/actions/input.js';
   import dialogs from '$lib/dialogs.js';
   import { deepClone } from '$lib/objects.js';
-  import { startProgress } from '$lib/progress.js';
   import applicationSettings from '$lib/stores/settings.js';
   import views from '$lib/stores/views.js';
   import { convertLooseJson, stringCouldBeID } from '$lib/strings.js';
@@ -178,7 +177,6 @@
   }
 
   async function saveDocument(event) {
-    const progress = startProgress('Performing update…');
     const success = await UpdateFoundDocument(
       collection.hostKey,
       collection.dbKey,
@@ -191,8 +189,6 @@
       objectViewerSuccessMessage = 'Document has been saved!';
       submitQuery();
     }
-
-    progress.end();
   }
 
   $: collection && refresh();
@@ -344,7 +340,10 @@
       <div>
         <label class="field inline">
           <select bind:value={collection.viewKey}>
-            {#each Object.entries(viewsForCollection) as [ key, view ]}
+            {#each Object.entries(viewsForCollection) as [
+              key,
+              view,
+            ]}
               <option value={key}>{view.name}</option>
             {/each}
           </select>
@@ -412,7 +411,15 @@
 {/if}
 
 <datalist id="limits">
-  {#each [ 1, 5, 10, 25, 50, 100, 200 ] as value}
+  {#each [
+    1,
+    5,
+    10,
+    25,
+    50,
+    100,
+    200,
+  ] as value}
     <option {value} />
   {/each}
 </datalist>

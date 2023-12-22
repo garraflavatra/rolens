@@ -6,22 +6,10 @@ export function Beep() {
   return window['go']['ui']['UI']['Beep']();
 }
 
-export function OpenDirectory(arg1) {
-  return window['go']['ui']['UI']['OpenDirectory'](arg1);
-}
-
 export function Reveal(arg1) {
   return window['go']['ui']['UI']['Reveal'](arg1);
 }
 
-export function StartProgressBar(arg1, arg2) {
-  return window['go']['ui']['UI']['StartProgressBar'](arg1, arg2);
-}
-
 export function Startup(arg1) {
   return window['go']['ui']['UI']['Startup'](arg1);
-}
-
-export function StopProgressBar(arg1) {
-  return window['go']['ui']['UI']['StopProgressBar'](arg1);
 }

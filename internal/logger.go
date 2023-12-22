@@ -4,11 +4,7 @@ import (
 	"os"
 	"path"
 	"strings"
-
-	"github.com/ncruces/zenity"
 )
-
-var showError = true
 
 type AppLogger struct {
 	directory string
@@ -26,24 +22,8 @@ func NewAppLogger(directory, filename string) *AppLogger {
 
 func (l *AppLogger) Print(message string) {
 	os.MkdirAll(l.directory, os.ModePerm)
-	f, err := os.OpenFile(l.filepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-
-	if err != nil && showError {
-		zenity.Error(err.Error(), zenity.Title("Could not open logfile!"), zenity.ErrorIcon)
-		showError = false
-	}
-
-	if _, err = f.WriteString(message); err != nil {
-		if showError {
-			zenity.Error(err.Error(), zenity.Title("Could not write to logfile!"), zenity.ErrorIcon)
-			showError = false
-		} else {
-			showError = true
-		}
-	} else {
-		showError = true
-	}
-
+	f, _ := os.OpenFile(l.filepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f.WriteString(message)
 	f.Close()
 }
 

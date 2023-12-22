@@ -134,6 +134,10 @@ export function SaveQuery(arg1) {
   return window['go']['app']['App']['SaveQuery'](arg1);
 }
 
+export function SaveShellOuput(arg1) {
+  return window['go']['app']['App']['SaveShellOuput'](arg1);
+}
+
 export function SaveShellScript(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['app']['App']['SaveShellScript'](arg1, arg2, arg3, arg4, arg5);
 }

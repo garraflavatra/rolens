@@ -3,7 +3,7 @@
   import CodeEditor from '$components/editors/codeeditor.svelte';
   import Icon from '$components/icon.svelte';
   import environment from '$lib/stores/environment.js';
-  import { OpenShellScript, SaveShellScript } from '$wails/go/app/App.js';
+  import { OpenShellScript, SaveShellScript, SaveShellOuput } from '$wails/go/app/App.js';
   import { BrowserOpenURL } from '$wails/runtime/runtime.js';
   import { javascript } from '@codemirror/lang-javascript';
   import { onDestroy, onMount } from 'svelte';
@@ -71,6 +71,10 @@
       script,
       false // not temporary
     );
+  }
+
+  async function saveOutput() {
+    await SaveShellOuput(result.output + '\n' + result.stderr);
   }
 
   async function copyErrorDescription() {
@@ -154,6 +158,10 @@
         <Icon name="save" /> Save as…
       </button>
     </div>
+
+    <button class="button secondary" disabled={!result.output} on:click={saveOutput}>
+      <Icon name="upload" /> Save output as…
+    </button>
 
     <button class="button viewtoggle" title="Toggle horizontal/vertical view" on:click={toggleView}>
       <Icon name="columns" rotation={horizontal ? 90 : 0} />

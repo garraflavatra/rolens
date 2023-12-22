@@ -182,3 +182,30 @@ func (a *App) OpenShellScript() string {
 
 	return string(script)
 }
+
+func (a *App) SaveShellOuput(output string) {
+	fname, err := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
+		DefaultFilename:      "mongosh-output.txt",
+		DefaultDirectory:     a.Env.DownloadDirectory,
+		Title:                "Save mongosh output",
+		CanCreateDirectories: true,
+	})
+
+	if err != nil {
+		runtime.LogWarningf(a.ctx, "Shell: error exporting output to %s: %s", fname, err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title: "Error exporting output",
+			Message: err.Error(),
+			Type: runtime.ErrorDialog,
+		})
+	}
+
+	if err := os.WriteFile(fname, []byte(output), os.ModePerm); err != nil {
+		runtime.LogWarningf(a.ctx, "Shell: error writing shell output to %s: %s", fname, err.Error())
+		runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Title: "Error writing shell output",
+			Message: err.Error(),
+			Type: runtime.ErrorDialog,
+		})
+	}
+}

@@ -72,6 +72,8 @@ export function ReportSharedStateVariable(arg1:string,arg2:string):Promise<void>
 
 export function SaveQuery(arg1:string):Promise<string>;
 
+export function SaveShellOuput(arg1:string):Promise<void>;
+
 export function SaveShellScript(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<app.SaveShellScriptResult>;
 
 export function SavedQueries():Promise<map[string]app.SavedQuery>;

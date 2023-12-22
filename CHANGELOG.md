@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+* Bumped minimum reqiured Go version from 1.18 to 1.20.
+
 New features:
 
 * Added log view (#53, #54).

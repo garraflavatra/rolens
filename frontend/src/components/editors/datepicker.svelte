@@ -173,7 +173,7 @@
     padding-bottom: 8px;
   }
   .calendar .day button.active {
-    background-color: #00008b;
+    background-color: var(--selection);
     color: #fff;
   }
   .calendar .day button.notinmonth {

@@ -1,6 +1,9 @@
 :root {
-  --darwin-titlebar-height: 36px;
   --radius: 4px;
+  --titlebar-height: 36px;
+
+  --primary: #00008b;
+  --selection: rgba(0, 62, 205, 0.3);
 }
 
 html,
@@ -14,8 +17,8 @@ body {
   -webkit-user-select: none;
   user-select: none;
   cursor: default;
-  font-size: 13px;
-  line-height: 13px;
+  font-size: 15px;
+  line-height: 17px;
   background-color: rgba(255, 255, 255, 0.45);
 }
 
@@ -42,7 +45,7 @@ p strong {
 }
 
 a {
-  color: rgb(0, 0, 204);
+  color: #0000cc;
   text-decoration: underline;
   text-underline-offset: 2px;
   text-decoration-thickness: 1px;
@@ -66,8 +69,8 @@ select:disabled {
 }
 
 .button {
-  background-color: #00008b;
-  border: 1px solid #00008b;
+  background-color: var(--primary);
+  border: 1px solid var(--primary);
   padding: 0.5rem;
   border-radius: var(--radius);
   color: #fff;
@@ -151,8 +154,8 @@ select:disabled {
 .field > textarea:focus,
 .field > select:focus {
   outline: none;
-  border-color: #00008b;
-  box-shadow: 0 0 0 3px rgba(0, 0, 139, 0.2);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
 }
 .field > input.invalid,
 .field > textarea.invalid,

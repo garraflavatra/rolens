@@ -1,40 +1,30 @@
 <script>
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
   import Icon from './icon.svelte';
 
   export let tabs = [];
   export let selectedKey = '';
   export let canAddTab = false;
-  export let multiline = false;
+  export let compact = true;
 
   const dispatch = createEventDispatcher();
-  const maxPixelsPerMultilineTab = 120;
   let navEl;
-  let pixelsPerTab = 0;
-  $: tabs && navEl && updateMeasurements();
-
-  function updateMeasurements() {
-    pixelsPerTab = (navEl.offsetWidth ?? 0) / tabs.length;
-  }
 
   function select(tabKey) {
     selectedKey = tabKey;
     dispatch('select', tabKey);
   }
-
-  onMount(() => {
-    window.addEventListener('resize', updateMeasurements);
-  });
 </script>
 
-<nav class="tabs" class:multiline={multiline || (pixelsPerTab < maxPixelsPerMultilineTab)} bind:this={navEl}>
+<nav class="tabs" class:compact bind:this={navEl}>
   <ul>
     {#each tabs as tab (tab.key)}
-      <li class:active={tab.key === selectedKey}>
+      <li class="tab" class:active={tab.key === selectedKey} class:closable={tab.closable}>
         <button class="tab" on:click={() => select(tab.key)}>
           {#if tab.icon} <Icon name={tab.icon} /> {/if}
           <span class="label">{tab.title}</span>
         </button>
+
         {#if tab.closable}
           <button class="button-small" on:click={() => dispatch('closeTab', tab.key)}>
             <Icon name="x" />
@@ -44,8 +34,8 @@
     {/each}
 
     {#if canAddTab}
-      <li class="tab add">
-        <button class="tab" on:click={() => dispatch('addTab')}>
+      <li>
+        <button class="button-small" on:click={() => dispatch('addTab')}>
           <Icon name="+" />
         </button>
       </li>
@@ -59,23 +49,14 @@
     display: flex;
     list-style: none;
   }
+
   li {
     display: inline-block;
-    flex: 1;
     position: relative;
   }
 
-  li.add {
-    flex: 0 1;
-  }
-
-  .tabs :global(svg) {
-    width: 13px;
-    height: 13px;
+  nav.tabs :global(svg) {
     vertical-align: bottom;
-  }
-  li.active :global(svg) {
-    color: #fff;
   }
 
   button.tab {
@@ -96,20 +77,51 @@
     border-right: 1px solid #ccc;
   }
   li.active button.tab {
-    color: #fff;
-    background-color: #00008b;
-    border-color: #00008b;
+    background-color: var(--selection);
+    border-color: var(--primary);
     cursor: not-allowed;
   }
 
-  nav.tabs.multiline button.tab .label {
-    display: block;
-    margin-top: 4px;
+  button.tab .label {
+    margin-top: 5px;
+    display: inline-block;
   }
 
-  .button-small {
+  nav.tabs .button-small {
+    margin: 12px 0 0 4px;
+  }
+
+  li.closable .button-small {
+    display: none;
     position: absolute;
+    top: 0;
     right: 7px;
-    top: 7px;
+  }
+  li.closable.active {
+    padding-right: 20px;
+  }
+  li.closable.active .button-small {
+    display: block;
+  }
+
+  nav.tabs.compact {
+    border-bottom: 1px solid #aaa;
+  }
+  nav.tabs.compact li {
+    border-bottom: 2px solid transparent;
+  }
+  nav.tabs.compact li.tab:hover,
+  nav.tabs.compact li.tab.active {
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+  nav.tabs.compact button.tab {
+    border: none;
+    color: inherit;
+    background-color: transparent;
+    border-width: 0;
+  }
+  nav.tabs.compact li.active button.tab {
+    border-bottom-width: 2px;
   }
 </style>

@@ -226,12 +226,11 @@
     cursor: pointer;
   }
   tr.selectable.selected td {
-    background-color: #00008b !important;
-    color: #fff;
+    background-color: var(--selection) !important;
   }
 
   td {
-    padding: 2px;
+    padding: 4px 2px;
     text-overflow: ellipsis;
   }
   td.has-toggle {
@@ -247,7 +246,7 @@
   }
 
   td .value {
-    height: 15px;
+    height: 1.2em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

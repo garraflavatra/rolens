@@ -1,16 +1,12 @@
 <script>
   import BlankState from '$components/blankstate.svelte';
   import ContextMenu from '$components/contextmenu.svelte';
-  import dialogs from '$lib/dialogs.js';
   import contextMenu from '$lib/stores/contextmenu.js';
   import hostTree from '$lib/stores/hosttree.js';
   import applicationInited from '$lib/stores/inited.js';
   import windowTitle from '$lib/stores/windowtitle.js';
   import Connection from '$organisms/connection/index.svelte';
-  import { EventsOn } from '$wails/runtime/runtime.js';
   import { tick } from 'svelte';
-  import AboutDialog from './dialogs/about.svelte';
-  import SettingsDialog from './dialogs/settings/index.svelte';
 
   let showWelcomeScreen = undefined;
 
@@ -27,17 +23,6 @@
     await tick();
     hostTree.newHost();
   }
-
-  function showAboutDialog() {
-    dialogs.new(AboutDialog);
-  }
-
-  function showSettings() {
-    dialogs.new(SettingsDialog);
-  }
-
-  EventsOn('OpenPreferences', showSettings);
-  EventsOn('OpenAboutModal', showAboutDialog);
 </script>
 
 <svelte:window on:contextmenu|preventDefault />
@@ -64,29 +49,22 @@
 
 <style>
   .titlebar {
-    height: 0;
-    background-color: #00002a;
+    height: var(--titlebar-height);
     --wails-draggable: drag;
-    color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-  }
-  :global([data-platform="darwin"]) .titlebar {
-    height: var(--darwin-titlebar-height);
+    background-color: #ddd;
   }
 
   main {
-    height: 100vh;
+    height: calc(100vh - var(--titlebar-height));
     display: grid;
     grid-template: 1fr / minmax(300px, 0.3fr) 1fr;
   }
   main.empty {
     grid-template: 1fr / 1fr;
-  }
-  :global([data-platform="darwin"]) main {
-    height: calc(100vh - var(--darwin-titlebar-height));
   }
 
   main > :global(*) {

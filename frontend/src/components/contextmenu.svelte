@@ -101,7 +101,7 @@
     text-align: left;
   }
   button.selected {
-    background-color: #00008b;
+    background-color: var(--selection);
     color: #fff;
   }
 

@@ -8,7 +8,7 @@ Robust, blazing-fast, comprehensive, yet simple [MongoDB](https://www.mongodb.co
 
 ## Why another MongoDB client?
 
-This project arose from all flaws of similar tools many of which are slow, complicated, heavy, and fairly unwieldy. They mostly require a reasonably high level of knowledge on how to operate the program.
+This project arose from all flaws of similar tools many of which are slow, complicated, heavy, and fairly unwieldy. They mostly require quite a high level of knowledge on how to operate the program.
 
 **Rolens aims to be the intuitive, lightweight counterpart of these overengineered tools.**
 

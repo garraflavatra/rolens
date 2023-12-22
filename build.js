@@ -50,18 +50,18 @@ function isNullish(val) {
   return val === undefined || val === null;
 }
 
-// Check that Go ^1.18 is installed.
+// Check that Go ^1.20 is installed.
 
 try {
   const goMinorVersion = /go1\.([0-9][0-9])/.exec(
     execSync('go version').toString()
   )?.pop();
 
-  if (isNullish(goMinorVersion) || (parseInt(goMinorVersion) < 18)) {
+  if (isNullish(goMinorVersion) || (parseInt(goMinorVersion) < 20)) {
     throw new Error();
   }
 } catch {
-  missingDependencies.push({ name: 'Go ^1.18 ^16', url: 'https://go.dev/doc/install' });
+  missingDependencies.push({ name: 'Go ^1.20', url: 'https://go.dev/doc/install' });
 }
 
 // Check that Node.js ^16 is installed.

@@ -12,12 +12,12 @@
 # - ubuntu-22.04
 #
 # Bundles to choose from:
-# - rolens-macos-11-amd64.tar.gz
-# - rolens-macos-11-arm64.tar.gz
-# - rolens-macos-12-amd64.tar.gz
-# - rolens-macos-12-arm64.tar.gz
-# - rolens-macos-13-amd64.tar.gz
-# - rolens-macos-13-arm64.tar.gz
+# - rolens-macos-11-amd64.zip
+# - rolens-macos-11-arm64.zip
+# - rolens-macos-12-amd64.zip
+# - rolens-macos-12-arm64.zip
+# - rolens-macos-13-amd64.zip
+# - rolens-macos-13-arm64.zip
 # - rolens-ubuntu-20.04-amd64.tar.gz
 # - rolens-ubuntu-22.04-amd64.tar.gz
 # - rolens-windows-2019-amd64.zip
@@ -32,8 +32,8 @@ version=$(<./build/version.txt)
 mkdir bundle
 
 # macOS apps
-mv artifacts/*/rolens-macos-11-amd64.tar.gz "bundle/rolens-$version-macos-11+-amd64.tar.gz"
-mv artifacts/*/rolens-macos-11-arm64.tar.gz "bundle/rolens-$version-macos-11+-arm64.tar.gz"
+mv artifacts/*/rolens-macos-11-amd64.zip "bundle/rolens-$version-macos-11+-amd64.zip"
+mv artifacts/*/rolens-macos-11-arm64.zip "bundle/rolens-$version-macos-11+-arm64.zip"
 
 # Windows installers
 mv artifacts/*/rolens-windows-2019-amd64-installer.zip "bundle/rolens-$version-windows-10+-amd64-installer.zip"

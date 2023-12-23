@@ -24,12 +24,12 @@ func (a *App) Menu() *menu.Menu {
 	appMenu := menu.NewMenu()
 
 	aboutMenu := appMenu.AddSubmenu("Rolens")
-	aboutMenu.AddText("About Rolens", nil, menuCallbackEmit(a, "OpenAboutModal"))
+	aboutMenu.AddText("About Rolens", nil, menuCallbackEmit(a, "global.about"))
 	aboutMenu.AddSeparator()
-	aboutMenu.AddText("Preferences…", keys.CmdOrCtrl(","), menuCallbackEmit(a, "OpenPreferences"))
+	aboutMenu.AddText("Preferences…", keys.CmdOrCtrl(","), menuCallbackEmit(a, "global.settings"))
 	aboutMenu.AddSeparator()
-	aboutMenu.AddText("Open data directory…", nil, func(cd *menu.CallbackData) { a.ui.Reveal(a.Env.DataDirectory) })
-	aboutMenu.AddText("Open log directory…", nil, func(cd *menu.CallbackData) { a.ui.Reveal(a.Env.LogDirectory) })
+	aboutMenu.AddText("Open data directory", nil, func(cd *menu.CallbackData) { a.ui.Reveal(a.Env.DataDirectory) })
+	aboutMenu.AddText("Open log directory", nil, func(cd *menu.CallbackData) { a.ui.Reveal(a.Env.LogDirectory) })
 	aboutMenu.AddText("Purge logs…", nil, func(cd *menu.CallbackData) { a.PurgeLogDirectory() })
 	aboutMenu.AddSeparator()
 

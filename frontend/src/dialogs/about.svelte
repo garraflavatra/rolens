@@ -30,6 +30,10 @@
 </Modal>
 
 <style>
+  .brand, .info {
+    line-height: 1.2;
+  }
+
   .brand {
     display: flex;
     align-items: center;
@@ -40,9 +44,9 @@
     flex: 0 1 125px;
   }
   .brand .title {
-    font-size: 2.25rem;
+    font-size: 2.25em;
     font-weight: 600;
-    line-height: 2.5rem;
+    margin-bottom: .25em;
   }
   .brand .title .version {
     font-size: 80%;
@@ -51,7 +55,6 @@
   }
   .brand .description {
     font-size: 1.5rem;
-    line-height: 1.6rem;
   }
 
   hr {
@@ -60,7 +63,6 @@
 
   .info {
     font-size: 1.25rem;
-    line-height: 1.25rem;
     margin: 0 1rem 1rem;
     text-align: center;
   }

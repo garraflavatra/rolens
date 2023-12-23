@@ -62,6 +62,7 @@ At this point, Rolens is comparable to MongoHub regarding features. It cannot ha
 * Database management
   - See stats
   - Create dumps with `mongodump`
+  - Write and execute shell scripts
 * Collections
   - See stats
   - Find, insert, update, & remove
@@ -75,7 +76,6 @@ At this point, Rolens is comparable to MongoHub regarding features. It cannot ha
 ## Wishlist
 
 * User management
-* Shell _([under development](https://github.com/garraflavatra/rolens/pull/44))_
 
 ## Author and license
 

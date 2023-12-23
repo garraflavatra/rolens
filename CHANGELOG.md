@@ -1,6 +1,4 @@
-## [Unreleased]
-
-* Bumped minimum reqiured Go version from 1.18 to 1.20.
+## [v0.3.0]
 
 New features:
 
@@ -16,6 +14,7 @@ Patches:
 * Set a deadline for counting documents, and added a button to count documents if the deadline has been exceeded.
 * Changed os.ModePerm (777) file permissions to 644 and 755.
 * UI improvements.
+* Bumped minimum reqiured Go version from 1.18 to 1.20.
 
 Bugfixes:
 
@@ -56,3 +55,4 @@ Initial release.
 [v0.2.0]: https://github.com/garraflavatra/rolens/releases/tag/v0.2.0
 [v0.2.1]: https://github.com/garraflavatra/rolens/releases/tag/v0.2.1
 [v0.2.2]: https://github.com/garraflavatra/rolens/releases/tag/v0.2.2
+[v0.3.0]: https://github.com/garraflavatra/rolens/releases/tag/v0.3.0

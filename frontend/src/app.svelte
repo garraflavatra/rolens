@@ -1,12 +1,15 @@
 <script>
+  import { tick } from 'svelte';
+  import { fly } from 'svelte/transition';
+
   import BlankState from '$components/blankstate.svelte';
+  import Connection from '$organisms/connection/index.svelte';
   import ContextMenu from '$components/contextmenu.svelte';
+
   import contextMenu from '$lib/stores/contextmenu.js';
   import hostTree from '$lib/stores/hosttree.js';
   import applicationInited from '$lib/stores/inited.js';
   import windowTitle from '$lib/stores/windowtitle.js';
-  import Connection from '$organisms/connection/index.svelte';
-  import { tick } from 'svelte';
 
   let showWelcomeScreen = undefined;
 
@@ -31,7 +34,7 @@
   <div class="titlebar">{$windowTitle}</div>
 
   {#if $applicationInited && (showWelcomeScreen !== undefined)}
-    <main class:empty={showWelcomeScreen}>
+    <main class:empty={showWelcomeScreen} in:fly={{ y: 10 }}>
       {#if showWelcomeScreen}
         <BlankState label="Welcome to Rolens!" image="/logo.png" pale={false} big={true}>
           <button class="button" on:click={createFirstHost}>Add your first host</button>

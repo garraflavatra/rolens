@@ -1,7 +1,7 @@
 <script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { tweened } from 'svelte/motion';
-  import { cubicInOut } from 'svelte/easing';
+  import { cubicOut } from 'svelte/easing';
   import Icon from './icon.svelte';
 
   export let tabs = [];
@@ -10,8 +10,8 @@
   export let compact = true;
 
   const dispatch = createEventDispatcher();
-  const activeIndicatorLeft = tweened(0, { easing: cubicInOut, duration: 400 });
-  const activeIndicatorRight = tweened(0, { easing: cubicInOut, duration: 400 });
+  const activeIndicatorLeft = tweened(0, { easing: cubicOut, duration: 400 });
+  const activeIndicatorRight = tweened(0, { easing: cubicOut, duration: 400 });
   const liElements = {};
   let navEl;
 
@@ -37,6 +37,8 @@
     }
   });
 </script>
+
+<svelte:window on:resize={() => moveActiveIndicator()} />
 
 <nav class="tabs" class:compact bind:this={navEl}>
   <ul>

@@ -3,8 +3,9 @@
 </script>
 
 <script>
-  import { Beep } from '$wails/go/ui/UI.js';
   import { createEventDispatcher } from 'svelte';
+  import { fade, fly } from 'svelte/transition';
+  import { Beep } from '$wails/go/ui/UI.js';
   import Icon from './icon.svelte';
 
   export let show = true;
@@ -35,6 +36,7 @@
   }
 
   function close() {
+    show = false;
     dispatch('close');
   }
 </script>
@@ -42,8 +44,8 @@
 <svelte:window on:keydown={keydown} />
 
 {#if show}
-  <div class="modal outer" on:pointerdown|self={Beep}>
-    <div class="inner" style:max-width={width || '80vw'}>
+  <div class="modal outer" on:pointerdown|self={Beep} transition:fade={{ duration: 200 }}>
+    <div class="inner" style:max-width={width || '80vw'} transition:fly={{ y: 20, duration: 200 }}>
       {#if title}
         <header>
           <div class="title">{title}</div>

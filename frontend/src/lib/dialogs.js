@@ -6,11 +6,17 @@ function newDialog(dialogComponent, data = {}) {
   outlet.className = 'dialogoutlet';
   document.getElementById('dialogoutlets').appendChild(outlet);
 
-  const instance = new dialogComponent({ target: outlet, props: data });
+  const instance = new dialogComponent({
+    target: outlet,
+    intro: true,
+    props: data,
+  });
 
   instance.$close = function() {
-    instance.$destroy();
-    outlet.remove();
+    setTimeout(() => {
+      instance.$destroy();
+      outlet.remove();
+    }, 200);
   };
 
   instance.$on('close', instance.$close);

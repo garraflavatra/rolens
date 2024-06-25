@@ -60,7 +60,7 @@ function copyStatic() {
   fs.readdirSync(__dirname+'/static').forEach(function(fname) {
     fs.copyFileSync(__dirname+'/static/'+fname, outdir+'/'+fname);
   });
-  globSync(indir+'/**/*.{png,jpg,jpeg}').forEach(function(fname) {
+  globSync(indir+'/**/*.{png,jpg,jpeg,webp}').forEach(function(fname) {
     const dest = outdir+'/'+fname.slice(indir.length + 1);
     fs.mkdirSync(path.dirname(dest), { recursive: true });
     fs.copyFileSync(fname, dest);

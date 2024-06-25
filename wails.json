@@ -15,7 +15,7 @@
     "companyName": "Romein van Buren",
     "productVersion": "0.3.0",
     "comments": "The intuitive MongoDB administration tool",
-    "copyright": "© Romein van Buren 2023 (GNU GPL 3.0)."
+    "copyright": "© Romein van Buren 2022-2024 (GNU GPL 3.0)."
   },
   "preBuildHooks": {
     "*/*": "node ../version_to_file.js"

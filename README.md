@@ -79,7 +79,7 @@ At this point, Rolens is comparable to MongoHub regarding features. It cannot ha
 
 ## Author and license
 
-© [Romein van Buren](mailto:romein@vburen.nl) 2023. The source code and compiled binaries are released under the GNU GPLv3 license — see [`LICENSE`](./LICENSE) for the full license text.
+© [Romein van Buren](mailto:romein@vburen.nl) 2022-2024. The source code and compiled binaries are released under the GNU GPLv3 license — see [`LICENSE`](./LICENSE) for the full license text.
 
 ## Credits
 

@@ -15,7 +15,7 @@ This project arose from all flaws of similar tools many of which are slow, compl
 - **Low overhead**: Typical query results against a local database are returned whithin milliseconds.
 - **Intuitive interface**: You know MongoDB? You know Rolens.
 
-![Impression of Rolens's interface](./images/home-impression.png)
+![Impression of Rolens's interface](./images/home-impression.webp)
 
 This project is heavily inspired by the excellent [MongoHub](https://github.com/bububa/MongoHub-Mac) application, which sadly has not been updated since 2011.
 

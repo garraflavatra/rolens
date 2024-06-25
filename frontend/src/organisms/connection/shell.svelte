@@ -24,7 +24,7 @@
   let editor;
 
   async function runScript() {
-    if (!$environment.hasMongoDump) {
+    if (!$environment.hasMongoShell) {
       return;
     }
 

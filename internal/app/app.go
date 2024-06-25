@@ -173,8 +173,8 @@ func (a *App) ChooseDirectory(title string) string {
 	}
 
 	dir, err := wailsRuntime.OpenDirectoryDialog(a.ctx, wailsRuntime.OpenDialogOptions{
-		Title: title,
-		DefaultDirectory: a.Env.DownloadDirectory,
+		Title:                title,
+		DefaultDirectory:     a.Env.DownloadDirectory,
 		CanCreateDirectories: true,
 	})
 

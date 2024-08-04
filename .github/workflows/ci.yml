@@ -68,7 +68,7 @@ jobs:
       run: ./build/linux/ci_generate.sh "${{ matrix.platform }}"
 
     - name: Upload generated binaries
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: rolens-${{ matrix.platform }}
         path: releases/*
@@ -95,7 +95,7 @@ jobs:
       run: build/ci_bundle.sh
 
     - name: Upload the bundle as an artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: rolens-bundle
         path: bundle

@@ -3,7 +3,7 @@ title: Colophon
 order: 900
 ---
 
-Rolens is © [Romein van Buren](mailto:romein@vburen.nl) 2022-2024. The source code and compiled binaries are released under the GNU GPLv3 license — see [`LICENSE`](https://github.com/garraflavatra/rolens/blob/main/LICENSE) for the full license text.
+Rolens is © [Romein van Buren](mailto:romein@vburen.nl) 2022-2025. The source code and compiled binaries are released under the GNU GPLv3 license — see [`LICENSE`](https://github.com/garraflavatra/rolens/blob/main/LICENSE) for the full license text.
 
 ## Credits
 

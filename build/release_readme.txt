@@ -28,5 +28,5 @@ Feel free to contact me if you have questions! Send an e-mail to romein@vburen.n
 Author and license
 ------------------
 
-© Romein van Buren 2022-2024. The source code and compiled binaries are released
+© Romein van Buren 2022-2025. The source code and compiled binaries are released
 under the GNU GPLv3 license — see LICENSE for the full license text.

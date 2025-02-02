@@ -70,7 +70,7 @@ func main() {
 			WindowIsTranslucent:  true,
 			About: &mac.AboutInfo{
 				Title:   "Rolens - Multiplatform MongoDB client",
-				Message: "© 2022-2024 Romein van Buren",
+				Message: "© 2022-2025 Romein van Buren",
 				Icon:    appIcon,
 			},
 		},

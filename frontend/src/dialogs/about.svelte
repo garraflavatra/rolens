@@ -19,7 +19,7 @@
   <hr />
 
   <div class="info">
-    <p class="copy">© Romein van Buren, 2022-2024.</p>
+    <p class="copy">© Romein van Buren, 2022-2025.</p>
     <p>
       <a href="https://garraflavatra.github.io/rolens/" use:alink>Documentation</a> |
       <a href="https://github.com/garraflavatra/rolens" use:alink>GitHub</a> |

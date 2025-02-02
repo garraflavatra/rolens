@@ -14,14 +14,12 @@ jobs:
         platform:
           - windows-2019
           - windows-2022
-          - macos-12
           - macos-13
           - macos-14
-          - ubuntu-20.04
           - ubuntu-22.04
           - ubuntu-24.04
-        go-version: [ 1.21 ]
-        node-version: [ 18 ]
+        go-version: [ 1.23.5 ]
+        node-version: [ 22 ]
 
     runs-on: ${{ matrix.platform }}
 
@@ -44,7 +42,7 @@ jobs:
 
     - name: Install build dependencies for Linux
       if: contains(matrix.platform, 'ubuntu')
-      run: sudo apt-get install gtk+-3.0 webkit2gtk-4.0
+      run: sudo apt-get update && sudo apt-get install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -76,7 +74,7 @@ jobs:
 
   bundle:
     name: Bundle artifacts
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: build
     if: ${{ always() }}
 
